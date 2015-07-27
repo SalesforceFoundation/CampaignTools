@@ -1,0 +1,3 @@
+<apex:page standardController="Campaign" extensions="ProcessSegmentBTN_CTRL" action="{!refreshCampaignList}" >
+    <apex:PageMessages />
+</apex:page>

@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
@@ -64,6 +65,15 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Include_in_List__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Whether this Member should be included in the final list, after processing the inclusion/exclusion logic.</inlineHelpText>
+        <label>Include in List</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Lead__c</fullName>
@@ -90,18 +100,18 @@
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Sources__c</fullName>
+        <fullName>Source_Names__c</fullName>
         <externalId>false</externalId>
-        <label>Sources</label>
+        <label>Source Names</label>
         <length>32768</length>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
-        <fullName>Source_Names__c</fullName>
+        <fullName>Sources__c</fullName>
         <externalId>false</externalId>
-        <label>Source Names</label>
+        <label>Sources</label>
         <length>32768</length>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
