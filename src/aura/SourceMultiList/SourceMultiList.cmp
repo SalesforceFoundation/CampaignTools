@@ -1,0 +1,18 @@
+<aura:component >
+    <aura:attribute name="group" type="Object" />
+    
+	<div class="filter-list">
+        <div class="group-filters or">
+            <aura:iteration items="{!v.group.items}" var="item">
+                <aura:if isTrue="{!item.type == 'filter'}">
+	            	<c:Source source="{!item}" />
+                    <aura:set attribute="else">
+                        <c:SourceGroup group="{!item}" />
+                    </aura:set>
+                </aura:if>
+        	</aura:iteration>
+        </div>
+         <ui:button aura:id="button" buttonTitle="Click to add a source" class="btn btn-default" label="Add new source" press="{!c.addSource}"/>
+         <ui:button aura:id="button" buttonTitle="Click to add a group" class="btn btn-default" label="Add new group" press="{!c.addGroup}"/>
+    </div>
+</aura:component>
