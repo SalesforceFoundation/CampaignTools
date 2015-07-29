@@ -37,7 +37,7 @@
 *
 */
 @isTest
-private with sharing class SegmentTreeProcessor_TEST {
+public with sharing class SegmentTreeProcessor_TEST {
 
     /*********************************************************************************************************
     * @description if you only want to run one test in this class, fill in its name here.
@@ -132,7 +132,7 @@ private with sharing class SegmentTreeProcessor_TEST {
     * A is root
     * B, D, E are leafs
     */  
-    static Segment__c segTreeTestData() {
+    public static Segment__c segTreeTestData(string srcB, string srcD, string srcE) {
 
         Segment__c rootSegment = new Segment__c(Operation__c=Label.logicOR);
         insert rootSegment;
@@ -145,7 +145,8 @@ private with sharing class SegmentTreeProcessor_TEST {
                 Parent_Segment__c = rootSegment.id
             ));
         }
-        childSegments[0].Source_ID__c = 'B';
+        childSegments[0].Source_ID__c = srcB;
+        childSegments[0].Source_Type__c = 'Campaign';
         childSegments[1].Operation__c = label.logicAND;
         insert childSegments;
 
@@ -156,8 +157,10 @@ private with sharing class SegmentTreeProcessor_TEST {
                 Parent_Segment__c = childSegments[1].id
             ));
         }
-        gchildSegments[0].Source_ID__c = 'D';
-        gchildSegments[1].Source_ID__c = 'E';
+        gchildSegments[0].Source_ID__c = srcD;
+        gchildSegments[0].Source_Type__c = 'Campaign';
+        gchildSegments[1].Source_ID__c = srcE;
+        gchildSegments[1].Source_Type__c = 'Campaign';
         insert gchildSegments;
 
         return rootSegment;
@@ -170,7 +173,7 @@ private with sharing class SegmentTreeProcessor_TEST {
         if (strTestOnly != '*' && strTestOnly != 'testSimpleTreeIn') return;
         
         // A (B C(D, E))
-        CSegment csegRoot = SegmentMapper.mapRootSegment(segTreeTestData());
+        CSegment csegRoot = SegmentMapper.mapRootSegment(segTreeTestData('B', 'D', 'E'));
         
         // create Members list with combinations of sources B, D, E
         list<Segment__c> listSrc = [select Id, Source_ID__c from Segment__c where Source_ID__c != null 
@@ -213,7 +216,7 @@ private with sharing class SegmentTreeProcessor_TEST {
         
         // A (B C(D, E))
         // change E to be an Exclude
-        Segment__c segRoot = segTreeTestData();
+        Segment__c segRoot = segTreeTestData('B', 'D', 'E');
         list<Segment__c> listSeg = [select Id from Segment__c where Source_ID__c = 'E'];
         system.assertEquals(1, listSeg.size());
         listSeg[0].Exclude_Source__c = true;

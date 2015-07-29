@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Campaign+Tools</fullName>
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campaign Tools</fullName>
     <types>
         <members>CSegment</members>
         <members>CampaignPopulate</members>
         <members>MembersBuilder</members>
         <members>MembersBuilder_TEST</members>
         <members>ProcessSegmentBTN_CTRL</members>
+        <members>ProcessSegmentBTN_TEST</members>
         <members>SegmentMapper</members>
         <members>SegmentMapper_TEST</members>
         <members>SegmentTreeProcessor</members>
