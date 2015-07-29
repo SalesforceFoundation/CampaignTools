@@ -49,7 +49,9 @@ public with sharing class SegmentTreeProcessor {
     public static void processSegmentTree(CSegment csegRoot, list<Member__c> listMember) {
         for (Member__c member : listMember) {
             member.Include_in_List__c = includeMemberInSegmentTree(member, csegRoot);
+            system.debug('**** member: ' + member);
         }
+        update listMember;
     }
 
     /*******************************************************************************************************
@@ -63,10 +65,12 @@ public with sharing class SegmentTreeProcessor {
     
         // handle a leaf segment, which should have a single source
         if (cseg.Segment.Source_ID__c != null) {
-            // if this member refers to this source
-            if (member.Sources__c != null && member.Sources__c.contains(cseg.Segment.Source_ID__c))
-                // then it is to be included.
-                return !cseg.Segment.Exclude_Source__c;
+            // if we should include this member, they need to refer to the source
+            if (!cseg.Segment.Exclude_Source__c) {
+                return (member.Sources__c != null && member.Sources__c.contains(cseg.Segment.Source_ID__c));
+            } else {
+                return (member.Sources__c == null || !member.Sources__c.contains(cseg.Segment.Source_ID__c));
+            }
         }
 
         // not a leaf node, so recursively call on all child segments

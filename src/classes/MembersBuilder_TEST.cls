@@ -123,21 +123,30 @@ public with sharing class MembersBuilder_TEST {
         
         List<Member__c> membersInserted = [select Contact__c, Lead__c, Sources__c, Source_Names__c from Member__c order by Contact__c, Lead__c];
         System.assertEquals(5, membersInserted.size());
+        //leads comes first
+        System.assertEquals(c2_1.ID, membersInserted[0].Lead__c);
+        System.assertEquals(c5_2.ID, membersInserted[1].Lead__c);
+        //then contacts
+        System.assertEquals(c1_1.ID, membersInserted[2].Contact__c);
+        System.assertEquals(c3_2.ID, membersInserted[3].Contact__c);
+        System.assertEquals(c4_2.ID, membersInserted[4].Contact__c);
         
-        System.assertEquals(camp1.ID, membersInserted[0].Sources__c);
-        System.assertEquals('Campaign:' + camp1.Name, membersInserted[0].Source_Names__c);
+
+        System.assertEquals(camp1.ID + ';' + camp3.ID, membersInserted[0].Sources__c);
+        System.assertEquals('Campaign:' + camp1.Name + ';Campaign:' + camp3.Name, membersInserted[0].Source_Names__c);
         
-        System.assertEquals(camp1.ID + ';' + camp3.ID, membersInserted[1].Sources__c);
-        System.assertEquals('Campaign:' + camp1.Name + ';Campaign:' + camp3.Name, membersInserted[1].Source_Names__c);
+        System.assertEquals(camp2.ID, membersInserted[1].Sources__c);
+        System.assertEquals('Campaign:' + camp2.Name, membersInserted[1].Source_Names__c);
         
-        System.assertEquals(camp2.ID, membersInserted[2].Sources__c);
-        System.assertEquals('Campaign:' + camp2.Name, membersInserted[2].Source_Names__c);
+        System.assertEquals(camp1.ID, membersInserted[2].Sources__c);
+        System.assertEquals('Campaign:' + camp1.Name, membersInserted[2].Source_Names__c);
         
         System.assertEquals(camp2.ID, membersInserted[3].Sources__c);
         System.assertEquals('Campaign:' + camp2.Name, membersInserted[3].Source_Names__c);
         
         System.assertEquals(camp2.ID, membersInserted[4].Sources__c);
-        System.assertEquals('Campaign:' + camp2.Name, membersInserted[4].Source_Names__c);   
+        System.assertEquals('Campaign:' + camp2.Name, membersInserted[4].Source_Names__c);
+        
     }
     
     @isTest

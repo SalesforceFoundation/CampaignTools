@@ -3,6 +3,7 @@
     <fullName>Campaign Tools</fullName>
     <types>
         <members>CSegment</members>
+        <members>CampaignPopulate</members>
         <members>MembersBuilder</members>
         <members>MembersBuilder_TEST</members>
         <members>ProcessSegmentBTN_CTRL</members>
@@ -18,6 +19,7 @@
     </types>
     <types>
         <members>Campaign.Campaign_List__c</members>
+        <members>CampaignMember.Source_Names__c</members>
         <members>Member__c.Contact__c</members>
         <members>Member__c.Include_in_List__c</members>
         <members>Member__c.Lead__c</members>
@@ -38,10 +40,8 @@
         <name>CustomLabel</name>
     </types>
     <types>
-        <members>CustomLabels</members>
-        <name>CustomLabels</name>
-    </types>
-    <types>
+        <members>Campaign</members>
+        <members>CampaignMember</members>
         <members>Member__c</members>
         <members>Segment__c</members>
         <name>CustomObject</name>
@@ -50,6 +50,10 @@
         <members>Member__c-Member Layout</members>
         <members>Segment__c-Group Layout</members>
         <name>Layout</name>
+    </types>
+    <types>
+        <members>Campaign.Refresh_Campaign_List</members>
+        <name>WebLink</name>
     </types>
     <version>34.0</version>
 </Package>

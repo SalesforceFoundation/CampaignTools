@@ -11,4 +11,15 @@
         <required>false</required>
         <type>Lookup</type>
     </fields>
+    <webLinks>
+        <fullName>Refresh_Campaign_List</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Refresh Campaign List</masterLabel>
+        <openType>sidebar</openType>
+        <page>ProcessSegmentBTN</page>
+        <protected>false</protected>
+    </webLinks>
 </CustomObject>

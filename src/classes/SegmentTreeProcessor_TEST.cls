@@ -71,7 +71,7 @@ private with sharing class SegmentTreeProcessor_TEST {
     }
 
     /*********************************************************************************************************
-    * @description test processing a single leaf tree where the source should not be included; 
+    * @description test processing a single leaf tree where the source was not found.
     */  
     static testMethod void testSingleLeafOut() {
         if (strTestOnly != '*' && strTestOnly != 'testSingleLeafOut') return;
@@ -96,6 +96,31 @@ private with sharing class SegmentTreeProcessor_TEST {
     }
 
     /*********************************************************************************************************
+    * @description test processing a single leaf tree where the source should be excluded 
+    */  
+    static testMethod void testSingleLeafExclude() {
+        if (strTestOnly != '*' && strTestOnly != 'testSingleLeafExclude') return;
+        
+        Segment__c seg = new Segment__c();
+        seg.Exclude_Source__c = true;
+        seg.Source_ID__c = 'foo';
+        seg.Source_Type__c = 'Campaign';
+        insert seg;
+        
+        list<Member__c> listMember = new list<Member__c>();
+        Member__c member = new Member__c();
+        member.Root_Segment__c = seg.Id;
+        member.Sources__c = 'foo';
+        listMember.add(member);
+        insert listMember;
+        
+        CSegment cseg = new CSegment(seg);
+        
+        SegmentTreeProcessor.processSegmentTree(cseg, listMember);
+        system.assertEquals(false, listMember[0].Include_in_List__c);
+    }
+
+    /*********************************************************************************************************
     * @description creates a segment tree of sample data for testing purposes.
     * the logic represented is all contacts in list B or (D and E)
     *       A
@@ -107,7 +132,7 @@ private with sharing class SegmentTreeProcessor_TEST {
     * A is root
     * B, D, E are leafs
     */  
-    static CSegment csegTreeTestData() {
+    static Segment__c segTreeTestData() {
 
         Segment__c rootSegment = new Segment__c(Operation__c=Label.logicOR);
         insert rootSegment;
@@ -135,8 +160,7 @@ private with sharing class SegmentTreeProcessor_TEST {
         gchildSegments[1].Source_ID__c = 'E';
         insert gchildSegments;
 
-        CSegment csegRoot = SegmentMapper.mapRootSegment(rootSegment);
-        return csegRoot;
+        return rootSegment;
     }
     
     /*********************************************************************************************************
@@ -146,7 +170,7 @@ private with sharing class SegmentTreeProcessor_TEST {
         if (strTestOnly != '*' && strTestOnly != 'testSimpleTreeIn') return;
         
         // A (B C(D, E))
-        CSegment csegRoot = csegTreeTestData();
+        CSegment csegRoot = SegmentMapper.mapRootSegment(segTreeTestData());
         
         // create Members list with combinations of sources B, D, E
         list<Segment__c> listSrc = [select Id, Source_ID__c from Segment__c where Source_ID__c != null 
@@ -181,4 +205,52 @@ private with sharing class SegmentTreeProcessor_TEST {
 
     }
 
+    /*********************************************************************************************************
+    * @description test processing a tree w/ children & grandchildren where some sources should be excluded; 
+    */  
+    static testMethod void testSimpleTreeExclude() {
+        if (strTestOnly != '*' && strTestOnly != 'testSimpleTreeExclude') return;
+        
+        // A (B C(D, E))
+        // change E to be an Exclude
+        Segment__c segRoot = segTreeTestData();
+        list<Segment__c> listSeg = [select Id from Segment__c where Source_ID__c = 'E'];
+        system.assertEquals(1, listSeg.size());
+        listSeg[0].Exclude_Source__c = true;
+        upsert listSeg;
+        CSegment csegRoot = SegmentMapper.mapRootSegment(segRoot);
+        
+        
+        // create Members list with combinations of sources B, D, E
+        list<Segment__c> listSrc = [select Id, Source_ID__c from Segment__c where Source_ID__c != null 
+            order by Source_ID__c];
+        system.assertEquals(3, listSrc.size());
+        string idB = listSrc[0].Source_ID__c;            
+        string idD = listSrc[1].Source_ID__c;
+        string idE = listSrc[2].Source_ID__c;
+        list<Member__c> listMember = new list<Member__c>();
+        listMember.add(new Member__c(Root_Segment__c = csegRoot.Segment.Id, Sources__c=idB+';'));
+        listMember.add(new Member__c(Root_Segment__c = csegRoot.Segment.Id, Sources__c=idB+';'+idD+';'));
+        listMember.add(new Member__c(Root_Segment__c = csegRoot.Segment.Id, Sources__c=idB+';'+idE+';'));
+        listMember.add(new Member__c(Root_Segment__c = csegRoot.Segment.Id, Sources__c=idD+';'));
+        listMember.add(new Member__c(Root_Segment__c = csegRoot.Segment.Id, Sources__c=idE+';'));
+        listMember.add(new Member__c(Root_Segment__c = csegRoot.Segment.Id, Sources__c=idD+';'+idE+';'));
+        listMember.add(new Member__c(Root_Segment__c = csegRoot.Segment.Id, Sources__c=idB+';'+idD+';'+idE+';'));
+        listMember.add(new Member__c(Root_Segment__c = csegRoot.Segment.Id, Sources__c='X;'));
+        insert listMember;        
+
+        // process the members against the segment tree
+        SegmentTreeProcessor.processSegmentTree(csegRoot, listMember);
+        
+        // verify which are included for (B or (D and !E))
+        system.assertEquals(true, listMember[0].Include_in_List__c);
+        system.assertEquals(true, listMember[1].Include_in_List__c);
+        system.assertEquals(true, listMember[2].Include_in_List__c);
+        system.assertEquals(true, listMember[3].Include_in_List__c);
+        system.assertEquals(false, listMember[4].Include_in_List__c);
+        system.assertEquals(false, listMember[5].Include_in_List__c);
+        system.assertEquals(true, listMember[6].Include_in_List__c);
+        system.assertEquals(false, listMember[7].Include_in_List__c);
+
+    }
 }

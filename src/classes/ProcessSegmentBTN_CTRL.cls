@@ -56,22 +56,36 @@ public with sharing class ProcessSegmentBTN_CTRL {
     * @return PageReference null, to cause the campaign's detail page to refresh.
     ********************************************************************************************************/
     public PageReference refreshCampaignList() {
-        campaign = [select Campaign_List__c from Campaign where Id = :campaign.Id];
+        campaign = [select Id, Campaign_List__c from Campaign where Id = :campaign.Id];
 
         if (campaign.Campaign_List__c == null) {
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'There is no saved Campaign List for this campaign.'));
             return null;
         }
         
-        /***
+        // first we populate Members object with all potential people to include on the list.
+        system.debug('**** Campaign_List__c: ' + campaign.Campaign_List__c);
         MembersBuilder mb = new MembersBuilder(campaign.Campaign_List__c);
-        ****/
         
+        // next we instantiate our wrapper around the saved Segment for use in processing.
         Segment__c segRoot = [select Id from Segment__c where Id = :campaign.Campaign_List__c];
+        system.debug('**** segRoot: ' + segRoot);
         CSegment csegRoot = SegmentMapper.mapRootSegment(segRoot);
+        system.debug('**** csegRoot: ' + csegRoot);
         
-        list<Member__c> listMember = [select Id, Sources__c from Member__c where Root_Segment__c = :segRoot.Id];
+        // now we process each member against the Segment tree, seeing if the member should be in the final list
+        list<Member__c> listMember = [select Id, Sources__c, Contact__c, Lead__c, Source_Names__c, Include_In_List__c from Member__c where Root_Segment__c = :segRoot.Id];
+        system.debug('**** listMember before processing: ' + listMember);
         SegmentTreeProcessor.processSegmentTree(csegRoot, listMember);
+        system.debug('**** listMember after processing: ' + listMember);
+        
+        // populate the campaign with the included members.
+        CampaignPopulate.populateCampaignWithMembers(campaign.Id, listMember);
+        
+        // finally, remove all temporary member records
+        delete listMember;
+        
+        // return back to the campaign.
         return pgRet;
     }
 

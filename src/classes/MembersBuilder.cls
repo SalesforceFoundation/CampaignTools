@@ -20,20 +20,22 @@ public with sharing class MembersBuilder {
                                                                 from CampaignMember where Campaign.ID in :sourceCampaigns]);
 
         //Insert each Member and its sources
-        membersToInsert.addAll(getMemberRecords(members));
+        membersToInsert.addAll(getMemberRecords(rootSegmentID, members));
         insert membersToInsert;
     }
     
-    private List<Member__c> getMemberRecords(Map<ID, CampaignMember> campaignMembers) {
+    private List<Member__c> getMemberRecords(ID rootSegmentID, Map<ID, CampaignMember> campaignMembers) {
         Map<ID, Member__c> membersToInsert = new Map<ID, Member__c>();
         for(CampaignMember member : campaignMembers.values()) {
             //The member is a Contact and it's not in our map
             if(member.Contact.ID != null && membersToInsert.get(member.Contact.ID) == null) {
                 membersToInsert.put(member.Contact.ID, new Member__c(Sources__c = member.Campaign.ID, 
+                                                            Root_Segment__c = rootSegmentID, Contact__c = member.Contact.ID,
                                                             Source_Names__c = 'Campaign:' + member.Campaign.Name));
              //The member is a Lead and it's not in our map
             } else if(member.Lead.ID != null && membersToInsert.get(member.Lead.ID) == null) {
                 membersToInsert.put(member.Lead.ID, new Member__c(Sources__c = member.Campaign.ID, 
+                                                            Root_Segment__c = rootSegmentID, Lead__c = member.Lead.ID,
                                                             Source_Names__c = 'Campaign:' + member.Campaign.Name));
             } else {
                 Member__c existingMember;
