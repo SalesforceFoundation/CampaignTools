@@ -4,6 +4,9 @@ public with sharing class MembersBuilder {
         
         Set<ID> sourceCampaigns = new Set<ID>();
         Set<ID> sourceReports = new Set<ID>();
+        List<Member__c> membersToInsert = new List<Member__c>();
+        
+
         //Retrieve all sources from all children segments of root segment
         for(Segment__c segment : [select Source_ID__c, Source_Type__c from Segment__c where Root_Segment__c = :rootSegmentID 
         and Source_ID__c != null]) {
@@ -14,17 +17,22 @@ public with sharing class MembersBuilder {
             }
         }
  
-        //Each member can be a Lead or a Contact
-        List<Member__c> membersToInsert = new List<Member__c>();
-        Map<ID, CampaignMember> members = new Map<ID, CampaignMember>([select Contact.ID, Lead.ID, Campaign.ID, Campaign.Name 
-                                                                from CampaignMember where Campaign.ID in :sourceCampaigns]);
+        if (!sourceCampaigns.isEmpty()) {
+            membersToInsert.addAll(getMemberRecords(rootSegmentID, sourceCampaigns));
+        }
 
-        //Insert each Member and its sources
-        membersToInsert.addAll(getMemberRecords(rootSegmentID, members));
+        if (!sourceReports.isEmpty()) {
+            membersToInsert.addAll(ProcessReports.getMemberRecords(rootSegmentID, sourceReports));
+        }
+
         insert membersToInsert;
     }
     
-    private List<Member__c> getMemberRecords(ID rootSegmentID, Map<ID, CampaignMember> campaignMembers) {
+    private List<Member__c> getMemberRecords(ID rootSegmentID, set<id> sourceCampaigns ) {
+        //Each member can be a Lead or a Contact
+        Map<ID, CampaignMember> campaignMembers = new Map<ID, CampaignMember>([select Contact.ID, Lead.ID, Campaign.ID, Campaign.Name 
+                                                                    from CampaignMember where Campaign.ID in :sourceCampaigns]);
+
         Map<ID, Member__c> membersToInsert = new Map<ID, Member__c>();
         for(CampaignMember member : campaignMembers.values()) {
             //The member is a Contact and it's not in our map

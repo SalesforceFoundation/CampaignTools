@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Campaign Tools</fullName>
+    <fullName>Campaign+Tools</fullName>
     <types>
         <members>CSegment</members>
         <members>CampaignPopulate</members>
         <members>MembersBuilder</members>
         <members>MembersBuilder_TEST</members>
+        <members>ProcessReports</members>
         <members>ProcessSegmentBTN_CTRL</members>
         <members>ProcessSegmentBTN_TEST</members>
         <members>SegmentMapper</members>
@@ -15,14 +16,8 @@
         <name>ApexClass</name>
     </types>
     <types>
-        <name>ApexComponent</name>
-    </types>
-    <types>
         <members>ProcessSegmentBTN</members>
         <name>ApexPage</name>
-    </types>
-    <types>
-        <name>ApexTrigger</name>
     </types>
     <types>
         <members>Campaign.Campaign_List__c</members>
@@ -60,6 +55,11 @@
         <members>Member__c-Member Layout</members>
         <members>Segment__c-Group Layout</members>
         <name>Layout</name>
+    </types>
+    <types>
+        <members>Campaign_List_Builder_Reports</members>
+        <members>Campaign_List_Builder_Reports/Test_Report_Do_Not_Modify</members>
+        <name>Report</name>
     </types>
     <types>
         <members>bssf1</members>
