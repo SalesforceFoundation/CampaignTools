@@ -1,23 +1,20 @@
 <aura:component >
-    <aura:attribute name="source" type="Object"/>
+    <aura:attribute name="source" type="CSegment"/>
+ 	<aura:registerEvent name="deleteCSegmentEvent" type="c:deleteCSegmentEvent"/>
     
  	<div class="filter">
-         <ui:button aura:id="deleteSource" buttonTitle="Delete Source" class="btn btn-danger btn-sm" label="del" press="{!c.delete}"/>
-        <ui:inputSelect class="form-control" aura:id="sourceType" change="{!c.handleSourceType}">
+        <ui:inputSelect class="form-control-narrow" aura:id="sourceType" change="{!c.handleSourceType}">
             <ui:inputSelectOption text="Select Source Type"/>
-            <ui:inputSelectOption text="Campaign" value="Campaign"/>
-            <ui:inputSelectOption text="Report" value="Report"/>
+            <ui:inputSelectOption text="Campaign" label="Campaign" value="{!v.source.Segment.Source_Type__c == 'Campaign'}" />
+            <ui:inputSelectOption text="Report" label="Report" value="{!v.source.Segment.Source_Type__c == 'Report'}" />
     	</ui:inputSelect>
         
-        <aura:if isTrue="{!v.source.sourceType == 'Report'}">
-            <ui:inputSelect class="form-control" aura:id="report">
-                <ui:inputSelectOption text="Select Report"/>
-            </ui:inputSelect>
+        <aura:if isTrue="{!v.source.Segment.Source_Type__c == 'Report'}">
+            <c:autocomplete sObjectType="Report" autocompleteEvent="{!c.handleAutocomplete}" inputLabel="&nbsp;&nbsp;find&nbsp;" value="{!v.source.sourceName}" fields="" />
         </aura:if>
-        <aura:if isTrue="{!v.source.sourceType == 'Campaign'}">
-            <ui:inputSelect class="form-control" aura:id="campaign">
-                <ui:inputSelectOption text="Select Campaign"/>
-            </ui:inputSelect>
+        <aura:if isTrue="{!v.source.Segment.Source_Type__c == 'Campaign'}">
+            <c:autocomplete sObjectType="Campaign" autocompleteEvent="{!c.handleAutocomplete}" inputLabel="&nbsp;&nbsp;find&nbsp;" value="{!v.source.sourceName}" fields="" />
         </aura:if>
+        <ui:button aura:id="deleteSource" buttonTitle="Delete Source" class="btn btn-default btn-xs" label="del" press="{!c.delete}"/>
 	</div>
 </aura:component>

@@ -3,20 +3,22 @@ public with sharing class ProcessReports {
     /*******************************************************************************************************
     * @description Calculates and returns member records for a campaign list with source reports.
     * @param rootSegmentID The ID of the root segment.
-    * @param setReportIDs A set of IDs of the reports
+    * @param mapReportIDs A map of report IDs to column names containing contact/lead ids.
     * @return List A list of member records in memory, ready for insert.
     ********************************************************************************************************/
-    public static List<Member__c> getMemberRecords(ID rootSegmentID, set<id> setReportIDs) {
+    public static List<Member__c> getMemberRecords(id rootSegmentID, map<id,string> mapReportIDs) {
         
         map<id,Reports.reportResults> mapReportResults = new map<id,Reports.reportResults>();
 
         map<id,Member__c> mapMembers = new map<id,Member__c>();
 
-        for (id reportId : setReportIDs) {
+        for (id reportId : mapReportIDs.keySet()) {
             Reports.reportResults result = Reports.ReportManager.runReport(reportId, true);
             String reportName = result.getReportMetadata().getName();
-            set<id> setMemberIds = getMemberIdsFromReport(result);
+            set<id> setMemberIds = getMemberIdsFromReport(result, mapReportIDs.get(reportId));
 
+            system.debug('all members' + setMemberIds);
+            
             mapReportResults.put(reportId, result);
             
             for (id memberId : setMemberIds) {
@@ -25,18 +27,20 @@ public with sharing class ProcessReports {
                     Member__c member = new Member__c(
                         Root_Segment__c = rootSegmentID,
                         Sources__c = reportId,
-                        Source_Names__c = 'Report: ' + reportName
+                        Source_Names__c = 'Report:' + reportName
                     );
                     
                     if (memberId.getSObjectType() == Schema.Contact.SObjectType)
                         member.Contact__c = memberId;
-                    else 
+                    if (memberId.getSObjectType() == Schema.Lead.SObjectType)
                         member.Lead__c = memberId;
+
+                    mapMembers.put(memberId, member);
                 //add a new source to an existing member
                 } else {
                     Member__c member = mapMembers.get(memberId);
                     member.Sources__c += ';'+reportId;
-                    member.Source_Names__c += ';Report: ' + reportName;
+                    member.Source_Names__c += ';Report:' + reportName;
                 }
             }
         }
@@ -49,44 +53,45 @@ public with sharing class ProcessReports {
     * @param reportId The salesforce id of the report to extract.
     * @return set A set of IDs of contacts or leads in the report.
     ********************************************************************************************************/
-    public static set<id> getMemberIdsFromReport(Reports.reportResults reportResults) {
+    /*public static set<id> getMemberIdsFromReport(Reports.reportResults reportResults, string fieldName) {
         
-        map<string,Reports.ReportFactWithDetails> mapFacts = (map<string,Reports.ReportFactWithDetails>)reportResults.getFactMap();
+
+        Map<String,Reports.GroupingColumn> mapGroupingColumnInfo = reportResults.getReportExtendedMetadata().getGroupingColumnInfo();
         
+
         set<id> memberIds = new set<id>();
 
-        //TBD if we need to process all ReportFacts in summery/matrix reports, 
-        //we might save lots of processing time by skipping summary rows, etc.
-        for (Reports.ReportFactWithDetails fact : mapFacts.values()) {
-            memberIds.addAll(getMemberIdsFromRows(fact.getRows()));
-        }
+            
+
+        //memberIds.addAll(getMemberIdsFromRows(fact.getRows()));
 
         return memberIds;
-    }
+    }*/
 
     /*******************************************************************************************************
     * @description Parses detail rows from a report to extract Contact or Lead IDs.
     * @param listDetailRows The report detail row in which to perform the search.
     * @return integer The column number, or null if no Contact/Lead Id is found.
     ********************************************************************************************************/
-    private static set<id> getMemberIdsFromRows(List<Reports.ReportDetailRow> listDetailRows) {
+    public static set<id> getMemberIdsFromReport(Reports.reportResults reportResults, string fieldName) {
         set<id> members = new set<id>();
-        integer memberIdCell;
 
-        //find the column number if any for the current list of rows contains a contact or lead id
-        for (Reports.ReportDetailRow row : listDetailRows) {
-            
-            memberIdCell = getColumnNumber(row.getDataCells());
-            if (memberIdCell != null)
-                break;
-        }
+        //find the column number
+        integer memberIdCell = getColumnNumber(reportResults, fieldName);
 
         //if we found a column with member ids, extract them
         if (memberIdCell!=null) {
-            for (Reports.ReportDetailRow row : listDetailRows) {
-                string val = (string) row.getDataCells()[memberIdCell].getValue();
-                if (!string.isBlank(val)) {
-                    members.add((id)val);
+            map<string,Reports.ReportFactWithDetails> mapFacts = (map<string,Reports.ReportFactWithDetails>)reportResults.getFactMap();
+
+            for (Reports.ReportFactWithDetails fact : mapFacts.values()) {
+                for (Reports.ReportDetailRow row : fact.getRows()) {
+                    string val = (string) row.getDataCells()[memberIdCell].getValue();
+                    if (!string.isBlank(val)) {
+                        system.debug('Added +row:' + val);
+                        members.add((id)val);
+                    } else {
+                        system.debug('Empty row:' + row);
+                    }
                 }
             }
         }
@@ -99,8 +104,18 @@ public with sharing class ProcessReports {
     * @param listDataCells The report cell data in which to perform the search.
     * @return integer The column number, or null if no Contact/Lead Id is found.
     ********************************************************************************************************/
-    private static integer getColumnNumber(list<Reports.ReportDataCell> listDataCells) {
-        for (integer i=0; i<listDataCells.size(); i++) {
+    private static integer getColumnNumber(Reports.reportResults reportResults, string fieldName) {
+        
+        list<String> listColumnNames = reportResults.getReportMetadata().getDetailColumns();
+
+        for (integer i=0; i<listColumnNames.size(); i++) {
+            if (listColumnNames[i].equalsIgnoreCase(fieldName)) {
+                return i;
+            }
+        }
+        return null;
+
+/*        for (integer i=0; i<listDataCells.size(); i++) {
             string val = (string)listDataCells[i].getValue();
             if (val.length() == 18) {
                 //verify this is a contact or lead id in a try/catch, in case the value
@@ -115,6 +130,6 @@ public with sharing class ProcessReports {
                 } catch (Exception ex){}
             }
         }
-        return null;
+        return null;*/
     }
 }

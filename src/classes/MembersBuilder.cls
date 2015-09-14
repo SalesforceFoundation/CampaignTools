@@ -3,17 +3,17 @@ public with sharing class MembersBuilder {
     public MembersBuilder(ID rootSegmentID) {
         
         Set<ID> sourceCampaigns = new Set<ID>();
-        Set<ID> sourceReports = new Set<ID>();
+        Map<ID, string> sourceReports = new map<ID, string>();
         List<Member__c> membersToInsert = new List<Member__c>();
         
 
         //Retrieve all sources from all children segments of root segment
-        for(Segment__c segment : [select Source_ID__c, Source_Type__c from Segment__c where Root_Segment__c = :rootSegmentID 
+        for(Segment__c segment : [select Source_ID__c, Source_Type__c, Report_Field_Name__c from Segment__c where Root_Segment__c = :rootSegmentID 
         and Source_ID__c != null]) {
             if(segment.Source_Type__c == 'Campaign') {
                 sourceCampaigns.add(segment.Source_ID__c);
             } else if(segment.Source_Type__c == 'Report') {
-                sourceReports.add(segment.Source_ID__c);
+                sourceReports.put(segment.Source_ID__c, segment.Report_Field_Name__c);
             }
         }
  
@@ -22,6 +22,7 @@ public with sharing class MembersBuilder {
         }
 
         if (!sourceReports.isEmpty()) {
+            system.debug('sourceReports' + sourceReports);
             membersToInsert.addAll(ProcessReports.getMemberRecords(rootSegmentID, sourceReports));
         }
 

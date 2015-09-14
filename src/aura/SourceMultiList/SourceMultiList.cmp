@@ -1,18 +1,32 @@
 <aura:component >
-    <aura:attribute name="group" type="Object" />
+    <aura:attribute name="group" type="CSegment" />
+ 	<aura:registerEvent name="addCSegmentEvent" type="c:addCSegmentEvent"/>
+    <aura:handler event="c:deleteCSegmentEvent" action="{!c.handleDeleteCSegmentEvent}"/>
     
 	<div class="filter-list">
-        <div class="group-filters or">
-            <aura:iteration items="{!v.group.items}" var="item">
-                <aura:if isTrue="{!item.type == 'filter'}">
-	            	<c:Source source="{!item}" />
+	    <!-- <span><i>SourceMultiList {!v.group.Segment.Id}, Children: {!v.group.listChildCSegments.length}</i></span> -->
+        <div class="{!v.group.Segment.Operation__c == 'OR' ? 'group-filters or' : 'group-filters and'}">
+            <aura:if isTrue="{!v.group.Segment.Operation__c == 'SOURCE'}">
+                <!-- <span><i>A multilist node that is a SOURCE!</i></span> -->
+                <c:Source source="{!v.group}" />
+            <aura:set attribute="else">        
+                <aura:iteration items="{!v.group.listChildCSegments}" var="cseg">
+                    <aura:if isTrue="{!cseg.Segment.Operation__c  == 'SOURCE'}">
+                        <c:Source source="{!cseg}" />
                     <aura:set attribute="else">
-                        <c:SourceGroup group="{!item}" />
+                        <c:SourceMultiList group="{!cseg}" />
                     </aura:set>
-                </aura:if>
-        	</aura:iteration>
+                    </aura:if>
+                    <div class="operationLabel" >{!v.group.Segment.Operation__c == 'AND' ? 'and' : 'or'}</div>
+                </aura:iteration>            
+            </aura:set>
+            </aura:if>
+            <aura:if isTrue="{! v.group.Segment.Operation__c != 'OR'}">
+	            <ui:button aura:id="button" buttonTitle="Click to add a source" class="btn btn-default btn-xs" label="Add new source" press="{!c.addSource}"/>
+            </aura:if>
+            <aura:if isTrue="{! v.group.parentCSegment == v.group.rootCSegment}">
+                <ui:button aura:id="button" buttonTitle="Click to add a group" class="btn btn-default btn-xs" label="Add new group" press="{!c.addGroup}"/>
+            </aura:if>
         </div>
-         <ui:button aura:id="button" buttonTitle="Click to add a source" class="btn btn-default" label="Add new source" press="{!c.addSource}"/>
-         <ui:button aura:id="button" buttonTitle="Click to add a group" class="btn btn-default" label="Add new group" press="{!c.addGroup}"/>
     </div>
 </aura:component>

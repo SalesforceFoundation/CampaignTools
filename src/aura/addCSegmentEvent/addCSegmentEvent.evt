@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="event fired from the SourceMultiList component when the Add Group button is clicked." >
+    <aura:attribute name="cseg" type="CSegment"/>
+</aura:event>

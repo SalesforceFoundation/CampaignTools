@@ -67,23 +67,42 @@ public with sharing class SegmentTreeProcessor {
         if (cseg.Segment.Source_ID__c != null) {
             // if we should include this member, they need to refer to the source
             if (!cseg.Segment.Exclude_Source__c) {
+            	system.debug('member is in?: ' + (member.Sources__c != null && member.Sources__c.contains(cseg.Segment.Source_ID__c)) + ' ' + member);
                 return (member.Sources__c != null && member.Sources__c.contains(cseg.Segment.Source_ID__c));
             } else {
                 return (member.Sources__c == null || !member.Sources__c.contains(cseg.Segment.Source_ID__c));
+                system.debug('member is in?: ' + (member.Sources__c == null || !member.Sources__c.contains(cseg.Segment.Source_ID__c)) + ' ' + member);
             }
         }
 
         // not a leaf node, so recursively call on all child segments
         boolean isAnd = cseg.Segment.Operation__c == label.LogicAND; 
         
+        // but if we have no children, bail out
+        if (cseg.listChildCSegments.size() < 1)
+            return true;
+        
+        // if this and/or node is an exclude, then we flip its logic,
+        // and push the negation down.  ie !(A and B) == (!A or !B)
+        // !(C or D) == (!C and !D)
+        boolean isNegate = cseg.Segment.Exclude_Source__c;
+        if (isNegate)
+            isAnd = !isAnd;
+        
         for (CSegment csegment : cseg.listChildCSegments) {
             boolean include = includeMemberInSegmentTree(member, csegment);
+            if (isNegate)
+                include = !include;
             if (isAnd) {
-                if (!include)
+                if (!include) {
+                    system.debug('member is very out: ' + member);
                     return false; // we can short circuit in this case!
+                }
             } else { // Or
-                if (include)
+                if (include) {
+                    system.debug('member is very in: ' + member);
                     return true; // we can short circuit in this case!
+                }
             }            
         }
         
@@ -91,6 +110,7 @@ public with sharing class SegmentTreeProcessor {
         // so we know what to return given our Operation.
         // And with no short circuiting means true
         // Or with no short circuiting means false
+        system.debug('member is in?: ' + isAnd + ' '+ member);
         return (isAnd);
         
     }

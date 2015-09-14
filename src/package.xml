@@ -2,7 +2,9 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Campaign+Tools</fullName>
     <types>
+        <members>AutocompleteController</members>
         <members>CSegment</members>
+        <members>CampaignListBuilder_CTRL</members>
         <members>CampaignPopulate</members>
         <members>MembersBuilder</members>
         <members>MembersBuilder_TEST</members>
@@ -14,11 +16,23 @@
         <members>SegmentMapper_TEST</members>
         <members>SegmentTreeProcessor</members>
         <members>SegmentTreeProcessor_TEST</members>
+        <members>SegmentTreeSave</members>
+        <members>SegmentTreeSave_TEST</members>
         <name>ApexClass</name>
     </types>
     <types>
         <members>ProcessSegmentBTN</members>
         <name>ApexPage</name>
+    </types>
+    <types>
+        <members>CampaignListBuilder</members>
+        <members>Source</members>
+        <members>SourceMultiList</members>
+        <members>addCSegmentEvent</members>
+        <members>autocomplete</members>
+        <members>autocompleteEvent</members>
+        <members>deleteCSegmentEvent</members>
+        <name>AuraDefinitionBundle</name>
     </types>
     <types>
         <members>Campaign.Campaign_List__c</members>
@@ -32,6 +46,7 @@
         <members>Segment__c.Exclude_Source__c</members>
         <members>Segment__c.Operation__c</members>
         <members>Segment__c.Parent_Segment__c</members>
+        <members>Segment__c.Report_Field_Name__c</members>
         <members>Segment__c.Root_Segment__c</members>
         <members>Segment__c.Source_ID__c</members>
         <members>Segment__c.Source_Type__c</members>

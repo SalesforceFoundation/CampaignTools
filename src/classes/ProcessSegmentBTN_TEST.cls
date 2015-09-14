@@ -74,7 +74,7 @@ public with sharing class ProcessSegmentBTN_TEST {
         
         // now create our Segment Tree with the campaign Id's
         // contacts in list B or (D and E)
-        Segment__c segRoot = SegmentTreeProcessor_TEST.segTreeTestData(listCmp[0].Id, listCmp[1].Id, listCmp[2].Id); 
+        Segment__c segRoot = SegmentTreeProcessor_TEST.segTreeTestData(listCmp[0].Id, listCmp[1].Id, listCmp[2].Id, false); 
                 
         // our test campaign to fill
         Campaign cmp = new Campaign();
