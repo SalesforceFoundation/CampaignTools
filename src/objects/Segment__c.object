@@ -97,6 +97,16 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Report_Field_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Report Field Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Root_Segment__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
