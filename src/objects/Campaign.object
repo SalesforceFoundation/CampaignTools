@@ -12,6 +12,16 @@
         <type>Lookup</type>
     </fields>
     <webLinks>
+        <fullName>Edit_Campaign_List</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Edit Campaign List</masterLabel>
+        <openType>replace</openType>
+        <page>CampaignList</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
         <fullName>Refresh_Campaign_List</fullName>
         <availability>online</availability>
         <displayType>button</displayType>

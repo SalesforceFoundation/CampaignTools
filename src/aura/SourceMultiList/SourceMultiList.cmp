@@ -3,7 +3,7 @@
  	<aura:registerEvent name="addCSegmentEvent" type="c:addCSegmentEvent"/>
     <aura:handler event="c:deleteCSegmentEvent" action="{!c.handleDeleteCSegmentEvent}"/>
     
-	<div class="filter-list">
+	<div class="filter-list slds-theme--shade">
 	    <!-- <span><i>SourceMultiList {!v.group.Segment.Id}, Children: {!v.group.listChildCSegments.length}</i></span> -->
         <div class="{!v.group.Segment.Operation__c == 'OR' ? 'group-filters or' : 'group-filters and'}">
             <aura:if isTrue="{!v.group.Segment.Operation__c == 'SOURCE'}">
@@ -22,10 +22,10 @@
             </aura:set>
             </aura:if>
             <aura:if isTrue="{! v.group.Segment.Operation__c != 'OR'}">
-	            <ui:button aura:id="button" buttonTitle="Click to add a source" class="btn btn-default btn-xs" label="Add new source" press="{!c.addSource}"/>
+	            <ui:button aura:id="button" buttonTitle="Click to add a source" class="slds-button--small" label="Add new source" press="{!c.addSource}"/>
             </aura:if>
             <aura:if isTrue="{! v.group.parentCSegment == v.group.rootCSegment}">
-                <ui:button aura:id="button" buttonTitle="Click to add a group" class="btn btn-default btn-xs" label="Add new group" press="{!c.addGroup}"/>
+                <ui:button aura:id="button" buttonTitle="Click to add a group" class="slds-button--small" label="Add new group" press="{!c.addGroup}"/>
             </aura:if>
         </div>
     </div>

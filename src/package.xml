@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Campaign+Tools</fullName>
+    <fullName>Campaign Tools</fullName>
     <types>
         <members>AutocompleteController</members>
         <members>CSegment</members>
         <members>CampaignListBuilder_CTRL</members>
+        <members>CampaignList_CTRL</members>
         <members>CampaignPopulate</members>
         <members>MembersBuilder</members>
         <members>MembersBuilder_TEST</members>
-        <members>ProcessReports</members>
-        <members>ProcessReports_TEST</members>
         <members>ProcessSegmentBTN_CTRL</members>
         <members>ProcessSegmentBTN_TEST</members>
         <members>SegmentMapper</members>
@@ -21,17 +20,26 @@
         <name>ApexClass</name>
     </types>
     <types>
+        <name>ApexComponent</name>
+    </types>
+    <types>
+        <members>CampaignList</members>
         <members>ProcessSegmentBTN</members>
         <name>ApexPage</name>
     </types>
     <types>
-        <members>CampaignListBuilder</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>CampaignListApp</members>
+        <members>CampaignListCmp</members>
         <members>Source</members>
         <members>SourceMultiList</members>
         <members>addCSegmentEvent</members>
         <members>autocomplete</members>
         <members>autocompleteEvent</members>
         <members>deleteCSegmentEvent</members>
+        <members>svg</members>
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
@@ -46,7 +54,6 @@
         <members>Segment__c.Exclude_Source__c</members>
         <members>Segment__c.Operation__c</members>
         <members>Segment__c.Parent_Segment__c</members>
-        <members>Segment__c.Report_Field_Name__c</members>
         <members>Segment__c.Root_Segment__c</members>
         <members>Segment__c.Source_ID__c</members>
         <members>Segment__c.Source_Type__c</members>
@@ -73,15 +80,13 @@
         <name>Layout</name>
     </types>
     <types>
-        <members>Campaign_List_Builder_Reports</members>
-        <members>Campaign_List_Builder_Reports/Test_Report_Do_Not_Modify</members>
-        <name>Report</name>
-    </types>
-    <types>
-        <members>bssf1</members>
+        <members>LightningDesignSystem</members>
+        <members>jquery</members>
+        <members>jqueryui</members>
         <name>StaticResource</name>
     </types>
     <types>
+        <members>Campaign.Edit_Campaign_List</members>
         <members>Campaign.Refresh_Campaign_List</members>
         <name>WebLink</name>
     </types>

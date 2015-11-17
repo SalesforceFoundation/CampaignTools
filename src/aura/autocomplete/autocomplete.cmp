@@ -3,6 +3,7 @@
     <aura:attribute name="fields" type="String[]" default="" description="List of fields to get with each record"/>
     <aura:attribute name="limit" type="Integer" default="10" description="Limits the number of sObjects returned to this value" />
     <aura:attribute name="inputLabel" type="String" default="" description="Label for text input"/>
+    <aura:attribute name="placeholder" type="String" default="" description="Placeholder text to display when empty" />
     <aura:attribute name="value" type="String" description="initial value to display" />
     
     <aura:attribute name="ready" type="Boolean" default="false" description="Used to check if resources have been loaded"/>
@@ -11,8 +12,8 @@
         
     <ltng:require scripts="/resource/jquery,/resource/jqueryui/jqueryui/jquery-ui.js," 
                   styles="/resource/jqueryui/jqueryui/jquery-ui.css" afterScriptsLoaded="{!c.doInit}" />
-
-    <div style="display:inline;" >
-        <ui:inputText label="{!v.inputLabel}" value="{!v.value}" class="autocomplete" size="50" />
+	<div style="display:inline"> <!-- this div needed by autocomplete to work! -->
+        <ui:inputText value="{!v.value}" label="{!v.inputLabel}" placeholder="{!v.placeholder}"
+                      class="autocomplete slds-form-element__control slds-input" />
     </div>
 </aura:component>

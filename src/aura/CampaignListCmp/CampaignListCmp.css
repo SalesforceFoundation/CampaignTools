@@ -1,6 +1,3 @@
-.THIS.bootstrap-sf1 {
-    background: white;
-}
 .THIS .group {
   border-bottom: 1px solid #d8d8d8;
   padding: 20px;
@@ -19,7 +16,7 @@
 }
 /* this is the styling for the SourceMultiList component */
 .THIS .filter-list {
-  background-color: #fafafa;
+  /* background-color: #fafafa; now using LDS shade theme */
   border: 1px solid #d8d8d8;
   border-radius: 10px;  
   padding: 10px 10px 10px 10px;
@@ -55,10 +52,10 @@
 
 /* this is the styling for the Source component */
 .THIS .filter {
-  padding: 10px 10px 10px 10px;
-  margin: 10px 10px 10px 10px;
+  /* padding: 10px 10px 10px 10px; */
+  margin-left: 10px;
   position: relative;
-  background-color: white;
+  /* background-color: white; */
   border-radius: 10px;  
   /* border-bottom: 1px solid #d8d8d8; */
   z-index: 1;
@@ -76,7 +73,7 @@
 }
 
 .THIS .operationLabel {
-  margin: -5px 0px -5px 0px;
+  /* margin: -5px 0px -5px 0px; */
 }
 /************ not really working, so remove for now.
 .THIS .and .filter:after,

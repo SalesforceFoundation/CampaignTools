@@ -2,19 +2,22 @@
     <aura:attribute name="source" type="CSegment"/>
  	<aura:registerEvent name="deleteCSegmentEvent" type="c:deleteCSegmentEvent"/>
     
- 	<div class="filter">
-        <ui:inputSelect class="form-control-narrow" aura:id="sourceType" change="{!c.handleSourceType}">
-            <ui:inputSelectOption text="Select Source Type"/>
-            <ui:inputSelectOption text="Campaign" label="Campaign" value="{!v.source.Segment.Source_Type__c == 'Campaign'}" />
-            <ui:inputSelectOption text="Report" label="Report" value="{!v.source.Segment.Source_Type__c == 'Report'}" />
-    	</ui:inputSelect>
-        
-        <aura:if isTrue="{!v.source.Segment.Source_Type__c == 'Report'}">
-            <c:autocomplete sObjectType="Report" autocompleteEvent="{!c.handleAutocomplete}" inputLabel="&nbsp;&nbsp;find&nbsp;" value="{!v.source.sourceName}" fields="" />
-        </aura:if>
-        <aura:if isTrue="{!v.source.Segment.Source_Type__c == 'Campaign'}">
-            <c:autocomplete sObjectType="Campaign" autocompleteEvent="{!c.handleAutocomplete}" inputLabel="&nbsp;&nbsp;find&nbsp;" value="{!v.source.sourceName}" fields="" />
-        </aura:if>
-        <ui:button aura:id="deleteSource" buttonTitle="Delete Source" class="btn btn-default btn-xs" label="del" press="{!c.delete}"/>
+ 	<div class="filter slds-form--inline">
+        <div class="slds-form-element">
+            <ui:inputSelect class="slds-select" aura:id="sourceType" change="{!c.handleSourceType}">
+                <ui:inputSelectOption text="Select Source Type"/>
+                <ui:inputSelectOption text="Campaign" label="Campaign" value="{!v.source.Segment.Source_Type__c == 'Campaign'}" />
+                <ui:inputSelectOption text="Report" label="Report" value="{!v.source.Segment.Source_Type__c == 'Report'}" />
+            </ui:inputSelect>
+        </div>        
+        <div class="slds-form-element" style="width:60%">
+            <aura:if isTrue="{!v.source.Segment.Source_Type__c == 'Report'}">
+                <c:autocomplete sObjectType="Report" autocompleteEvent="{!c.handleAutocomplete}" placeholder="find..." value="{!v.source.sourceName}" fields="" />
+            </aura:if>
+            <aura:if isTrue="{!v.source.Segment.Source_Type__c == 'Campaign'}">
+                <c:autocomplete sObjectType="Campaign" autocompleteEvent="{!c.handleAutocomplete}" placeholder="find..." value="{!v.source.sourceName}" fields="" />
+            </aura:if>
+        </div>        
+        <ui:button aura:id="deleteSource" buttonTitle="Delete Source" class="slds-button--small" label="del" press="{!c.delete}"/>
 	</div>
 </aura:component>

@@ -4,7 +4,8 @@
     loadCampaignInfo: function(component) {
 
         // parse out url parameter of campaignId
-        var cmpId = this.getParam('CampaignId');
+        //var cmpId = this.getParam('CampaignId');
+        var cmpId = component.get('v.campaignId');
         
         // query for the campaign object (name and Campaign_List__c)
 		var action = component.get("c.getCampaign");
@@ -193,8 +194,11 @@
     
 	// close the builder and return to the campaign
     close: function(component) {
-    	//window.history.back();
-    	window.top.location.replace('/' + component.get('v.campaign.Id'));
+        if (typeof sforce === "undefined") {
+	    	window.top.location.replace('/' + component.get('v.campaign.Id'));
+        } else {
+	    	sforce.one.navigateToSObject(component.get('v.campaign.Id'));
+        }
     },                           
     
     // helper to display an errors that occur from a server method call

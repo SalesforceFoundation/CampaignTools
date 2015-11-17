@@ -1,0 +1,62 @@
+<aura:component controller="CampaignListBuilder_CTRL" >
+    <aura:attribute name="campaignId" type="String" />
+	<aura:attribute name="campaign" type="Campaign"/>
+    <aura:attribute name="csegRoot" type="CSegment"/>
+    <aura:attribute name="csegRootOriginal" type="CSegment"/>
+    <aura:attribute name="csegExcludes" type="CSegment"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="c:addCSegmentEvent" action="{!c.handleAddCSegmentEvent}"/>   
+    
+    
+    <!-- <ltng:require styles="/resource/bssf1" /> -->
+	
+    <!-- gets an error when loading here, but ok from the vfpage!!!!
+    <ltng:require scripts="/resource/LightningDesignSystem/assets/styles/salesforce-lightning-design-system.css" />
+    -->
+    
+    
+    <!-- only needed by autocomplete component, but lightning bug fails to load it there -->
+    <ltng:require scripts="/resource/jquery,/resource/jqueryui/jqueryui/jquery-ui.js," 
+                  styles="/resource/jqueryui/jqueryui/jquery-ui.css" />
+
+	<div class="slds">
+		<!-- PAGE HEADER -->
+		<div class="slds-page-header" role="banner">
+			<!-- LAYOUT GRID -->
+			<div class="slds-grid">
+				<!-- GRID COL -->
+				<div class="slds-col">
+					<!-- HEADING AREA -->                    
+					<!-- MEDIA OBJECT = FIGURE + BODY -->
+					<div class="slds-media">
+						<div class="slds-media__figure">
+							<c:svg class="slds-icon slds-icon--large slds-icon-standard-user" 
+                                   xlinkHref="/resource/LightningDesignSystem/assets/icons/standard-sprite/svg/symbols.svg#campaign" />
+						</div>
+						<div class="slds-media__body">
+							<p class="slds-text-heading--label">Campaign List</p>
+							<h1 class="slds-text-heading--medium">{!v.campaign.Name}</h1>
+						</div>
+					</div>
+					<!-- / MEDIA OBJECT -->
+					<!-- HEADING AREA -->
+				</div>
+				<!-- GRID COL -->
+				<div class="slds-col slds-no-flex slds-align-middle">
+					<div class="slds-button-group" role="group">
+                        <ui:button aura:id="buttonSave" buttonTitle="Click to save and return to campaign" class="slds-button slds-button--neutral" label="Save &amp; Close" press="{!c.saveAndClose}" />
+                        <ui:button aura:id="buttonClose" buttonTitle="Click to return to campaign" class="slds-button slds-button--neutral" label="Close" press="{!c.close}" />
+					</div>
+				</div>
+				<!-- / GRID COL -->
+			</div>
+			<!-- / LAYOUT GRID -->
+		</div>
+		<!-- / PAGE HEADER -->
+            
+        <p/>
+        <c:SourceMultiList group="{!v.csegRoot}" />
+        <h3>Excludes</h3>
+        <c:SourceMultiList group="{!v.csegExcludes}" />
+    </div>
+</aura:component>

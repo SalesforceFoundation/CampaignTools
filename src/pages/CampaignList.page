@@ -1,0 +1,20 @@
+<apex:page standardController="Campaign" extensions="CampaignList_CTRL" standardStylesheets="false" showHeader="false" docType="html-5.0" applyHtmlTag="false" >
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <apex:includeScript value="/lightning/lightning.out.js" />
+        <apex:stylesheet value="{!URLFOR($Resource.LightningDesignSystem, 'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        
+        <div id="lightning" />
+        <script>
+            var id = '{!cmp.Id}';
+            $Lightning.use("c:CampaignListApp", function() {
+                $Lightning.createComponent("c:CampaignListCmp",
+                    { campaignId : id },
+                    "lightning",
+                    function(cmp) {
+                        // anything needed after lightning loaded?
+                    }
+                );
+            });
+        </script>
+    </html>
+</apex:page>
