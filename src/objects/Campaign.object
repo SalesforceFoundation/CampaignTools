@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <fields>
+        <fullName>Campaign_List_Mutex__c</fullName>
+        <description>This field indicates whether a mutex/lock is placed on this Campaign object.  A time value in this field indicates that a lock is in place, and the time when the lock was placed.  A null value in this field indicates no lock is being held.  This field must be updated atomically to avoid concurrency issues.</description>
+        <externalId>false</externalId>
+        <label>Campaign List Mutex</label>
+        <required>false</required>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>Campaign_List_Update_Status__c</fullName>
         <description>This tracks the status of updating this Campaign from a campaign list</description>
         <externalId>false</externalId>

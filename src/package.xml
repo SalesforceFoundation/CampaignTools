@@ -31,6 +31,8 @@
         <members>DeleteCampaignListMembersBatch_TEST</members>
         <members>DeleteCampaignMembersBatch</members>
         <members>DeleteCampaignMembersBatch_TEST</members>
+        <members>Mutex</members>
+        <members>Mutex_TEST</members>
         <members>ProcessSegmentBTN_CTRL</members>
         <members>ProcessSegmentBTN_TEST</members>
         <members>ReportService</members>
@@ -61,6 +63,7 @@
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
+        <members>Campaign.Campaign_List_Mutex__c</members>
         <members>Campaign.Campaign_List_Update_Status__c</members>
         <members>Campaign.Campaign_List__c</members>
         <members>CampaignMember.Source_Names__c</members>
