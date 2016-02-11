@@ -52,9 +52,16 @@ profiles:
         command: cumulusci package_beta $TDDIUM_CURRENT_COMMIT --create-release
 
   beta_deploy:
+    environment:
+      SPLIT:
+        - ORG_SUFFIX: beta
+        - ORG_SUFFIX: beta_2
     tests:
-      - type: custom
+      - type: junit
         command: git fetch --all; cumulusci ci beta_deploy "`git describe --tags | grep 'beta\/' | tail -1`" "$TDDIUM_CURRENT_COMMIT" --run-tests
+        report_files:
+        - "test_results_junit.xml"
+        
 
   dummy1:
     tests:
