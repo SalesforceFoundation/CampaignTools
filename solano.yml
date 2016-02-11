@@ -55,7 +55,7 @@ profiles:
     environment:
       SPLIT:
         - ORG_SUFFIX: beta
-        - ORG_SUFFIX: jasonde
+        - ORG_SUFFIX: beta_2
     tests:
       - type: junit
         command: git fetch --all; cumulusci ci beta_deploy "`git describe --tags | grep 'beta\/' | tail -1`" "$TDDIUM_CURRENT_COMMIT" --run-tests
