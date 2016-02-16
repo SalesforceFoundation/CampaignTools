@@ -79,7 +79,7 @@ profiles:
   beta_release:
     tests:
       - type: custom
-        command: cumulusci github master_to_feature $TDDIUM_CURRENT_COMMIT
+        command: cumulusci github master_to_feature --commit $TDDIUM_CURRENT_COMMIT
 
   dummy1:
     tests:
