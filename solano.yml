@@ -25,8 +25,8 @@ hooks:
 environment:
   CUMULUSCI_PATH: CumulusCI
   DEBUG_TESTS: true
-  CUMULUSCI_STEPS_FEATURE: deploy,dummy1,dummy2
-  CUMULUSCI_STEPS_MASTER: deploy,package_beta,beta_deploy
+  CUMULUSCI_STEPS_FEATURE: deploy,dummy1,dummy2,dummy3
+  CUMULUSCI_STEPS_MASTER: deploy,package_beta,beta_deploy,beta_release
 
 test_pattern: 
   - 'none'
@@ -37,6 +37,8 @@ plan:
   - profile: "{{ plan_step_2 }}"
     sets: plan_step_3
   - profile: "{{ plan_step_3 }}"
+    sets: plan_step_4
+  - profile: "{{ plan_step_4 }}"
 
 profiles:
   deploy:
@@ -54,19 +56,40 @@ profiles:
   beta_deploy:
     tests:
       - type: junit
+        name: beta deploy to beta org
         command: export ORG_SUFFIX=beta; git fetch --all; cumulusci ci beta_deploy "`git describe --tags | grep 'beta\/' | tail -1`" "$TDDIUM_CURRENT_COMMIT" --run-tests
         report_files:
         - "test_results_junit.xml"
       - type: junit
+        name: beta deploy to beta_1 org
         command: export ORG_SUFFIX=beta_2; git fetch --all; cumulusci ci beta_deploy "`git describe --tags | grep 'beta\/' | tail -1`" "$TDDIUM_CURRENT_COMMIT" --run-tests
         report_files:
         - "test_results_junit.xml"
-        
+      - type: junit
+        name: beta deploy to beta_2 org
+        command: export ORG_SUFFIX=beta_3; git fetch --all; cumulusci ci beta_deploy "`git describe --tags | grep 'beta\/' | tail -1`" "$TDDIUM_CURRENT_COMMIT" --run-tests
+        report_files:
+        - "test_results_junit.xml"
+      - type: junit
+        name: beta deploy to beta_3 org
+        command: export ORG_SUFFIX=beta_4; git fetch --all; cumulusci ci beta_deploy "`git describe --tags | grep 'beta\/' | tail -1`" "$TDDIUM_CURRENT_COMMIT" --run-tests
+        report_files:
+        - "test_results_junit.xml"
+
+  beta_release:
+    tests:
+      - type: custom
+        command: cumulusci github master_to_feature $TDDIUM_CURRENT_COMMIT
 
   dummy1:
     tests:
       - /bin/true
+
   dummy2:
+    tests:
+      - /bin/true
+
+  dummy3:
     tests:
       - /bin/true
 
