@@ -7,7 +7,7 @@ system:
     - branch: master
       queue: default
     - branch: "feature/*"
-      queue: feature
+      queue: features
 
 hooks:
   pre_setup: |
