@@ -231,7 +231,7 @@ public class ReportService implements CampaignList.ReportService {
         }
     }
 
-    /*
+    /**
      * @author Salesforce.org
      * @group CampaignTools
      * @description This Iterator will return ids retrieved from
@@ -244,7 +244,7 @@ public class ReportService implements CampaignList.ReportService {
         private Boolean hasNext;
         private Id next;
 
-        /*
+        /**
          * @description Constructor
          * @param iterator The Iterator that is to be filtered for unique items
         */
@@ -252,7 +252,7 @@ public class ReportService implements CampaignList.ReportService {
             this.iterator = iterator;
         }
 
-        /*
+        /**
          * @description Implementation of hasNext() from Iterator interface.
          * Returns true if there is another value available from the filtered
          * iterator that is strictly greater than the most recently returned id.
@@ -273,7 +273,7 @@ public class ReportService implements CampaignList.ReportService {
             return hasNext;
         }
 
-        /*
+        /**
          * @description Implementation of next() from Iterator interface.
          * Returns the next value from the filtered iterator, ensuring that
          * only unique values are returned.

@@ -35,12 +35,12 @@
 */
 public with sharing class ProcessSegmentBTN_CTRL {
 
-    /*
+    /**
      * @description The campaign retrieved from the standard controller
      */
     private Campaign campaign;
 
-    /*
+    /**
     * @description Constructor
     * @param controller StandardController to a Campaign
     */
@@ -48,7 +48,7 @@ public with sharing class ProcessSegmentBTN_CTRL {
         campaign = (Campaign) controller.getRecord();
     }
 
-    /*
+    /**
     * @description Action Method invoked by the Refresh Campaign List button on
     * a campaign.
     *
