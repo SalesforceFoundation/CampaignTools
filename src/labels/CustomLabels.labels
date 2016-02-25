@@ -121,6 +121,62 @@
         <value>Could not release lock on campaign {0}</value>
     </labels>
     <labels>
+        <fullName>JobProgressCompletedLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressCompletedLabel</shortDescription>
+        <value>Completed</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressExtendedStatusLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressExtendedStatusLabel</shortDescription>
+        <value>Extended Status</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressItemsProcessedLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressItemsProcessedLabel</shortDescription>
+        <value>batches processed</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressItemsProcessedOfLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressItemsProcessedOfLabel</shortDescription>
+        <value>of</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressProgressLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressProgressLabel</shortDescription>
+        <value>Progress</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressStartedByLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressStartedByLabel</shortDescription>
+        <value>Started by</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressStatusLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressStatusLabel</shortDescription>
+        <value>Status</value>
+    </labels>
+    <labels>
         <fullName>MutexFieldInvalidDateTimeException</fullName>
         <categories>Mutex,Exceptions</categories>
         <language>en_US</language>

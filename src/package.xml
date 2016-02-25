@@ -100,6 +100,13 @@
         <members>CampaignToolsListRefreshStatusQueuedMessage</members>
         <members>CampaignToolsNoSavedCampaignList</members>
         <members>CampaignToolsReleaseLockException</members>
+        <members>JobProgressCompletedLabel</members>
+        <members>JobProgressExtendedStatusLabel</members>
+        <members>JobProgressItemsProcessedLabel</members>
+        <members>JobProgressItemsProcessedOfLabel</members>
+        <members>JobProgressProgressLabel</members>
+        <members>JobProgressStartedByLabel</members>
+        <members>JobProgressStatusLabel</members>
         <members>MutexFieldInvalidDateTimeException</members>
         <members>MutexFieldInvalidUpdateableException</members>
         <members>PageMessagesConfirm</members>

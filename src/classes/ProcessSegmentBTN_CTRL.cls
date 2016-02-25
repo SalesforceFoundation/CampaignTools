@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2015 Salesforce.com Foundation
+    Copyright (c) 2016 Salesforce.org
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
     * Redistributions in binary form must reproduce the above copyright
       notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of the Salesforce.com Foundation nor the names of
+    * Neither the name of the Salesforce.org nor the names of
       its contributors may be used to endorse or promote products derived
       from this software without specific prior written permission.
 
@@ -84,6 +84,14 @@ public with sharing class ProcessSegmentBTN_CTRL {
         return null;
     }
 
+    /**
+     * @description A remote action for querying for the current campaign list
+     * refresh status of a given campaign.  Returns one of the picklist values
+     * defined on Campaign.Campaign_List_Update_Status__c, which correspond to
+     * the values defined in the CampaignList.UpdateStatus enum.
+     *
+     * @return String
+     */
     @RemoteAction
     public static String getCampaignListUpdateStatus(Id campaignId) {
         Campaign c = [

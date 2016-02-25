@@ -102,31 +102,37 @@
                         </div>
                         <div class="slds-tile__detail">
                             <p class="slds-text-body--small slds-truncate">
-                                Started by <span class="createdByName"></span> <span class="createdDate"></span>
+                                <apex:outputText value="{!$Label.JobProgressStartedByLabel}"/>
+                                <span class="createdByName"></span> <span class="createdDate"></span>
                             </p>
                             <dl class="slds-dl--horizontal slds-text-body--small">
                                 <div class="slds-x-small-show-only">
                                     <dt class="slds-dl--horizontal__label slds-medium-size--2-of-12 slds-x-small-show-only">
-                                        <p class="slds-truncate">Status:</p>
+                                        <p class="slds-truncate"><apex:outputText value="{!$Label.JobProgressStatusLabel}"/>:</p>
                                     </dt>
                                     <dd class="slds-dl--horizontal__detail slds-tile__meta slds-medium-size--10-of-12 slds-x-small-show-only">
                                         <p class="slds-truncate status"></p>
                                     </dd>
                                 </div>
                                 <dt class="slds-dl--horizontal__label slds-medium-size--2-of-12">
-                                    <p class="slds-truncate">Progress:</p>
+                                    <p class="slds-truncate"><apex:outputText value="{!$Label.JobProgressProgressLabel}"/>:</p>
                                 </dt>
                                 <dd class="slds-dl--horizontal__detail slds-tile__meta slds-medium-size--10-of-12">
-                                    <p class="slds-truncate"><span class="jobItemsProcessed"></span> of <span class="totalJobItems"></span> batches processed</p>
+                                    <p class="slds-truncate">
+                                        <span class="jobItemsProcessed"></span>
+                                        {!HTMLENCODE($Label.JobProgressItemsProcessedOfLabel)}
+                                        <span class="totalJobItems"></span>
+                                        {!HTMLENCODE($Label.JobProgressItemsProcessedLabel)}
+                                    </p>
                                 </dd>
                                 <dt class="slds-dl--horizontal__label slds-medium-size--2-of-12 completedDateContainer">
-                                    <p class="slds-truncate">Completed:</p>
+                                    <p class="slds-truncate"><apex:outputText value="{!$Label.JobProgressCompletedLabel}"/>:</p>
                                 </dt>
                                 <dd class="slds-dl--horizontal__detail slds-tile__meta slds-medium-size--10-of-12 completedDateContainer">
                                     <p class="slds-truncate completedDate"></p>
                                 </dd>
                                 <dt class="slds-dl--horizontal__label slds-medium-size--2-of-12 extendedStatusContainer">
-                                    <p class="slds-truncate">Extended Status:</p>
+                                    <p class="slds-truncate"><apex:outputText value="{!$Label.JobProgressExtendedStatusLabel}"/>:</p>
                                 </dt>
                                 <dd class="slds-dl--horizontal__detail slds-tile__meta slds-medium-size--10-of-12 extendedStatusContainer">
                                     <p class="extendedStatus"></p>
