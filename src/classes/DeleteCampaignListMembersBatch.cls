@@ -38,6 +38,16 @@ public class DeleteCampaignListMembersBatch extends BatchableSequence.Batch impl
     @TestVisible
     private Id rootSegmentId;
 
+    /** @description Is this the final cleanup pass? (i.e. should we unlock the
+     * Campaign when we're done?)
+     */
+    @TestVisible
+    private Boolean isFinalCleanup = false;
+
+    /** @description The id of the Campaign to populate */
+    @TestVisible
+    private Id campaignId;
+
     /**
      * @description Construct the DeleteCampaignListMembersBatch class to clean
      * up the given campaign list's Member__c records
@@ -46,6 +56,19 @@ public class DeleteCampaignListMembersBatch extends BatchableSequence.Batch impl
      */
     public DeleteCampaignListMembersBatch(Id rootSegmentId) {
         this.rootSegmentId = rootSegmentId;
+    }
+
+    /**
+     * @description Construct the DeleteCampaignListMembersBatch class to clean
+     * up the given campaign list's Member__c records
+     *
+     * @param rootSegmentId The "campaign list" id
+     * @param isFinalCleanup Is this the final cleanup pass?
+     */
+    public DeleteCampaignListMembersBatch(Id rootSegmentId, Id campaignId, Boolean isFinalCleanup) {
+        this(rootSegmentId);
+        this.campaignId = campaignId;
+        this.isFinalCleanup = isFinalCleanup;
     }
 
     /**
@@ -73,6 +96,49 @@ public class DeleteCampaignListMembersBatch extends BatchableSequence.Batch impl
     }
 
     /**
+     * @description Implementation of finish() from Database.Batchable
+     * interface.  This will call BatachableSequence's finish() method and then
+     * release the mutex lock held on the campaign if this campaign list
+     * cleanup is the final pass cleanup for the refresh process.
+     *
+     * @param bc The BatchableContext for this batch
+     * @return void
+     */
+    public override void finish(Database.BatchableContext bc) {
+        super.finish(bc);
+
+        if (isFinalCleanup) {
+            try {
+                CampaignList.getService().updateCampaignStatus(
+                    campaignId,
+                    CampaignList.UpdateStatus.Completed
+                );
+
+                Mutex.MutexInterface m = CampaignList.getMutexFactory().create(campaignId, Campaign.Campaign_List_Mutex__c);
+                Boolean lockReleased = m.releaseLock();
+
+                if (!lockReleased) {
+                    throw new CouldNotReleaseLockException(
+                        String.format(
+                            Label.CampaignToolsReleaseLockException,
+                            new List<String>{campaignId}
+                        )
+                    );
+                }
+
+            } catch (Exception e) {
+                throw new CouldNotUpdateCampaignException(
+                    String.format(
+                        Label.CampaignToolsCantFinishUpdateException,
+                        new List<String>{campaignId}
+                    ),
+                    e
+                );
+            }
+        }
+    }
+
+    /**
      * @description This will cause this batch to be executed, i.e.,
      * Database.executeBatch() will be called with this batch as the batch to
      * execute and this batch's scope.
@@ -82,4 +148,8 @@ public class DeleteCampaignListMembersBatch extends BatchableSequence.Batch impl
     public override Id executeBatch() {
         return Database.executeBatch(this, getScope());
     }
+
+    public virtual class CustomException extends Exception {}
+    public class CouldNotReleaseLockException extends CustomException {}
+    public class CouldNotUpdateCampaignException extends CustomException {}
 }

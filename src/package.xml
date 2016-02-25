@@ -31,8 +31,10 @@
         <members>DeleteCampaignListMembersBatch_TEST</members>
         <members>DeleteCampaignMembersBatch</members>
         <members>DeleteCampaignMembersBatch_TEST</members>
+        <members>JobProgress_CTRL</members>
         <members>Mutex</members>
         <members>Mutex_TEST</members>
+        <members>PageMessages_CTRL</members>
         <members>ProcessSegmentBTN_CTRL</members>
         <members>ProcessSegmentBTN_TEST</members>
         <members>ReportService</members>
@@ -40,15 +42,14 @@
         <name>ApexClass</name>
     </types>
     <types>
+        <members>JobProgress</members>
+        <members>PageMessages</members>
         <name>ApexComponent</name>
     </types>
     <types>
         <members>CampaignList</members>
         <members>ProcessSegmentBTN</members>
         <name>ApexPage</name>
-    </types>
-    <types>
-        <name>ApexTrigger</name>
     </types>
     <types>
         <members>CampaignListApp</members>
@@ -85,12 +86,26 @@
     </types>
     <types>
         <members>CampaignToolsAlreadyRunningException</members>
+        <members>CampaignToolsAlreadyRunningWarningDetail</members>
+        <members>CampaignToolsAlreadyRunningWarningSummary</members>
         <members>CampaignToolsCantFinishUpdateException</members>
         <members>CampaignToolsCantUpdateException</members>
+        <members>CampaignToolsListRefreshPageTitle</members>
+        <members>CampaignToolsListRefreshStatusAbortedHeading</members>
+        <members>CampaignToolsListRefreshStatusCompletedHeading</members>
+        <members>CampaignToolsListRefreshStatusFailedHeading</members>
+        <members>CampaignToolsListRefreshStatusProcessingHeading</members>
+        <members>CampaignToolsListRefreshStatusProcessingMessage</members>
+        <members>CampaignToolsListRefreshStatusQueuedHeading</members>
+        <members>CampaignToolsListRefreshStatusQueuedMessage</members>
+        <members>CampaignToolsNoSavedCampaignList</members>
         <members>CampaignToolsReleaseLockException</members>
         <members>MutexFieldInvalidDateTimeException</members>
         <members>MutexFieldInvalidUpdateableException</members>
-        <members>ReturnToCampaign</members>
+        <members>PageMessagesConfirm</members>
+        <members>PageMessagesError</members>
+        <members>PageMessagesFatal</members>
+        <members>PageMessagesWarning</members>
         <name>CustomLabel</name>
     </types>
     <types>
@@ -98,8 +113,6 @@
         <name>CustomLabels</name>
     </types>
     <types>
-        <members>Campaign</members>
-        <members>CampaignMember</members>
         <members>Member__c</members>
         <members>Segment__c</members>
         <name>CustomObject</name>
@@ -118,6 +131,8 @@
         <members>LightningDesignSystem</members>
         <members>jquery</members>
         <members>jqueryui</members>
+        <members>momentjs</members>
+        <members>transparencyjs</members>
         <name>StaticResource</name>
     </types>
     <types>

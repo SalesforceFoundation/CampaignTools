@@ -92,47 +92,6 @@ public class CampaignListToCampaignBatch extends BatchableSequence.Batch impleme
     }
 
     /**
-     * @description Implementation of finish() from Database.Batchable
-     * interface.  This will call BatachableSequence's finish() method and then
-     * update the specified campaign's status to indicate that it was
-     * successfully populated from the specified campaign list.
-    *
-    * @param bc The BatchableContext for this batch
-    * @return void
-    */
-    public override void finish(Database.BatchableContext bc) {
-        super.finish(bc);
-        try {
-            CampaignList.getService().updateCampaignStatus(
-                campaignId,
-                CampaignList.UpdateStatus.SUCCESS
-            );
-
-            Mutex.MutexInterface m = CampaignList.getMutexFactory().create(campaignId, Campaign.Campaign_List_Mutex__c);
-            Boolean lockReleased = m.releaseLock();
-
-            if (!lockReleased) {
-                throw new CouldNotReleaseLockException(
-                    String.format(
-                        Label.CampaignToolsReleaseLockException,
-                        new List<String>{campaignId}
-                    )
-                );
-            }
-
-        } catch (Exception e) {
-            throw new CouldNotUpdateCampaignException(
-                String.format(
-                    Label.CampaignToolsCantFinishUpdateException,
-                    new List<String>{campaignId}
-                ),
-                e
-            );
-        }
-
-    }
-
-    /**
      * @description This will cause this batch to be executed, i.e.,
      * Database.executeBatch() will be called with this batch as the batch to
      * execute and this batch's scope.
@@ -142,8 +101,4 @@ public class CampaignListToCampaignBatch extends BatchableSequence.Batch impleme
     public override Id executeBatch() {
         return Database.executeBatch(this, getScope());
     }
-
-    public virtual class CustomException extends Exception {}
-    public class CouldNotReleaseLockException extends CustomException {}
-    public class CouldNotUpdateCampaignException extends CustomException {}
 }

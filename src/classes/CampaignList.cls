@@ -84,17 +84,19 @@ public abstract class CampaignList {
 
     /**
      * @description This enum has values that correspond the state of a
-     * Campaign as it is being updated from a campaign list.  RUNNING means
-     * that the Campaign is currently being updated.  SUCCESS means that the
+     * Campaign as it is being updated from a campaign list.  Processing means
+     * that the Campaign is currently being updated.  Completed means that the
      * last time the Campaign was updated from a campaign list, there were no
-     * issues.  FAILURE means that the last time the Campaign was attempted to
+     * issues.  Failed means that the last time the Campaign was attempted to
      * be updated from a campaign list, there was an error that prevented
      * successful update.
      */
     public enum UpdateStatus {
-        RUNNING,
-        SUCCESS,
-        FAILURE
+        Queued,
+        Processing,
+        Aborted,
+        Completed,
+        Failed
     }
 
     public enum SegmentType {

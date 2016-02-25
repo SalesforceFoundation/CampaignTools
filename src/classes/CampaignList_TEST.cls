@@ -124,9 +124,13 @@ public class CampaignList_TEST {
         public Id updatedCampaignId;
         public Id updatedRootSegmentId;
         public CampaignList.UpdateStatus updatedStatus;
+        public Boolean throwAlreadyRunningException = false;
         public void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId) {
             updatedCampaignId = campaignId;
             updatedRootSegmentId = rootSegmentId;
+            if (throwAlreadyRunningException) {
+                throw new CampaignListService.CampaignListUpdateAlreadyRunningException();
+            }
         }
         public void updateCampaignStatus(Id campaignId, CampaignList.UpdateStatus status) {
             updatedCampaignId = campaignId;
