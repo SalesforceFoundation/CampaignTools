@@ -29,17 +29,13 @@
 */
 /**
 * @author Salesforce.org
-* @date 2015
-*
 * @group CampaignTools
-*
 * @description Test code for the Refresh Campaign List button on a campaign.
-*
 */
 @isTest
-public with sharing class ProcessSegmentBTN_TEST {
+private with sharing class ProcessSegmentBTN_TEST {
     @isTest
-    public static void testProcessSegment1() {
+    private static void testRefreshCampaignListActionCallsService() {
         Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
         Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
 
@@ -59,7 +55,101 @@ public with sharing class ProcessSegmentBTN_TEST {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, pr);
+        System.assertEquals(null, pr);
+
+        System.assertEquals(campaignId, serviceStub.updatedCampaignId);
+        System.assertEquals(rootSegmentId, serviceStub.updatedRootSegmentId);
+    }
+
+    @isTest
+    private static void testCampaignWithNoListIssuesErrorAndDoesNotCallService() {
+        Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+
+        Campaign c = new Campaign(
+            Id = campaignId,
+            Campaign_List__c = null
+        );
+
+        CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
+        CampaignList.setService(serviceStub);
+
+        Test.startTest();
+
+        ApexPages.StandardController sc = new ApexPages.StandardController(c);
+        ProcessSegmentBTN_CTRL btn = new ProcessSegmentBTN_CTRL(sc);
+
+        PageReference pr = btn.refreshCampaignList();
+
+        Test.stopTest();
+
+        List<ApexPages.Message> pageMessages = ApexPages.getMessages();
+
+        System.assertEquals(1, pageMessages.size());
+
+        System.assertEquals(
+            ApexPages.Severity.ERROR,
+            pageMessages.get(0).getSeverity()
+        );
+
+        System.assertEquals(
+            Label.CampaignToolsNoSavedCampaignList,
+            pageMessages.get(0).getSummary()
+        );
+
+        System.assertEquals(null, pr);
+
+        System.assertEquals(null, serviceStub.updatedCampaignId);
+        System.assertEquals(null, serviceStub.updatedRootSegmentId);
+    }
+
+    @isTest
+    private static void testCampaignAlreadyRunningIssuesError() {
+        Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+        Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+
+        Campaign c = new Campaign(
+            Id = campaignId,
+            Name = 'Test Campaign',
+            Campaign_List__c = rootSegmentId
+        );
+
+        CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
+        serviceStub.throwAlreadyRunningException = true;
+
+        CampaignList.setService(serviceStub);
+
+        Test.startTest();
+
+        ApexPages.StandardController sc = new ApexPages.StandardController(c);
+        ProcessSegmentBTN_CTRL btn = new ProcessSegmentBTN_CTRL(sc);
+
+        PageReference pr = btn.refreshCampaignList();
+
+        Test.stopTest();
+
+        List<ApexPages.Message> pageMessages = ApexPages.getMessages();
+
+        System.assertEquals(1, pageMessages.size());
+
+        System.assertEquals(
+            ApexPages.Severity.WARNING,
+            pageMessages.get(0).getSeverity()
+        );
+
+        System.assertEquals(
+            String.format(
+                Label.CampaignToolsAlreadyRunningWarningSummary,
+                new List<String>{'Test Campaign'}
+            ),
+            pageMessages.get(0).getSummary()
+        );
+
+        System.assertEquals(
+            Label.CampaignToolsAlreadyRunningWarningDetail,
+            pageMessages.get(0).getDetail()
+        );
+
+        System.assertEquals(null, pr);
 
         System.assertEquals(campaignId, serviceStub.updatedCampaignId);
         System.assertEquals(rootSegmentId, serviceStub.updatedRootSegmentId);

@@ -6,7 +6,23 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>CampaignToolsAlreadyRunningException</shortDescription>
-        <value>Could not update campaign {0} because this campaign is locked by another campaign list update.</value>
+        <value>Could not initiate refresh of campaign {0} because this campaign is locked by another campaign list update.</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsAlreadyRunningWarningDetail</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsAlreadyRunningExceptionDetail</shortDescription>
+        <value>This campaign is locked by another campaign list refresh process.</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsAlreadyRunningWarningSummary</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsAlreadyRunningExceptionSummary</shortDescription>
+        <value>Could not initiate refresh of campaign {0}</value>
     </labels>
     <labels>
         <fullName>CampaignToolsCantFinishUpdateException</fullName>
@@ -25,12 +41,140 @@
         <value>Could not update campaign {0}.</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsListRefreshPageTitle</fullName>
+        <categories>CampaignTools</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListRefreshPageTitle</shortDescription>
+        <value>Campaign List Refresh</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListRefreshStatusAbortedHeading</fullName>
+        <categories>CampaignTools</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListRefreshStatusAbortedHeading</shortDescription>
+        <value>The campaign refresh process has been aborted</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListRefreshStatusCompletedHeading</fullName>
+        <categories>CampaignTools</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListRefreshStatusCompletedHeading</shortDescription>
+        <value>The campaign refresh process has been successfully completed!</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListRefreshStatusFailedHeading</fullName>
+        <categories>CampaignTools</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListRefreshStatusFailedHeading</shortDescription>
+        <value>The campaign refresh process has been completed, but with errors</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListRefreshStatusProcessingHeading</fullName>
+        <categories>CampaignTools</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListRefreshStatusProcessingHeading</shortDescription>
+        <value>This campaign is currently being refreshed</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListRefreshStatusProcessingMessage</fullName>
+        <categories>CampaignTools</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListRefreshStatusProcessingMessage</shortDescription>
+        <value>The refresh process could take a while.  You can stay on this page to monitor the progress of the refresh process, or you can navigate away from this page and the refresh process will continue to run in the background.</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListRefreshStatusQueuedHeading</fullName>
+        <categories>CampaignTools</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListRefreshStatusQueuedHeading</shortDescription>
+        <value>The campaign refresh process has been queued and has not yet started</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListRefreshStatusQueuedMessage</fullName>
+        <categories>CampaignTools</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListRefreshStatusQueuedMessage</shortDescription>
+        <value>The refresh process could take a while.  You can stay on this page to monitor the progress of the refresh process, or you can navigate away from this page and the refresh process will continue to run in the background.</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsNoSavedCampaignList</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsNoSavedCampaignList</shortDescription>
+        <value>There is no saved Campaign List for this campaign.</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsReleaseLockException</fullName>
         <categories>CampaignTools,Exceptions</categories>
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>CampaignToolsReleaseLockException</shortDescription>
         <value>Could not release lock on campaign {0}</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressCompletedLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressCompletedLabel</shortDescription>
+        <value>Completed</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressExtendedStatusLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressExtendedStatusLabel</shortDescription>
+        <value>Extended Status</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressItemsProcessedLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressItemsProcessedLabel</shortDescription>
+        <value>batches processed</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressItemsProcessedOfLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressItemsProcessedOfLabel</shortDescription>
+        <value>of</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressProgressLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressProgressLabel</shortDescription>
+        <value>Progress</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressStartedByLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressStartedByLabel</shortDescription>
+        <value>Started by</value>
+    </labels>
+    <labels>
+        <fullName>JobProgressStatusLabel</fullName>
+        <categories>JobProgress</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>JobProgressStatusLabel</shortDescription>
+        <value>Status</value>
     </labels>
     <labels>
         <fullName>MutexFieldInvalidDateTimeException</fullName>
@@ -49,11 +193,35 @@
         <value>User does not have permission to update the mutex field, {0}</value>
     </labels>
     <labels>
-        <fullName>ReturnToCampaign</fullName>
-        <categories>CampaignTools</categories>
+        <fullName>PageMessagesConfirm</fullName>
+        <categories>PageMessages</categories>
         <language>en_US</language>
         <protected>true</protected>
-        <shortDescription>ReturnToCampaign</shortDescription>
-        <value>Return to Campaign</value>
+        <shortDescription>Confirm</shortDescription>
+        <value>Success</value>
+    </labels>
+    <labels>
+        <fullName>PageMessagesError</fullName>
+        <categories>PageMessages</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error</shortDescription>
+        <value>Error</value>
+    </labels>
+    <labels>
+        <fullName>PageMessagesFatal</fullName>
+        <categories>PageMessages</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Fatal</shortDescription>
+        <value>Error</value>
+    </labels>
+    <labels>
+        <fullName>PageMessagesWarning</fullName>
+        <categories>PageMessages</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Warning</shortDescription>
+        <value>Warning</value>
     </labels>
 </CustomLabels>

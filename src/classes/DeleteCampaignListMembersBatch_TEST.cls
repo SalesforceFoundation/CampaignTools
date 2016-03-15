@@ -67,4 +67,49 @@ private class DeleteCampaignListMembersBatch_TEST {
 
         System.assertEquals(0, remainingListMemberCount);
     }
+
+    public static testMethod void testFinish() {
+        Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+
+        DeleteCampaignListMembersBatch batch = new DeleteCampaignListMembersBatch(rootSegmentId);
+
+        CampaignList_TEST.ServiceStub listServiceStub = new CampaignList_TEST.ServiceStub();
+
+        CampaignList.setService(listServiceStub);
+
+        CampaignList_TEST.MutexStub mutexStub = new CampaignList_TEST.MutexStub();
+        mutexStub.releaseLock = true;
+
+        CampaignList_TEST.MutexStubFactory mutexFactory = new CampaignList_TEST.MutexStubFactory();
+        mutexFactory.m = mutexStub;
+        CampaignList.setMutexFactory(mutexFactory);
+
+        batch.finish(null);
+
+        System.assertEquals(null, listServiceStub.updatedCampaignId);
+        System.assertEquals(null, listServiceStub.updatedStatus);
+    }
+
+    public static testMethod void testFinishFinalCleanup() {
+        Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+
+        DeleteCampaignListMembersBatch batch = new DeleteCampaignListMembersBatch(rootSegmentId, campaignId, true);
+
+        CampaignList_TEST.ServiceStub listServiceStub = new CampaignList_TEST.ServiceStub();
+
+        CampaignList.setService(listServiceStub);
+
+        CampaignList_TEST.MutexStub mutexStub = new CampaignList_TEST.MutexStub();
+        mutexStub.releaseLock = true;
+
+        CampaignList_TEST.MutexStubFactory mutexFactory = new CampaignList_TEST.MutexStubFactory();
+        mutexFactory.m = mutexStub;
+        CampaignList.setMutexFactory(mutexFactory);
+
+        batch.finish(null);
+
+        System.assertEquals(campaignId, listServiceStub.updatedCampaignId);
+        System.assertEquals(CampaignList.UpdateStatus.Completed, listServiceStub.updatedStatus);
+    }
 }

@@ -80,7 +80,7 @@ private class CampaignListService_TEST {
         System.assertEquals(destinationCampaignId, mutexFactory.recordId);
         System.assertEquals(Campaign.Campaign_List_Mutex__c, mutexFactory.mutexField);
         System.assertEquals(1, mutexStub.acquireLockCalls);
-        System.assertEquals(CampaignList.UpdateStatus.RUNNING, serviceStub.updatedStatus);
+        System.assertEquals(CampaignList.UpdateStatus.Processing, serviceStub.updatedStatus);
 
         // assert that the batches in this sequence exist in the expected
         // order, with a report source batch and a campaign source batch (in
@@ -144,7 +144,7 @@ private class CampaignListService_TEST {
 
         CampaignListService listService = new CampaignListService();
 
-        listService.updateCampaignStatus(c.Id, CampaignList.UpdateStatus.SUCCESS);
+        listService.updateCampaignStatus(c.Id, CampaignList.UpdateStatus.Completed);
 
         c = [
             SELECT Campaign_List_Update_Status__c
@@ -153,6 +153,6 @@ private class CampaignListService_TEST {
             LIMIT 1
         ];
 
-        System.assertEquals('SUCCESS', c.Campaign_List_Update_Status__c);
+        System.assertEquals('Completed', c.Campaign_List_Update_Status__c);
     }
 }

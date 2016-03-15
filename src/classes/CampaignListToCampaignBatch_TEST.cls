@@ -113,26 +113,4 @@ private class CampaignListToCampaignBatch_TEST {
 
         System.assertEquals(AsyncApexJob.sObjectType, jobId.getSobjectType());
     }
-
-    public static testMethod void testFinish() {
-        Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
-
-        CampaignListToCampaignBatch batch = new CampaignListToCampaignBatch(campaignId, null);
-
-        CampaignList_TEST.ServiceStub listServiceStub = new CampaignList_TEST.ServiceStub();
-
-        CampaignList.setService(listServiceStub);
-
-        CampaignList_TEST.MutexStub mutexStub = new CampaignList_TEST.MutexStub();
-        mutexStub.releaseLock = true;
-
-        CampaignList_TEST.MutexStubFactory mutexFactory = new CampaignList_TEST.MutexStubFactory();
-        mutexFactory.m = mutexStub;
-        CampaignList.setMutexFactory(mutexFactory);
-
-        batch.finish(null);
-
-        System.assertEquals(campaignId, listServiceStub.updatedCampaignId);
-        System.assertEquals(CampaignList.UpdateStatus.SUCCESS, listServiceStub.updatedStatus);
-    }
 }
