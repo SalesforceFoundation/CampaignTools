@@ -33,17 +33,17 @@
  * @description Allows obtaining a mutex on a particular record, as long as that record has a mutex datetime field.  This relies on SELECT ... FOR UPDATE for concurrency control.
  */
 public with sharing class Mutex implements MutexInterface {
-    /*
+    /**
      * @description The recordId of the record to be locked
      */
     private Id recordId;
 
-    /*
+    /**
      * @description The field on the record to be used to store the acquire time of the lock.  If this field is null, the record is not locked.
      */
     private Schema.SObjectField mutexField;
 
-    /*
+    /**
      * @description Construct a Mutex for a specific record and mutexField.  Note this does not lock the record-- you must call acquireLock() to attempt to lock the record.  mutexField is a DateTime field on the record to be locked.
      *
      * @param recordId The id of the record to be locked.
@@ -171,7 +171,7 @@ public with sharing class Mutex implements MutexInterface {
         return true;
     }
 
-    /*
+    /**
      * @description Release the lock that has currently been acquired (if any) on the lock record.  Returns true to indicate that the record is not locked, or false if unable to release lock.
      *
      * @return Boolean
@@ -180,7 +180,7 @@ public with sharing class Mutex implements MutexInterface {
         return releaseLock(getLockRecord(true));
     }
 
-    /*
+    /**
      * @description Release the lock that has currently been acquired (if any) on the lock record.  Returns true to indicate that the record is not locked, or false if unable to release lock.
      *
      * @return Boolean
@@ -196,7 +196,7 @@ public with sharing class Mutex implements MutexInterface {
         return true;
     }
 
-    /*
+    /**
      * @description Get the DateTime that a lock was acquired on the record.  Returns null if the record is not locked.
      *
      * @return DateTime
@@ -205,7 +205,7 @@ public with sharing class Mutex implements MutexInterface {
         return getLockTime(getLockRecord(false));
     }
 
-    /*
+    /**
      * @description Get the DateTime that a lock was acquired on the record.  Returns null if the record is not locked.
      *
      * @param lockRecord The sObject corresponding to the record to be locked (must be queried with the mutexField)
@@ -235,12 +235,12 @@ public with sharing class Mutex implements MutexInterface {
         }
     }
 
-    /*
+    /**
      * @description Any exceptions thrown by the Mutex class will extend this class
      */
     public virtual class CustomException extends Exception {}
 
-    /*
+    /**
      * @description Exception thrown when a valid mutex field is not found on the sObjectType of this Mutex's recordId.
      */
     public class InvalidMutexFieldException extends CustomException {}

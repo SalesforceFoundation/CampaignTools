@@ -23,15 +23,23 @@
         <label>Campaign List Update Status</label>
         <picklist>
             <picklistValues>
-                <fullName>FAILURE</fullName>
+                <fullName>Queued</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>RUNNING</fullName>
+                <fullName>Failed</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>SUCCESS</fullName>
+                <fullName>Processing</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Aborted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
