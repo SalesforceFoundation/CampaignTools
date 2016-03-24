@@ -45,7 +45,7 @@ public class CampaignListService implements CampaignList.Service {
      * @return void
      */
     public void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId) {
-        updateCampaignFromCampaignList(campaignId, rootSegmentId, new BatchableSequence());
+        updateCampaignFromCampaignList(campaignId, rootSegmentId, true);
     }
 
     /**
@@ -56,11 +56,11 @@ public class CampaignListService implements CampaignList.Service {
      *
      * @param campaignId The id of the Campaign to be updated (note existing CampaignMember records will be deleted and replaced)
      * @param rootSegmentId The "campaign list" id
-     * @param batchSequence An instance of BatchableSequence to add created batches to
+     * @param acquireLock Whether to attempt to maintain lock on campaign
      * @return void
      */
-    @TestVisible
-    private void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, BatchableSequence.Interface_x batchSequence) {
+    public void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
+        BatchableSequence.Interface_x batchSequence = CampaignList.getBatchableSequenceFactory().create();
         CampaignList.Segment segmentTree = CampaignList.getSegmentMapper().getSegmentTreeByRootId(rootSegmentId);
 
         batchSequence.add(new DeleteCampaignMembersBatch(campaignId), 5000);
@@ -79,31 +79,32 @@ public class CampaignListService implements CampaignList.Service {
         batchSequence.add(new CampaignListToCampaignBatch(campaignId, segmentTree), 10000);
         batchSequence.add(new DeleteCampaignListMembersBatch(rootSegmentId, campaignId, true), 5000);
 
-        try {
-            Mutex.MutexInterface m = CampaignList.getMutexFactory().create(campaignId, Campaign.Campaign_List_Mutex__c);
-            Boolean lockAcquired = m.acquireLock();
+        if (acquireLock) {
+            try {
+                Mutex.MutexInterface m = CampaignList.getMutexFactory().create(campaignId, Campaign.Campaign_List_Mutex__c);
+                Boolean lockAcquired = m.acquireLock();
 
-            if (!lockAcquired) {
+                if (!lockAcquired) {
+                    throw new CampaignListUpdateAlreadyRunningException(
+                        String.format(
+                            Label.CampaignToolsAlreadyRunningException,
+                            new List<String>{campaignId}
+                        )
+                    );
+                }
+            } catch (Exception e) {
                 throw new CampaignListUpdateAlreadyRunningException(
                     String.format(
-                        Label.CampaignToolsAlreadyRunningException,
+                        Label.CampaignToolsCantUpdateException,
                         new List<String>{campaignId}
-                    )
+                    ),
+                    e
                 );
             }
-
-            CampaignList.getService().updateCampaignStatus(campaignId, CampaignList.UpdateStatus.Processing);
-            batchSequence.run();
-
-        } catch (Exception e) {
-            throw new CampaignListUpdateAlreadyRunningException(
-                String.format(
-                    Label.CampaignToolsCantUpdateException,
-                    new List<String>{campaignId}
-                ),
-                e
-            );
         }
+
+        CampaignList.getService().updateCampaignStatus(campaignId, CampaignList.UpdateStatus.Processing);
+        batchSequence.run();
     }
 
     /**
@@ -125,6 +126,25 @@ public class CampaignListService implements CampaignList.Service {
         }
 
         update c;
+    }
+
+    public Integer getFlexQueueCapacity(Integer maxFreeSlots) {
+        Integer holdingJobCount = queryHoldingJobCount();
+        Integer freeSlots = Math.max(100 - holdingJobCount, 0);
+        Integer capacity = Math.max(maxFreeSlots - freeSlots, 0);
+        return capacity;
+    }
+
+    private Integer queryHoldingJobCount() {
+        return [
+            SELECT COUNT()
+            FROM AsyncApexJob
+            WHERE Status = 'Holding'
+        ];
+    }
+
+    public Id enqueueJob(Queueable job) {
+        return System.enqueueJob(job);
     }
 
     public virtual class CustomException extends Exception {}

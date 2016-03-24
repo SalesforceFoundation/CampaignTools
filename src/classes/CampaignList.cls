@@ -37,7 +37,10 @@ public abstract class CampaignList {
 
     public interface Service {
         void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId);
+        void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock);
         void updateCampaignStatus(Id campaignId, UpdateStatus status);
+        Integer getFlexQueueCapacity(Integer maxFreeSlots);
+        Id enqueueJob(Queueable job);
     }
 
     public interface ReportService {
@@ -111,6 +114,7 @@ public abstract class CampaignList {
     private static MemberMapper memberMapper_x = new CampaignListMemberMapper();
     private static SegmentMapper segmentMapper_x = new CampaignListSegmentMapper();
     private static Mutex.Factory mutexFactory_x = new Mutex.DefaultFactory();
+    private static BatchableSequence.Factory bsFactory_x = new BatchableSequence.DefaultFactory();
 
     public static void setService(Service s) {
         service_x = s;
@@ -150,5 +154,13 @@ public abstract class CampaignList {
 
     public static Mutex.Factory getMutexFactory() {
         return mutexFactory_x;
+    }
+
+    public static void setBatchableSequenceFactory(BatchableSequence.Factory bsFactory) {
+        bsFactory_x = bsFactory;
+    }
+
+    public static BatchableSequence.Factory getBatchableSequenceFactory() {
+        return bsFactory_x;
     }
 }

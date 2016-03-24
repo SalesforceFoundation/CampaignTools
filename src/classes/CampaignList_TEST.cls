@@ -123,8 +123,13 @@ public class CampaignList_TEST {
     public class ServiceStub implements CampaignList.Service {
         public Id updatedCampaignId;
         public Id updatedRootSegmentId;
+        public Boolean updateCampaignFromCampaignListAcquireLock;
         public CampaignList.UpdateStatus updatedStatus;
         public Boolean throwAlreadyRunningException = false;
+        public Integer flexQueueCapacity;
+        public Integer maxFreeSlots;
+        public Queueable enqueueJobJob;
+        public Id enqueueJobId;
         public void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId) {
             updatedCampaignId = campaignId;
             updatedRootSegmentId = rootSegmentId;
@@ -132,9 +137,22 @@ public class CampaignList_TEST {
                 throw new CampaignListService.CampaignListUpdateAlreadyRunningException();
             }
         }
+        public void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
+            updatedCampaignId = campaignId;
+            updatedRootSegmentId = rootSegmentId;
+            updateCampaignFromCampaignListAcquireLock = acquireLock;
+        }
         public void updateCampaignStatus(Id campaignId, CampaignList.UpdateStatus status) {
             updatedCampaignId = campaignId;
             updatedStatus = status;
+        }
+        public Integer getFlexQueueCapacity(Integer maxFreeSlots) {
+            this.maxFreeSlots = maxFreeSlots;
+            return flexQueueCapacity;
+        }
+        public Id enqueueJob(Queueable job) {
+            this.enqueueJobJob = job;
+            return enqueueJobId;
         }
     }
 

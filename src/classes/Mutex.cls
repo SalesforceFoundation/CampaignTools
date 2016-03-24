@@ -123,7 +123,7 @@ public with sharing class Mutex implements MutexInterface {
         List<sObject> results;
         try {
             results = Database.query(getLockQuery(true));
-        } catch (System.DmlException e) {
+        } catch (Exception e) {
             return null;
         }
 

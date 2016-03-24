@@ -59,6 +59,9 @@ private class CampaignListService_TEST {
         insert campaignSourceSegment;
 
         BatchableSequenceStub bsStub = new BatchableSequenceStub();
+        BatchableSequenceStubFactory bsStubFactory= new BatchableSequenceStubFactory();
+        bsStubFactory.bs = bsStub;
+        CampaignList.setBatchableSequenceFactory(bsStubFactory);
 
         CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
         CampaignList.setService(serviceStub);
@@ -71,8 +74,7 @@ private class CampaignListService_TEST {
         CampaignList.setMutexFactory(mutexFactory);
 
         CampaignListService service = new CampaignListService();
-        service.updateCampaignFromCampaignList(destinationCampaignId, rootSegment.Id, bsStub);
-
+        service.updateCampaignFromCampaignList(destinationCampaignId, rootSegment.Id);
         // assert that the destination campaign was updated to indicate a
         // running update
 
@@ -123,6 +125,13 @@ private class CampaignListService_TEST {
         System.assertEquals(rootSegment.Id, campaignListToCampaignBatch.rootSegment.getId());
         System.assertEquals(destinationCampaignId, campaignListToCampaignBatch.campaignId);
         System.assertEquals(rootSegment.Id, deleteCampaignListMembersBatch2.rootSegmentId);
+    }
+
+    private class BatchableSequenceStubFactory implements BatchableSequence.Factory {
+        public BatchableSequence.Interface_x bs;
+        public BatchableSequence.Interface_x create() {
+            return bs;
+        }
     }
 
     private class BatchableSequenceStub implements BatchableSequence.Interface_x {
