@@ -367,6 +367,7 @@ public class CampaignListRefreshSchedulable implements Schedulable {
     }
 
     public class Worker implements Queueable {
+        @TestVisible
         private CampaignGraph cg;
 
         public Worker(CampaignGraph cg) {
@@ -402,7 +403,7 @@ public class CampaignListRefreshSchedulable implements Schedulable {
             );
 
             for (Integer i = 0; i < numberOfCampaignsToSchedule; i++) {
-                Campaign campaignToSchedule = campaignsToSchedule.get(i);
+                Campaign campaignToSchedule = readyCampaigns.get(i);
                 service.updateCampaignFromCampaignList(
                     campaignToSchedule.Id,
                     campaignToSchedule.Campaign_List__c,

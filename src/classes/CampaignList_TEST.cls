@@ -124,6 +124,9 @@ public class CampaignList_TEST {
         public Id updatedCampaignId;
         public Id updatedRootSegmentId;
         public Boolean updateCampaignFromCampaignListAcquireLock;
+        public List<Id> updateCampaignIdList = new List<Id>();
+        public List<Id> updateRootSegmentIdList = new List<Id>();
+        public List<Boolean> updateCampaignFromCampaignListAcquireLockList = new List<Boolean>();
         public CampaignList.UpdateStatus updatedStatus;
         public Boolean throwAlreadyRunningException = false;
         public Integer flexQueueCapacity;
@@ -141,6 +144,9 @@ public class CampaignList_TEST {
             updatedCampaignId = campaignId;
             updatedRootSegmentId = rootSegmentId;
             updateCampaignFromCampaignListAcquireLock = acquireLock;
+            updateCampaignIdList.add(campaignId);
+            updateRootSegmentIdList.add(rootSegmentId);
+            updateCampaignFromCampaignListAcquireLockList.add(acquireLock);
         }
         public void updateCampaignStatus(Id campaignId, CampaignList.UpdateStatus status) {
             updatedCampaignId = campaignId;
