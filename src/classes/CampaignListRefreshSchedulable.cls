@@ -33,6 +33,16 @@
  * @description A Schedulable for refreshing marked Campaigns from Campaign Lists
  */
 public class CampaignListRefreshSchedulable implements Schedulable {
+    /**
+     * @description Implementation of Schedulable.execute() method.  This will
+     * begin the process of refreshing Campaigns that have been marked for
+     * auto-refresh.  It will query for all Campaigns to be refreshed,
+     * determine any dependencies between Campaigns, and remove any cyclic
+     * dependencies that may exist.  Then, it delegates to the Worker class to
+     * begin the actual scheduling of Campaign refreshes.
+     *
+     * @param sc
+     */
     public void execute(SchedulableContext sc) {
         Map<Id, Campaign> campaigns = getCampaignsForAutoRefresh();
 
@@ -51,6 +61,12 @@ public class CampaignListRefreshSchedulable implements Schedulable {
         CampaignList.getService().enqueueJob(w);
     }
 
+    /**
+     * @description Query for all Campaigns that have been marked for
+     * auto-refresh and that have a Campaign List assigned.
+     *
+     * @return Map<Id, Campaign>
+     */
     @TestVisible
     private static Map<Id, Campaign> getCampaignsForAutoRefresh() {
         return new Map<Id, Campaign>([
@@ -65,6 +81,12 @@ public class CampaignListRefreshSchedulable implements Schedulable {
         ]);
     }
 
+    /**
+     * @description Query for Campaigns given a set of Campaign ids.
+     *
+     * @param campaignIds
+     * @return List<Campaign>
+     */
     @TestVisible
     private static List<Campaign> getCampaignsByIds(Set<Id> campaignIds) {
         return [
@@ -76,6 +98,13 @@ public class CampaignListRefreshSchedulable implements Schedulable {
         ];
     }
 
+    /**
+     * @description Given a list of Campaigns, pluck the associated Campaign
+     * List ids from those Campaigns and return this set of ids.
+     *
+     * @param campaigns
+     * @return Set<Id>
+     */
     @TestVisible
     private static Set<Id> getRootSegmentIdsFromCampaigns(List<Campaign> campaigns) {
         Set<Id> campaignListIds = new Set<Id>();
@@ -87,6 +116,13 @@ public class CampaignListRefreshSchedulable implements Schedulable {
         return campaignListIds;
     }
 
+    /**
+     * @description Given a set of Segment__c ids, query for all Segment__c
+     * objects that are associated with those ids.
+     *
+     * @param segmentIds The ids of the root segments for which all associated segments should be queried.
+     * @return List<Segment__c>
+     */
     @TestVisible
     private static List<Segment__c> getSegmentsByRootIds(Set<Id> segmentIds) {
         return [
@@ -103,6 +139,12 @@ public class CampaignListRefreshSchedulable implements Schedulable {
         ];
     }
 
+    /**
+     * @description Given some Campaigns, mark those Campaigns as being locked
+     * (by updating their mutex field) and update their status to 'Queued'.
+     *
+     * @param campaigns
+     */
     @TestVisible
     private static void lockAndMarkCampaignsAsQueued(Map<Id, Campaign> campaigns) {
         for (Campaign c : campaigns.values()) {
@@ -115,23 +157,78 @@ public class CampaignListRefreshSchedulable implements Schedulable {
         update campaigns.values();
     }
 
+    /**
+     * @author Salesforce.org
+     * @description An exception that is thrown if a Campaign is unable to be
+     * locked because it is already locked.
+     */
     public class CampaignAlreadyLockedException extends Exception {}
 
+    /**
+     * @author Salesforce.org
+     * @description This class represents a graph of dependencies between
+     * Campaigns to be updated.  It allows for updating the status of those
+     * Campaigns and then querying for Campaigns that have all of their
+     * dependencies resolved and are ready for scheduling.
+     */
     @TestVisible
     private class CampaignGraph {
+        /**
+         * @description The CampaignNodes that make up this graph.
+         */
         @TestVisible
         private Map<Id, CampaignNode> nodes = new Map<Id, CampaignNode>();
+
+        /**
+         * @description A set for keeping track of which nodes have been
+         * visited when performing a depth first search.
+         */
         private Set<CampaignNode> visitedNodes = new Set<CampaignNode>();
+
+        /**
+         * @description A set for keeping track of which nodes have been
+         * assigned to a strongly connected component when identifying SSCs.
+         */
         private Set<CampaignNode> assignedNodes = new Set<CampaignNode>();
+
+        /**
+         * @description A collection of strongly connected components, where
+         * the key represents the 'root' of the component, and the value is the
+         * set of nodes within that SSC.
+         */
         private Map<CampaignNode, Set<CampaignNode>> stronglyConnectedComponents = new Map<CampaignNode, Set<CampaignNode>>();
+
+        /**
+         * @description A list of nodes that is intended to be used as a stack
+         * for identifying potential leading nodes when searching for strongly
+         * connected components.
+         */
         private List<CampaignNode> leadingNodesStack = new List<CampaignNode>();
 
+        /**
+         * @description The number of Campaigns that are in 'Queued' status.
+         */
         public Integer queuedCount;
 
+        /**
+         * @description A private empty constructor for bypassing the main
+         * constructor.
+         */
         @TestVisible
         private CampaignGraph() {}
 
+        /**
+         * @description Construct a CampaignGraph given a map of Campaigns and
+         * a list of all of the Segment__c objects associated with those
+         * Campaigns.  This will determine the dependencies between the
+         * Campaigns, and store that dependency graph.
+         *
+         * @param campaigns
+         * @param segments
+         */
         public CampaignGraph(Map<Id, Campaign> campaigns, List<Segment__c> segments) {
+            // start by adding each given campaign as a node in the campaign
+            // graph.
             for (Id campaignId : campaigns.keySet()) {
                 Campaign c = campaigns.get(campaignId);
                 nodes.put(
@@ -145,6 +242,10 @@ public class CampaignListRefreshSchedulable implements Schedulable {
 
             Map<Id, Segment__c> segmentsMap = new Map<Id, Segment__c>(segments);
 
+            // next we determine both in and out edges for the campaign nodes
+            // by examining the Segment__c objects associated with the given
+            // campaigns for which Segment__c objects point to which Campaigns
+            // as sources.
             for (Segment__c s : segments) {
                 if (campaigns.containsKey(s.Source_ID__c)) {
                     Campaign sourceCampaign = campaigns.get(s.Source_ID__c);
@@ -169,10 +270,23 @@ public class CampaignListRefreshSchedulable implements Schedulable {
             }
         }
 
+        /**
+         * @description Get a set of Campaign ids for the Campaigns stored in
+         * this graph.
+         *
+         * @return Set<Id>
+         */
         public Set<Id> getCampaignIds() {
             return nodes.keySet();
         }
 
+        /**
+         * @description Update the status of the Campaigns stored in this
+         * Campaign graph given a list of Campaigns that include the update
+         * status value.
+         *
+         * @param campaigns
+         */
         public void setCampaignStatus(List<Campaign> campaigns) {
             queuedCount = 0;
             for (Campaign c : campaigns) {
@@ -185,6 +299,14 @@ public class CampaignListRefreshSchedulable implements Schedulable {
             }
         }
 
+        /**
+         * @description Determine which Campaigns stored in this graph are
+         * ready for scheduling.  That is, find the Campaigns that have not yet
+         * been scheduled for update and that have all of their dependencies
+         * resolved.
+         *
+         * @return List<Campaign>
+         */
         public List<Campaign> getReadyCampaigns() {
             List<Campaign> readyCampaigns = new List<Campaign>();
 
@@ -200,6 +322,10 @@ public class CampaignListRefreshSchedulable implements Schedulable {
             return readyCampaigns;
         }
 
+        /**
+         * @description Locate and break any cycles that may exist in this
+         * graph.
+         */
         @TestVisible
         private void removeCycles() {
             visitedNodes = new Set<CampaignNode>();
@@ -226,6 +352,14 @@ public class CampaignListRefreshSchedulable implements Schedulable {
 
         }
 
+        /**
+         * @description Perform a depth first search on the given CampaignNode
+         * by recursively visiting each *out* edge of the node.  After all
+         * nodes are visited, add this node to the leading nodes stack as a
+         * potential leading node (see removeCycles())
+         *
+         * @param cn The CampaignNode to recursively process
+         */
         private void depthFirstVisit(CampaignNode cn) {
             if (!visitedNodes.contains(cn)) {
                 visitedNodes.add(cn);
@@ -236,6 +370,15 @@ public class CampaignListRefreshSchedulable implements Schedulable {
            }
         }
 
+        /**
+         * @description Given a node and root node, assign the given node to
+         * the strongly connected component associated with the root node if
+         * the given node is not already assigned to an SSC.  This will
+         * recursively assign each *in* edge of the given node.
+         *
+         * @param cn The CampaignNode to recursively assign
+         * @param root The CampaignNode that is the root of the currently processing SSC
+         */
         private void assignToStronglyConnectedComponent(CampaignNode cn, CampaignNode root) {
             if (!assignedNodes.contains(cn)) {
                 if (!stronglyConnectedComponents.containsKey(root)) {
@@ -249,6 +392,13 @@ public class CampaignListRefreshSchedulable implements Schedulable {
             }
         }
 
+        /**
+         * @description Given a set of nodes, determine the edges that exist
+         * between these nodes.
+         *
+         * @param nodes
+         * @return List<Edge>
+         */
         private List<Edge> getEdgesBetweenNodes(Set<CampaignNode> nodes) {
             List<Edge> edges = new List<Edge>();
 
@@ -260,10 +410,17 @@ public class CampaignListRefreshSchedulable implements Schedulable {
                 }
             }
 
-
             return edges;
         }
 
+        /**
+         * @description Given a list of edges that may contain a cycle, return
+         * a list of edges that can be removed from the graph to break that
+         * cycle.
+         *
+         * @param edges A list of edges, presumably constituting a cycle
+         * @return List<Edge> A list of edges that can be removed to break that cycle
+         */
         private List<Edge> getEdgesToRemove(List<Edge> edges) {
             List<Edge> left = new List<Edge>();
             List<Edge> right = new List<Edge>();
@@ -284,6 +441,11 @@ public class CampaignListRefreshSchedulable implements Schedulable {
             }
         }
 
+        /**
+         * @description Remove the given list of edges from the CampaignGraph
+         *
+         * @param edges The edges to remove
+         */
         private void removeEdges(List<Edge> edges) {
             for (Edge e : edges) {
                 if (nodes.containsKey(e.fromNode.campaignId)) {
@@ -296,27 +458,75 @@ public class CampaignListRefreshSchedulable implements Schedulable {
         }
     }
 
+    /**
+     * @description The set of values that are considered 'finished' states for
+     * the Campaign refresh process.
+     */
     private static Set<String> finishedStates = new Set<String>{
         'Completed',
         'Aborted',
         'Failed'
     };
 
+    /**
+     * @author Salesforce.org
+     * @description A class that represents a node in the graph of campaign
+     * dependencies.
+     */
     @TestVisible
     private class CampaignNode implements Comparable {
+        /**
+         * @description The id of the Campaign associated with this node
+         */
         public Id campaignId;
-        public Id campaignListId;
-        public String updateStatus = '';
-        public Set<CampaignNode> dependencies = new Set<CampaignNode>();
-        public Set<CampaignNode> dependants = new Set<CampaignNode>();
-        public Boolean visited = false;
-        public Boolean inComponent = false;
 
+        /**
+         * @description The id of the Campaign List associated with this node
+         */
+        public Id campaignListId;
+
+        /**
+         * @description The refresh status of this Campaign, i.e., 'Queued',
+         * 'Processing', 'Completed', etc.
+         */
+        public String updateStatus = '';
+
+        /**
+         * @description A set of nodes that are dependencies of this node.
+         * That is, if the campaign represented by this node depends on other
+         * Campaigns as one of its sources, then the node that represents that
+         * Campaign should be in this set.
+         */
+        public Set<CampaignNode> dependencies = new Set<CampaignNode>();
+
+        /**
+         * @description A set of nodes that are dependants of this node.  That
+         * is, if the campaign represented by this node is dependended on as a
+         * source by another Campaign, then the node that represents that
+         * Campaign should be in this set.
+         */
+        public Set<CampaignNode> dependants = new Set<CampaignNode>();
+
+        /**
+         * @description Construct a CampaignNode for a Campaign by id, with
+         * associated campaign list.
+         *
+         * @param campaignId The id of the Campaign this node represents
+         * @param campaignListId The id of the CampaignList the Campaign is associated with
+         */
         public CampaignNode(Id campaignId, Id campaignListId) {
             this.campaignId = campaignId;
             this.campaignListId = campaignListId;
         }
 
+        /**
+         * @description Determine if the Campaign represented by this node is
+         * ready to be scheduled for a refresh.  This will check to see if all
+         * dependencies of the Campaign have been resolved (i.e. are in a
+         * finished state).
+         *
+         * @return Boolean
+         */
         public Boolean isReady() {
             if ('Queued' != updateStatus) {
                 return false;
@@ -333,10 +543,23 @@ public class CampaignListRefreshSchedulable implements Schedulable {
             return !dependencyStatus.retainAll(finishedStates);
         }
 
+        /**
+         * @description Implementation of Object.hashCode(), so this
+         * CampaignNode can be stored in a set.
+         *
+         * @return Integer
+         */
         public Integer hashCode() {
             return ((Object) campaignId).hashCode();
         }
 
+        /**
+         * @description Implementation of Object.equals(), so this CampaignNode
+         * can be stored in a set.
+         *
+         * @param other The object to check for equality
+         * @return Boolean
+         */
         public Boolean equals(Object other) {
             if (null == other) {
                 return false;
@@ -344,6 +567,13 @@ public class CampaignListRefreshSchedulable implements Schedulable {
             return (0 == compareTo(other));
         }
 
+        /**
+         * @description Implementation of Comparable.compareTo().  This will
+         * compare this node's campaignId to the other node's campaignId.
+         *
+         * @param other The other object to compare to.
+         * @return Integer
+         */
         public Integer compareTo(Object other) {
             Id otherId = ((CampaignNode) other).campaignId;
             if (campaignId == otherId) {
@@ -356,24 +586,71 @@ public class CampaignListRefreshSchedulable implements Schedulable {
         }
     }
 
+    /**
+     * @author Salesforce.org
+     * @description A class representing a directed edge in the CampaignGraph.
+     */
     private class Edge {
+        /**
+         * @description The CampaignNode from which this edge connects to
+         * another node.
+         */
         public CampaignNode fromNode;
+
+        /**
+         * @description The CampaignNode to which this edge connects another
+         * node.
+         */
         public CampaignNode toNode;
 
+        /**
+         * @description Construct an Edge given two nodes.
+         *
+         * @param fromNode The inbound node for this edge
+         * @param toNode The outbound node for this edge
+         */
         public Edge(CampaignNode fromNode, CampaignNode toNode) {
             this.fromNode = fromNode;
             this.toNode = toNode;
         }
     }
 
+    /**
+     * @author Salesforce.org
+     * @description The worker class that will schedule the refresh process for
+     * any Campaigns that are determined to be ready to schedule.  This class
+     * will attempt to schedule as many refresh processes as are determined to
+     * be ready to be scheduled, while also maintaining a buffer of
+     * availability in the FlexQueue.  If the worker is unable to schedule all
+     * of the Campaigns needed to be scheduled, it will call itself
+     * recursively.
+     */
     public class Worker implements Queueable {
+        /**
+         * @description The CampaignGraph that represents the dependencies
+         * between Campaigns to be updated.
+         */
         @TestVisible
         private CampaignGraph cg;
 
+        /**
+         * @description Construct a Worker given a CampaignGraph
+         *
+         * @param cg
+         */
         public Worker(CampaignGraph cg) {
             this.cg = cg;
         }
 
+        /**
+         * @description Implementation of Queueable.execute().  Will query for
+         * Campaign update status, determine which Campaigns are ready to
+         * schedule, and then will attempt to schedule as many of those refresh
+         * processes as possible.  If there are still Campaigns to be
+         * scheduled, it will invoke itself recursively.
+         *
+         * @param qc
+         */
         public void execute(QueueableContext qc) {
             CampaignList.Service service = CampaignList.getService();
 
