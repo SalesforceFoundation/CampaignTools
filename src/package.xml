@@ -16,6 +16,8 @@
         <members>CampaignListMemberMapper</members>
         <members>CampaignListMemberMapper_TEST</members>
         <members>CampaignListMember_TEST</members>
+        <members>CampaignListRefreshSchedulable</members>
+        <members>CampaignListRefreshSchedulable_TEST</members>
         <members>CampaignListSegment</members>
         <members>CampaignListSegmentMapper</members>
         <members>CampaignListSegmentMapper_TEST</members>
@@ -66,6 +68,7 @@
     <types>
         <members>Campaign.Campaign_List_Last_Updated__c</members>
         <members>Campaign.Campaign_List_Mutex__c</members>
+        <members>Campaign.Campaign_List_Refresh_Automatically__c</members>
         <members>Campaign.Campaign_List_Update_Status__c</members>
         <members>Campaign.Campaign_List__c</members>
         <members>CampaignMember.Source_Names__c</members>

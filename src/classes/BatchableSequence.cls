@@ -42,6 +42,16 @@ public class BatchableSequence implements Interface_x {
         Id run();
     }
 
+    public interface Factory {
+        Interface_x create();
+    }
+
+    public class DefaultFactory implements Factory {
+        public Interface_x create() {
+            return new BatchableSequence();
+        }
+    }
+
     /** @description A list of the Batchables in this sequence, in order */
     @TestVisible
     private List<Batch> batches = new List<Batch>();
