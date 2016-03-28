@@ -206,11 +206,6 @@ public class CampaignListRefreshSchedulable implements Schedulable {
         private List<CampaignNode> leadingNodesStack = new List<CampaignNode>();
 
         /**
-         * @description The number of Campaigns that are in 'Queued' status.
-         */
-        public Integer queuedCount;
-
-        /**
          * @description A private empty constructor for bypassing the main
          * constructor.
          */
@@ -286,9 +281,10 @@ public class CampaignListRefreshSchedulable implements Schedulable {
          * status value.
          *
          * @param campaigns
+         * @return Integer The number of Campaigns in 'Queued' status
          */
-        public void setCampaignStatus(List<Campaign> campaigns) {
-            queuedCount = 0;
+        public Integer setCampaignStatus(List<Campaign> campaigns) {
+            Integer queuedCount = 0;
             for (Campaign c : campaigns) {
                 if (nodes.containsKey(c.Id)) {
                     nodes.get(c.Id).updateStatus = c.Campaign_List_Update_Status__c;
@@ -297,6 +293,7 @@ public class CampaignListRefreshSchedulable implements Schedulable {
                     }
                 }
             }
+            return queuedCount;
         }
 
         /**
@@ -328,6 +325,45 @@ public class CampaignListRefreshSchedulable implements Schedulable {
          */
         @TestVisible
         private void removeCycles() {
+            /*
+             * If there is a cyclic dependency between Campaigns then we want
+             * to break that cycle, but still attempt to update Campaigns with
+             * minimal disruption to their dependency order.
+             *
+             * This method tries preserve dependencies that are not involved in
+             * a cycle by first finding all strongly connected components (SSC)
+             * using Kosaraju's algorithm, and then breaking all cycles between
+             * the nodes in each non-trivial SSC.
+             *
+             * A strongly connected component is a graph where every node is
+             * reachable from every other node in the graph.  The nodes in a
+             * graph can be partitioned into subgraphs where each subgraph is a
+             * SSC (a graph with a single node is considered a strongly
+             * connected component).
+             *
+             * Kosaraju's algorithm works by performing two depth first
+             * searches of the graph, first traversing edges in one direction,
+             * and the second DFS by traversing edges in the other direction.
+             * The first DFS tracks the order of the nodes as they are first
+             * discovered and adds them to a stack (here called
+             * leadingNodesStack).  The second pass through the graph performs
+             * a DFS on the nodes in the order they appear on the stack.  In
+             * the second pass, if a node pulled from the stack is not yet
+             * visited, then it is considered a 'leading node' and all
+             * unvisited nodes reachable by performing a DFS in reverse
+             * direction from that node are added to a SSC identified by the
+             * leading node (stronglyConnectedComponents map)
+             *
+             * Once the strongly connected components are identified, for those
+             * SSCs that consist of more than a single node, we know that there
+             * is a cycle between the nodes in that SSC and we must break it.
+             *
+             * To do this, we identify all edges between nodes in that SSC
+             * (omitting edges to/from nodes outside the SSC).  Then we
+             * identify a set of edges that we can remove to break all cycles
+             * within the SSC (see getEdgesToRemove() for details), and finally
+             * we remove those identified edges from the graph.
+             */
             visitedNodes = new Set<CampaignNode>();
             assignedNodes = new Set<CampaignNode>();
             stronglyConnectedComponents = new Map<CampaignNode, Set<CampaignNode>>();
@@ -422,6 +458,25 @@ public class CampaignListRefreshSchedulable implements Schedulable {
          * @return List<Edge> A list of edges that can be removed to break that cycle
          */
         private List<Edge> getEdgesToRemove(List<Edge> edges) {
+            /*
+             * This works by partitioning the edges into three sets.  Given the
+             * edge A -> B, if A is "less than" B then it is added to the
+             * "left" set.  If A is "greater than" B then it is added to the
+             * "right" set.  If A is "equal" to B, then it isn't added to any
+             * set.
+             *
+             * Then, we know that neither the "left" and "right" partitions
+             * contain a cycle, since if the set contained a cycle then there
+             * must be an edge that connects a node to a node "earlier" in the
+             * ordering-- which is not possible given how the sets were
+             * partitioned.
+             *
+             * We can break any cycles in the given set of edges by choosing to
+             * keep either the "left" set or the "right" set.  We choose to
+             * keep the set that maintains the most number of edges from the
+             * original set of edges.  So, we return (to be removed from the
+             * graph) the set that contains the lesser number of edges.
+             */
             List<Edge> left = new List<Edge>();
             List<Edge> right = new List<Edge>();
 
@@ -656,7 +711,7 @@ public class CampaignListRefreshSchedulable implements Schedulable {
 
             List<Campaign> campaigns = getCampaignsByIds(cg.getCampaignIds());
 
-            cg.setCampaignStatus(campaigns);
+            Integer queuedCount = cg.setCampaignStatus(campaigns);
 
             List<Campaign> readyCampaigns = cg.getReadyCampaigns();
 
@@ -675,7 +730,7 @@ public class CampaignListRefreshSchedulable implements Schedulable {
 
             // we can't schedule more than are ready...
             Integer numberOfCampaignsToSchedule = Math.min(
-                flexQueueCapacity,
+                maxToSchedule,
                 readyCampaigns.size()
             );
 
@@ -688,7 +743,7 @@ public class CampaignListRefreshSchedulable implements Schedulable {
                 );
             }
 
-            if (cg.queuedCount > 0) {
+            if (queuedCount > 0) {
                 Worker w = new Worker(cg);
                 service.enqueueJob(w);
             }

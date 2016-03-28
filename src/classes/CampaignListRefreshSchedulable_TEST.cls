@@ -526,11 +526,11 @@ private class CampaignListRefreshSchedulable_TEST {
 
         Test.startTest();
 
-        cg.setCampaignStatus(campaigns.values());
+        Integer queuedCount = cg.setCampaignStatus(campaigns.values());
 
         Test.stopTest();
 
-        System.assertEquals(1, cg.queuedCount);
+        System.assertEquals(1, queuedCount);
 
         for (CampaignListRefreshSchedulable.CampaignNode cn : cg.nodes.values()) {
             System.assertEquals(
