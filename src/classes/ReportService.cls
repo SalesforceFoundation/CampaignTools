@@ -172,6 +172,20 @@ public class ReportService implements CampaignList.ReportService {
         public ReportRowIdIterableIterator(Id reportId, String columnName) {
             this.reportId = reportId;
             this.columnName = columnName;
+
+            /*
+            We call getReportResults() in the constructor because if there are
+            going to be any problems running the report this first time, we
+            want the error to hit sooner rather than later.  This early failure
+            is necessary in order to be able to catch the exception within the
+            start() method of the Batchable that consumes this class. If the
+            error only became apparent after calling hasNext() or next() after
+            returning this Iterable from the start() method, then we would not
+            be able to catch that error since those calls happen in a context
+            we do not have control over.
+            */
+
+            ReportService.getReportResults(reportId, columnName, null);
         }
 
         /**

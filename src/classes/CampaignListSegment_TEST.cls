@@ -66,6 +66,7 @@ private class CampaignListSegment_TEST {
     }
 
     private static testMethod void testCampaignSourceSegment() {
+        Id targetCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
         Id segmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
         Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
         Id parentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
@@ -88,13 +89,15 @@ private class CampaignListSegment_TEST {
         System.assertEquals(false, segment.isExclusion());
         System.assertEquals('Test Campaign', segment.getSourceName());
 
-        CampaignListFromCampaignBatch batch = (CampaignListFromCampaignBatch) segment.getBatchProcessor();
+        CampaignListFromCampaignBatch batch = (CampaignListFromCampaignBatch) segment.getBatchProcessor(targetCampaignId);
         System.assertEquals(rootSegmentId, batch.rootSegmentId);
-        System.assertEquals(sourceId, batch.campaignId);
-        System.assertEquals('Campaign: Test Campaign', batch.campaignName);
+        System.assertEquals(targetCampaignId, batch.targetCampaignId);
+        System.assertEquals(sourceId, batch.sourceCampaignId);
+        System.assertEquals('Campaign: Test Campaign', batch.sourceCampaignName);
     }
 
     private static testMethod void testReportSourceSegment() {
+        Id targetCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
         Id segmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
         Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
         Id parentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
@@ -119,8 +122,10 @@ private class CampaignListSegment_TEST {
         System.assertEquals('test_column_name', segment.getColumnName());
         System.assertEquals('Test Report', segment.getSourceName());
 
-        CampaignListFromReportBatch batch = (CampaignListFromReportBatch) segment.getBatchProcessor();
+        CampaignListFromReportBatch batch = (CampaignListFromReportBatch) segment.getBatchProcessor(targetCampaignId);
+
         System.assertEquals(rootSegmentId, batch.rootSegmentId);
+        System.assertEquals(targetCampaignId, batch.targetCampaignId);
         System.assertEquals(sourceId, batch.reportId);
         System.assertEquals('Report: Test Report', batch.reportName);
         System.assertEquals('test_column_name', batch.idColumnName);

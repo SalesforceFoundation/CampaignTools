@@ -57,8 +57,15 @@ private with sharing class ProcessSegmentBTN_TEST {
 
         System.assertEquals(null, pr);
 
-        System.assertEquals(campaignId, serviceStub.updatedCampaignId);
-        System.assertEquals(rootSegmentId, serviceStub.updatedRootSegmentId);
+        System.assertEquals(
+            campaignId,
+            serviceStub.updateCampaignFromCampaignListCampaignId
+        );
+
+        System.assertEquals(
+            rootSegmentId,
+            serviceStub.updateCampaignFromCampaignListRootSegmentId
+        );
     }
 
     @isTest
@@ -98,8 +105,15 @@ private with sharing class ProcessSegmentBTN_TEST {
 
         System.assertEquals(null, pr);
 
-        System.assertEquals(null, serviceStub.updatedCampaignId);
-        System.assertEquals(null, serviceStub.updatedRootSegmentId);
+        System.assertEquals(
+            null,
+            serviceStub.updateCampaignFromCampaignListCampaignId
+        );
+
+        System.assertEquals(
+            null,
+            serviceStub.updateCampaignFromCampaignListRootSegmentId
+        );
     }
 
     @isTest
@@ -114,7 +128,7 @@ private with sharing class ProcessSegmentBTN_TEST {
         );
 
         CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
-        serviceStub.throwAlreadyRunningException = true;
+        serviceStub.updateCampaignFromCampaignListException = new CampaignListService.CampaignListUpdateAlreadyRunningException();
 
         CampaignList.setService(serviceStub);
 
@@ -151,7 +165,14 @@ private with sharing class ProcessSegmentBTN_TEST {
 
         System.assertEquals(null, pr);
 
-        System.assertEquals(campaignId, serviceStub.updatedCampaignId);
-        System.assertEquals(rootSegmentId, serviceStub.updatedRootSegmentId);
+        System.assertEquals(
+            campaignId,
+            serviceStub.updateCampaignFromCampaignListCampaignId
+        );
+
+        System.assertEquals(
+            rootSegmentId,
+            serviceStub.updateCampaignFromCampaignListRootSegmentId
+        );
     }
 }
