@@ -106,6 +106,18 @@ public abstract class CampaignListSegment implements CampaignList.Segment {
      * @description get "campaign list" id this segment belongs to
      * @return Id
      */
+    public Id getCampaignListId() {
+        if (null == rootSegmentId) {
+            return segmentId;
+        } else {
+            return rootSegmentId;
+        }
+    }
+
+    /**
+     * @description get root segment id this segment belongs to
+     * @return Id
+     */
     public Id getRootSegmentId() {
         return rootSegmentId;
     }
@@ -478,7 +490,7 @@ public abstract class CampaignListSegment implements CampaignList.Segment {
          */
         public override BatchableSequence.Batch getBatchProcessor() {
             CampaignListFromCampaignBatch batch = new CampaignListFromCampaignBatch(
-                rootSegmentId,
+                getCampaignListId(),
                 sourceId,
                 'Campaign: ' + getSourceName()
             );
@@ -537,7 +549,7 @@ public abstract class CampaignListSegment implements CampaignList.Segment {
          */
         public override BatchableSequence.Batch getBatchProcessor() {
             CampaignListFromReportBatch batch = new CampaignListFromReportBatch(
-                rootSegmentId,
+                getCampaignListId(),
                 sourceId,
                 columnName,
                 'Report: ' + getSourceName()

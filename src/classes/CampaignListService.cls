@@ -131,7 +131,7 @@ public class CampaignListService implements CampaignList.Service {
     public Integer getFlexQueueCapacity(Integer maxFreeSlots) {
         Integer holdingJobCount = queryHoldingJobCount();
         Integer freeSlots = Math.max(100 - holdingJobCount, 0);
-        Integer capacity = Math.max(maxFreeSlots - freeSlots, 0);
+        Integer capacity = Math.min(maxFreeSlots, freeSlots);
         return capacity;
     }
 
