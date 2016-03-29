@@ -333,13 +333,13 @@ public class CampaignListRefreshSchedulable implements Schedulable {
              * This method tries preserve dependencies that are not involved in
              * a cycle by first finding all strongly connected components (SSC)
              * using Kosaraju's algorithm, and then breaking all cycles between
-             * the nodes in each non-trivial SSC.
+             * the nodes in each SSC.
              *
              * A strongly connected component is a graph where every node is
              * reachable from every other node in the graph.  The nodes in a
              * graph can be partitioned into subgraphs where each subgraph is a
              * SSC (a graph with a single node is considered a strongly
-             * connected component).
+             * connected component, regardless of whether it has a loop or not).
              *
              * Kosaraju's algorithm works by performing two depth first
              * searches of the graph, first traversing edges in one direction,
@@ -354,15 +354,12 @@ public class CampaignListRefreshSchedulable implements Schedulable {
              * direction from that node are added to a SSC identified by the
              * leading node (stronglyConnectedComponents map)
              *
-             * Once the strongly connected components are identified, for those
-             * SSCs that consist of more than a single node, we know that there
-             * is a cycle between the nodes in that SSC and we must break it.
-             *
-             * To do this, we identify all edges between nodes in that SSC
-             * (omitting edges to/from nodes outside the SSC).  Then we
-             * identify a set of edges that we can remove to break all cycles
-             * within the SSC (see getEdgesToRemove() for details), and finally
-             * we remove those identified edges from the graph.
+             * Once the strongly connected components are identified, we
+             * identify all edges between nodes in that SSC (omitting edges
+             * to/from nodes outside the SSC).  Then we identify a set of edges
+             * that we can remove to break all cycles within the SSC (see
+             * getEdgesToRemove() for details), and finally we remove those
+             * identified edges from the graph.
              */
             visitedNodes = new Set<CampaignNode>();
             assignedNodes = new Set<CampaignNode>();
@@ -379,13 +376,10 @@ public class CampaignListRefreshSchedulable implements Schedulable {
             }
 
             for (Set<CampaignNode> ssc : stronglyConnectedComponents.values()) {
-                if (ssc.size() > 1) {
-                    List<Edge> edgesInComponent = getEdgesBetweenNodes(ssc);
-                    List<Edge> edgesToRemove = getEdgesToRemove(edgesInComponent);
-                    removeEdges(edgesToRemove);
-                }
+                List<Edge> edgesInComponent = getEdgesBetweenNodes(ssc);
+                List<Edge> edgesToRemove = getEdgesToRemove(edgesInComponent);
+                removeEdges(edgesToRemove);
             }
-
         }
 
         /**
@@ -462,8 +456,8 @@ public class CampaignListRefreshSchedulable implements Schedulable {
              * This works by partitioning the edges into three sets.  Given the
              * edge A -> B, if A is "less than" B then it is added to the
              * "left" set.  If A is "greater than" B then it is added to the
-             * "right" set.  If A is "equal" to B, then it isn't added to any
-             * set.
+             * "right" set.  If A is "equal" to B, then it is added to the set
+             * of edges definitely to be removed.
              *
              * Then, we know that neither the "left" and "right" partitions
              * contain a cycle, since if the set contained a cycle then there
@@ -477,6 +471,7 @@ public class CampaignListRefreshSchedulable implements Schedulable {
              * original set of edges.  So, we return (to be removed from the
              * graph) the set that contains the lesser number of edges.
              */
+            List<Edge> edgesToRemove = new List<Edge>();
             List<Edge> left = new List<Edge>();
             List<Edge> right = new List<Edge>();
 
@@ -486,14 +481,18 @@ public class CampaignListRefreshSchedulable implements Schedulable {
                     left.add(e);
                 } else if (compare > 0) {
                     right.add(e);
+                } else {
+                    edgesToRemove.add(e);
                 }
             }
 
             if (left.size() < right.size()) {
-                return left;
+                edgesToRemove.addAll(left);
             } else {
-                return right;
+                edgesToRemove.addAll(right);
             }
+
+            return edgesToRemove;
         }
 
         /**

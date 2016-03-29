@@ -732,4 +732,32 @@ private class CampaignListRefreshSchedulable_TEST {
             nextWorker.cg
         );
     }
+
+    @isTest
+    private static void testCampaignGraphRemoveCyclesHandlesLoops() {
+        Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+        Id campaignListId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+
+        CampaignListRefreshSchedulable.CampaignNode cn = new CampaignListRefreshSchedulable.CampaignNode(
+            campaignId,
+            campaignListId
+        );
+
+        cn.dependencies.add(cn);
+        cn.dependants.add(cn);
+
+        CampaignListRefreshSchedulable.CampaignGraph cg = new CampaignListRefreshSchedulable.CampaignGraph();
+        cg.nodes = new Map<Id, CampaignListRefreshSchedulable.CampaignNode>{
+            campaignId => cn
+        };
+
+        Test.startTest();
+
+        cg.removeCycles();
+
+        Test.stopTest();
+
+        System.assertEquals(0, cn.dependencies.size());
+        System.assertEquals(0, cn.dependants.size());
+    }
 }
