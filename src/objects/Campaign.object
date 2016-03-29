@@ -17,6 +17,14 @@
         <type>DateTime</type>
     </fields>
     <fields>
+        <fullName>Campaign_List_Refresh_Automatically__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Should this Campaign be automatically updated from its Campaign List sources on a regular, automated schedule?</description>
+        <externalId>false</externalId>
+        <label>Automatically Refresh Campaign List</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Campaign_List_Update_Status__c</fullName>
         <description>This tracks the status of updating this Campaign from a campaign list</description>
         <externalId>false</externalId>
