@@ -79,16 +79,30 @@ public class CampaignListToCampaignBatch extends BatchableSequence.Batch impleme
      * @return void
      */
     public void execute(Database.BatchableContext bc, List<Member__c> scope) {
-        List<CampaignList.Member> eligibleMembers = new List<CampaignList.Member>();
+        try {
+            List<CampaignList.Member> eligibleMembers = new List<CampaignList.Member>();
 
-        for (Member__c m : scope) {
-            CampaignList.Member member = new CampaignListMember(m);
-            if (member.meetsCriteria(rootSegment)) {
-                eligibleMembers.add(member);
+            for (Member__c m : scope) {
+                CampaignList.Member member = new CampaignListMember(m);
+                if (member.meetsCriteria(rootSegment)) {
+                    eligibleMembers.add(member);
+                }
             }
-        }
 
-        CampaignList.getMemberMapper().addMembersToCampaign(eligibleMembers, campaignId);
+            CampaignList.getMemberMapper().addMembersToCampaign(eligibleMembers, campaignId);
+        } catch (Exception e) {
+            CampaignList.Service service = CampaignList.getService();
+            service.unlockCampaignAndMarkFailed(
+                campaignId,
+                String.format(
+                    Label.CampaignToolsListToCampaignExecuteException,
+                    new List<String>{
+                        rootSegment.getId()
+                    }
+                )
+            );
+            service.abortJob(service.getJobId(bc));
+        }
     }
 
     /**

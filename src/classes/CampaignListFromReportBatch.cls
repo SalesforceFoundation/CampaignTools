@@ -42,6 +42,12 @@ public class CampaignListFromReportBatch extends BatchableSequence.Batch impleme
     private Id rootSegmentId;
 
     /**
+     * @description The id of the Campaign to be refreshed
+     */
+    @TestVisible
+    private Id targetCampaignId;
+
+    /**
      * @description The id of the Report from which to gather potential
      * members
      */
@@ -63,41 +69,56 @@ public class CampaignListFromReportBatch extends BatchableSequence.Batch impleme
     private String reportName;
 
     /**
-     * @description
+     * @description A factory for generating an Id iterable
      */
     @TestVisible
-    private Iterable<Id> idIterator;
+    private IdIterableFactory idIterableFactory = new DefaultIdIterableFactory();
 
     /**
      * @description Construct the batch process to gather potential members
      * from a given report for a given campaign list.
      *
      * @param rootSegmentId The id of the "campaign list" which the members should be added to
+     * @param targetCampaignId The id of the Campaign to be refreshed
      * @param reportId The id of the Report from which to gather potential members
      * @param idColumnName The name of the column in the report to retrieve id values from
      * @param reportName The name of the Report from which to gather potential members
      */
-    public CampaignListFromReportBatch(Id rootSegmentId, Id reportId, String idColumnName, String reportName) {
+    public CampaignListFromReportBatch(Id rootSegmentId, Id targetCampaignId, Id reportId, String idColumnName, String reportName) {
         this.rootSegmentId = rootSegmentId;
+        this.targetCampaignId = targetCampaignId;
         this.reportId = reportId;
         this.idColumnName = idColumnName;
         this.reportName = reportName;
     }
 
     /**
-     * @description Get the iterator that will provide ids to the execute()
-     * method.  If an iterable is already specified for this batch, it will be
-     * used.  Otherwise, an instance of the default implementation,
-     * ReportService.ReportRowValueIterableIterator, will be used.
-     *
-     * @return Iterable<Id>
+     * @description A factory for generating an Id iterable
+     */
+    public interface IdIterableFactory {
+        Iterable<Id> create(Id reportId, String idColumnName);
+    }
+
+    /**
+     * @description A default implementation of a factory for generating an Id
+     * iterable.  This will create a ReportService.ReportRowIdIterableIterator.
      */
     @TestVisible
-    private Iterable<Id> getIdIterable() {
-        if (null == idIterator) {
-            idIterator = new ReportService.ReportRowIdIterableIterator(reportId, idColumnName);
+    private class DefaultIdIterableFactory implements IdIterableFactory {
+        /**
+         * @description Create a ReportService.ReportRowIdIterableIterator
+         * using the given parameters.
+         *
+         * @param reportId The id of the report to iterate over
+         * @param idColumnName The name of the column in the report to return from the iterator
+         * @return Iterable<Id>
+         */
+        public Iterable<Id> create(Id reportId, String idColumnName) {
+            return new ReportService.ReportRowIdIterableIterator(
+                reportId,
+                idColumnName
+            );
         }
-        return idIterator;
     }
 
     /**
@@ -107,7 +128,23 @@ public class CampaignListFromReportBatch extends BatchableSequence.Batch impleme
      * @return Iterable<Id> An iterable that will provide values from the id column of the given report
      */
     public Iterable<Id> start(Database.BatchableContext bc) {
-        return getIdIterable();
+        try {
+            return idIterableFactory.create(reportId, idColumnName);
+        } catch (Exception e) {
+            CampaignList.Service service = CampaignList.getService();
+            service.unlockCampaignAndMarkFailed(
+                targetCampaignId,
+                String.format(
+                    Label.CampaignToolsListFromReportStartException,
+                    new List<String>{
+                        reportId,
+                        rootSegmentId
+                    }
+                )
+            );
+            service.abortJob(service.getJobId(bc));
+            return null;
+        }
     }
 
     /**
@@ -119,12 +156,27 @@ public class CampaignListFromReportBatch extends BatchableSequence.Batch impleme
      * @return void
      */
     public void execute(Database.BatchableContext bc, List<Id> ids) {
-        CampaignList.getMemberMapper().updateByRelatedIdsAndSource(
-            ids,
-            rootSegmentId,
-            reportId,
-            reportName
-        );
+        try {
+            CampaignList.getMemberMapper().updateByRelatedIdsAndSource(
+                ids,
+                rootSegmentId,
+                reportId,
+                reportName
+            );
+        } catch (Exception e) {
+            CampaignList.Service service = CampaignList.getService();
+            service.unlockCampaignAndMarkFailed(
+                targetCampaignId,
+                String.format(
+                    Label.CampaignToolsListFromReportExecuteException,
+                    new List<String>{
+                        reportId,
+                        rootSegmentId
+                    }
+                )
+            );
+            service.abortJob(service.getJobId(bc));
+        }
     }
 
     /**

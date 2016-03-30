@@ -70,7 +70,7 @@ private class CampaignListService_TEST {
         mutexStub.acquireLock = true;
 
         CampaignList_TEST.MutexStubFactory mutexFactory = new CampaignList_TEST.MutexStubFactory();
-        mutexFactory.m = mutexStub;
+        mutexFactory.createReturn = mutexStub;
         CampaignList.setMutexFactory(mutexFactory);
 
         CampaignListService service = new CampaignListService();
@@ -78,11 +78,11 @@ private class CampaignListService_TEST {
         // assert that the destination campaign was updated to indicate a
         // running update
 
-        System.assertEquals(destinationCampaignId, serviceStub.updatedCampaignId);
-        System.assertEquals(destinationCampaignId, mutexFactory.recordId);
-        System.assertEquals(Campaign.Campaign_List_Mutex__c, mutexFactory.mutexField);
+        System.assertEquals(destinationCampaignId, serviceStub.updateCampaignStatusCampaignId);
+        System.assertEquals(destinationCampaignId, mutexFactory.createRecordId);
+        System.assertEquals(Campaign.Campaign_List_Mutex__c, mutexFactory.createMutexField);
         System.assertEquals(1, mutexStub.acquireLockCalls);
-        System.assertEquals(CampaignList.UpdateStatus.Processing, serviceStub.updatedStatus);
+        System.assertEquals(CampaignList.UpdateStatus.Processing, serviceStub.updateCampaignStatusStatus);
 
         // assert that the batches in this sequence exist in the expected
         // order, with a report source batch and a campaign source batch (in
@@ -121,7 +121,8 @@ private class CampaignListService_TEST {
         System.assertEquals(sourceReportId, reportBatch.reportId);
         System.assertEquals('test_column_name', reportBatch.idColumnName);
         System.assertEquals(rootSegment.Id, campaignBatch.rootSegmentId);
-        System.assertEquals(sourceCampaignId, campaignBatch.campaignId);
+        System.assertEquals(destinationCampaignId, campaignBatch.targetCampaignId);
+        System.assertEquals(sourceCampaignId, campaignBatch.sourceCampaignId);
         System.assertEquals(rootSegment.Id, campaignListToCampaignBatch.rootSegment.getId());
         System.assertEquals(destinationCampaignId, campaignListToCampaignBatch.campaignId);
         System.assertEquals(rootSegment.Id, deleteCampaignListMembersBatch2.rootSegmentId);

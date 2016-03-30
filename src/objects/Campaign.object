@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <fields>
+        <fullName>Campaign_List_Error_Message__c</fullName>
+        <description>If there was an error while attempting to update this Campaign using a Campaign List, then this field will show that error message.</description>
+        <externalId>false</externalId>
+        <label>Campaign List Refresh Error Message</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Campaign_List_Last_Updated__c</fullName>
         <description>This contains the date/time of when this Campaign was last successfully populated by a Campaign List</description>
         <externalId>false</externalId>

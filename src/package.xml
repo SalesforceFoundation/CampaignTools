@@ -66,6 +66,7 @@
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
+        <members>Campaign.Campaign_List_Error_Message__c</members>
         <members>Campaign.Campaign_List_Last_Updated__c</members>
         <members>Campaign.Campaign_List_Mutex__c</members>
         <members>Campaign.Campaign_List_Refresh_Automatically__c</members>
@@ -93,6 +94,10 @@
         <members>CampaignToolsAlreadyRunningWarningSummary</members>
         <members>CampaignToolsCantFinishUpdateException</members>
         <members>CampaignToolsCantUpdateException</members>
+        <members>CampaignToolsDeleteCampaignListMembersExecuteException</members>
+        <members>CampaignToolsListFromCampaignExecuteException</members>
+        <members>CampaignToolsListFromReportExecuteException</members>
+        <members>CampaignToolsListFromReportStartException</members>
         <members>CampaignToolsListRefreshPageTitle</members>
         <members>CampaignToolsListRefreshStatusAbortedHeading</members>
         <members>CampaignToolsListRefreshStatusCompletedHeading</members>
@@ -101,6 +106,7 @@
         <members>CampaignToolsListRefreshStatusProcessingMessage</members>
         <members>CampaignToolsListRefreshStatusQueuedHeading</members>
         <members>CampaignToolsListRefreshStatusQueuedMessage</members>
+        <members>CampaignToolsListToCampaignExecuteException</members>
         <members>CampaignToolsNoSavedCampaignList</members>
         <members>CampaignToolsReleaseLockException</members>
         <members>JobProgressCompletedLabel</members>

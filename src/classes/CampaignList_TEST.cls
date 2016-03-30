@@ -40,155 +40,192 @@ public class CampaignList_TEST {
         return id_x;
     }
 
-    public class SegmentStub implements CampaignList.Segment {
-        public Id segmentId;
-        public Id parentId;
-        public Id rootSegmentId;
-        public Set<Id> acceptIds = new Set<Id>();
-        public Boolean meetsCriteria(CampaignList.Member m) {
-            return acceptIds.contains(m.getId());
+    public virtual class SegmentStub implements CampaignList.Segment {
+        public CampaignList.Member meetsCriteraM;
+        public Boolean meetsCriteriaReturn;
+        public Id getIdReturn;
+        public Id setIdSegmentId;
+        public Id getParentIdReturn;
+        public Id setParentIdParentId;
+        public Id getRootSegmentIdReturn;
+        public Id setRootSegmentIdRootSegmentId;
+        public List<CampaignList.Segment> getChildrenReturn;
+        public Iterator<CampaignList.Segment> iteratorReturn;
+        public Segment__c getSObjectReturn;
+        public CampaignList.Segment addChildChild;
+        public virtual Boolean meetsCriteria(CampaignList.Member m) {
+            meetsCriteraM = m;
+            return this.meetsCriteriaReturn;
         }
-        public Id getId() {
-            return segmentId;
+        public virtual Id getId() {
+            return this.getIdReturn;
         }
-        public void setId(Id segmentId) {
-            this.segmentId = segmentId;
+        public virtual void setId(Id segmentId) {
+            this.setIdSegmentId = segmentId;
         }
-        public Id getParentId() {
-            return null;
+        public virtual Id getParentId() {
+            return this.getParentIdReturn;
         }
-        public void setParentId(Id parentId) {
-            this.parentId = parentId;
+        public virtual void setParentId(Id parentId) {
+            this.setParentIdParentId = parentId;
         }
-        public Id getRootSegmentId() {
-            return null;
+        public virtual Id getRootSegmentId() {
+            return this.getRootSegmentIdReturn;
         }
-        public void setRootSegmentId(Id rootSegmentId) {
-            this.rootSegmentId = rootSegmentId;
+        public virtual void setRootSegmentId(Id rootSegmentId) {
+            this.setRootSegmentIdRootSegmentId = rootSegmentId;
         }
-        public List<CampaignList.Segment> getChildren() {
-            return null;
+        public virtual List<CampaignList.Segment> getChildren() {
+            return this.getChildrenReturn;
         }
-        public Iterator<CampaignList.Segment> iterator() {
-            return null;
+        public virtual Iterator<CampaignList.Segment> iterator() {
+            return this.iteratorReturn;
         }
-        public Segment__c getSObject() {
-            return null;
+        public virtual Segment__c getSObject() {
+            return this.getSObjectReturn;
         }
-        public void addChild(CampaignList.Segment child) {}
-    }
-
-    public class MemberMapperStub implements CampaignList.MemberMapper {
-        public List<CampaignList.Member> members;
-        public Id campaignId;
-        public List<Id> relatedIds;
-        public Id rootSegmentId;
-        public Id sourceId;
-        public String sourceName;
-        public void addMembersToCampaign(List<CampaignList.Member> members, Id campaignId) {
-            this.members = members;
-            this.campaignId = campaignId;
-        }
-        public void updateByRelatedIdsAndSource(List<Id> relatedIds, Id rootSegmentId, Id sourceId, String sourceName) {
-            this.relatedIds = relatedIds;
-            this.rootSegmentId = rootSegmentId;
-            this.sourceId = sourceId;
-            this.sourceName = sourceName;
+        public virtual void addChild(CampaignList.Segment child) {
+            this.addChildChild = child;
         }
     }
 
-    public class SegmentMapperStub implements CampaignList.SegmentMapper {
-        public Id sourceId;
-        public Id rootSegmentId;
-        public String sourceName;
-        public String serialized;
-        public CampaignList.Segment rootSegment;
-        public String getSourceNameById(Id sourceId) {
-            this.sourceId = sourceId;
-            return sourceName;
-        }
-        public CampaignList.Segment getSegmentTreeByRootId(Id rootSegmentId) {
-            return null;
-        }
-        public Id upsertSegmentTreeByRootSegment(CampaignList.Segment rootSegment) {
-            this.rootSegment = rootSegment;
-            return rootSegmentId;
-        }
-        public CampaignList.Segment deserializeSegmentFromJSON(String serialized) {
-            this.serialized = serialized;
-            return null;
-        }
-    }
-
-    public class ServiceStub implements CampaignList.Service {
-        public Id updatedCampaignId;
-        public Id updatedRootSegmentId;
-        public Boolean updateCampaignFromCampaignListAcquireLock;
-        public List<Id> updateCampaignIdList = new List<Id>();
-        public List<Id> updateRootSegmentIdList = new List<Id>();
-        public List<Boolean> updateCampaignFromCampaignListAcquireLockList = new List<Boolean>();
-        public CampaignList.UpdateStatus updatedStatus;
-        public Boolean throwAlreadyRunningException = false;
-        public Integer flexQueueCapacity;
-        public Integer maxFreeSlots;
-        public Queueable enqueueJobJob;
-        public Id enqueueJobId;
-        public void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId) {
-            updatedCampaignId = campaignId;
-            updatedRootSegmentId = rootSegmentId;
-            if (throwAlreadyRunningException) {
-                throw new CampaignListService.CampaignListUpdateAlreadyRunningException();
+    public virtual class MemberMapperStub implements CampaignList.MemberMapper {
+        public List<CampaignList.Member> addMembersToCampaignMembers;
+        public Id addMembersToCampaignCampaignId;
+        public Exception addMembersToCampaignException;
+        public List<Id> updateByRelatedIdsAndSourceRelatedIds;
+        public Id updateByRelatedIdsAndSourceRootSegmentId;
+        public Id updateByRelatedIdsAndSourceSourceId;
+        public String updateByRelatedIdsAndSourceSourceName;
+        public Exception updateByRelatedIdsAndSourceException;
+        public virtual void addMembersToCampaign(List<CampaignList.Member> members, Id campaignId) {
+            this.addMembersToCampaignMembers = members;
+            this.addMembersToCampaignCampaignId = campaignId;
+            if (null != this.addMembersToCampaignException) {
+                throw this.addMembersToCampaignException;
             }
         }
-        public void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
-            updatedCampaignId = campaignId;
-            updatedRootSegmentId = rootSegmentId;
-            updateCampaignFromCampaignListAcquireLock = acquireLock;
-            updateCampaignIdList.add(campaignId);
-            updateRootSegmentIdList.add(rootSegmentId);
-            updateCampaignFromCampaignListAcquireLockList.add(acquireLock);
+        public virtual void updateByRelatedIdsAndSource(List<Id> relatedIds, Id rootSegmentId, Id sourceId, String sourceName) {
+            this.updateByRelatedIdsAndSourceRelatedIds = relatedIds;
+            this.updateByRelatedIdsAndSourceRootSegmentId = rootSegmentId;
+            this.updateByRelatedIdsAndSourceSourceId = sourceId;
+            this.updateByRelatedIdsAndSourceSourceName = sourceName;
+            if (null != this.updateByRelatedIdsAndSourceException) {
+                throw this.updateByRelatedIdsAndSourceException;
+            }
         }
-        public void updateCampaignStatus(Id campaignId, CampaignList.UpdateStatus status) {
-            updatedCampaignId = campaignId;
-            updatedStatus = status;
+    }
+
+    public virtual class SegmentMapperStub implements CampaignList.SegmentMapper {
+        public Id getSourceNameByIdSourceId;
+        public String getSourceNameByIdReturn;
+        public Id getSegmentTreeByRootIdRootSegmentId;
+        public CampaignList.Segment getSegmentTreeByRootIdReturn;
+        public CampaignList.Segment upsertSegmentTreeByRootSegmentRootSegment;
+        public Id upsertSegmentTreeByRootSegmentReturn;
+        public String deserializeSegmentFromJSONSerialized;
+        public CampaignList.Segment deserializeSegmentFromJSONReturn;
+        public virtual String getSourceNameById(Id sourceId) {
+            this.getSourceNameByIdSourceId = sourceId;
+            return this.getSourceNameByIdReturn;
         }
-        public Integer getFlexQueueCapacity(Integer maxFreeSlots) {
-            this.maxFreeSlots = maxFreeSlots;
-            return flexQueueCapacity;
+        public virtual CampaignList.Segment getSegmentTreeByRootId(Id rootSegmentId) {
+            this.getSegmentTreeByRootIdRootSegmentId = rootSegmentId;
+            return this.getSegmentTreeByRootIdReturn;
         }
-        public Id enqueueJob(Queueable job) {
+        public virtual Id upsertSegmentTreeByRootSegment(CampaignList.Segment rootSegment) {
+            this.upsertSegmentTreeByRootSegmentRootSegment = rootSegment;
+            return this.upsertSegmentTreeByRootSegmentReturn;
+        }
+        public virtual CampaignList.Segment deserializeSegmentFromJSON(String serialized) {
+            this.deserializeSegmentFromJSONSerialized = serialized;
+            return this.deserializeSegmentFromJSONReturn;
+        }
+    }
+
+    public virtual class ServiceStub implements CampaignList.Service {
+        public Id updateCampaignFromCampaignListCampaignId;
+        public Id updateCampaignFromCampaignListRootSegmentId;
+        public Exception updateCampaignFromCampaignListException;
+        public Boolean updateCampaignFromCampaignListAcquireLock;
+        public Id updateCampaignStatusCampaignId;
+        public CampaignList.UpdateStatus updateCampaignStatusStatus;
+        public Id unlockCampaignAndMarkFailedCampaignId;
+        public String unlockCampaignAndMarkFailedErrorMessage;
+        public Integer getFlexQueueCapacityMaxFreeSlots;
+        public Integer getFlexQueueCapacityReturn;
+        public Queueable enqueueJobJob;
+        public Id enqueueJobReturn;
+        public Database.BatchableContext getJobIdBc;
+        public Id getJobIdReturn;
+        public Id abortJobJobId;
+        public virtual void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId) {
+            this.updateCampaignFromCampaignListCampaignId = campaignId;
+            this.updateCampaignFromCampaignListRootSegmentId = rootSegmentId;
+            if (null != this.updateCampaignFromCampaignListException) {
+                throw this.updateCampaignFromCampaignListException;
+            }
+        }
+        public virtual void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
+            this.updateCampaignFromCampaignListCampaignId = campaignId;
+            this.updateCampaignFromCampaignListRootSegmentId = rootSegmentId;
+            this.updateCampaignFromCampaignListAcquireLock = acquireLock;
+            if (null != this.updateCampaignFromCampaignListException) {
+                throw this.updateCampaignFromCampaignListException;
+            }
+        }
+        public virtual void updateCampaignStatus(Id campaignId, CampaignList.UpdateStatus status) {
+            this.updateCampaignStatusCampaignId = campaignId;
+            this.updateCampaignStatusStatus = status;
+        }
+        public virtual void unlockCampaignAndMarkFailed(Id campaignId, String errorMessage) {
+            this.unlockCampaignAndMarkFailedCampaignId = campaignId;
+            this.unlockCampaignAndMarkFailedErrorMessage = errorMessage;
+        }
+        public virtual Integer getFlexQueueCapacity(Integer maxFreeSlots) {
+            this.getFlexQueueCapacityMaxFreeSlots = maxFreeSlots;
+            return this.getFlexQueueCapacityReturn;
+        }
+        public virtual Id enqueueJob(Queueable job) {
             this.enqueueJobJob = job;
-            return enqueueJobId;
+            return this.enqueueJobReturn;
+        }
+        public virtual Id getJobId(Database.BatchableContext bc) {
+            this.getJobIdBc = bc;
+            return this.getJobIdReturn;
+        }
+        public virtual void abortJob(Id jobId) {
+            this.abortJobJobId = jobId;
         }
     }
 
-    public class MutexStubFactory implements Mutex.Factory {
-        public Id recordId;
-        public Schema.SObjectField mutexField;
-        public Mutex.MutexInterface m;
-        public Mutex.MutexInterface create(Id recordId, Schema.SObjectField mutexField) {
-            this.recordId = recordId;
-            this.mutexField = mutexField;
-            return m;
+    public virtual class MutexStubFactory implements Mutex.Factory {
+        public Id createRecordId;
+        public Schema.SObjectField createMutexField;
+        public Mutex.MutexInterface createReturn;
+        public virtual Mutex.MutexInterface create(Id recordId, Schema.SObjectField mutexField) {
+            this.createRecordId = recordId;
+            this.createMutexField = mutexField;
+            return this.createReturn;
         }
     }
 
-    public class MutexStub implements Mutex.MutexInterface {
+    public virtual class MutexStub implements Mutex.MutexInterface {
         public Integer acquireLockCalls = 0;
         public Integer releaseLockCalls = 0;
         public Integer getLockTimeCalls = 0;
         public Boolean acquireLock;
         public Boolean releaseLock;
         public DateTime lockTime;
-        public Boolean acquireLock() {
+        public virtual Boolean acquireLock() {
             acquireLockCalls++;
             return acquireLock;
         }
-        public Boolean releaseLock() {
+        public virtual Boolean releaseLock() {
             releaseLockCalls++;
             return releaseLock;
         }
-        public DateTime getLockTime() {
+        public virtual DateTime getLockTime() {
             getLockTimeCalls++;
             return lockTime;
         }
@@ -243,4 +280,6 @@ public class CampaignList_TEST {
             insert campaignMembers;
         }
     }
+
+    public class MockException extends Exception {}
 }

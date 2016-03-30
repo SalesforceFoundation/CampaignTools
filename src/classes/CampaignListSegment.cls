@@ -456,8 +456,11 @@ public abstract class CampaignListSegment implements CampaignList.Segment {
          * @description Get an appropriate BatchableSequence.Batch class that
          * can be executed to retrieve CampaignListMembers from this source and
          * persist those members to the database
+         *
+         * @param campaignId The id of the campaign to be refreshed
+         * @return BatchableSequence.Batch
          */
-        public abstract BatchableSequence.Batch getBatchProcessor();
+        public abstract BatchableSequence.Batch getBatchProcessor(Id campaignId);
     }
 
     /**
@@ -487,10 +490,14 @@ public abstract class CampaignListSegment implements CampaignList.Segment {
          * persist those members to the database.  In this case, it will return
          * a BatchableSequence.Batch class appropriate for retrieving
          * CampaignListMembers from an existing Campaign.
+         *
+         * @param campaignId The id of the campaign to be refreshed
+         * @return CampaignListFromCampaignBatch
          */
-        public override BatchableSequence.Batch getBatchProcessor() {
+        public override BatchableSequence.Batch getBatchProcessor(Id campaignId) {
             CampaignListFromCampaignBatch batch = new CampaignListFromCampaignBatch(
                 getCampaignListId(),
+                campaignId,
                 sourceId,
                 'Campaign: ' + getSourceName()
             );
@@ -546,10 +553,14 @@ public abstract class CampaignListSegment implements CampaignList.Segment {
          * persist those members to the database.  In this case, it will return
          * a BatchableSequence.Batch class appropriate for retrieving
          * CampaignListMembers from a Report.
+         *
+         * @param campaignId the id of the Campaign to be refreshed
+         * @return CampaignListFromReportBatch
          */
-        public override BatchableSequence.Batch getBatchProcessor() {
+        public override BatchableSequence.Batch getBatchProcessor(Id campaignId) {
             CampaignListFromReportBatch batch = new CampaignListFromReportBatch(
                 getCampaignListId(),
+                campaignId,
                 sourceId,
                 columnName,
                 'Report: ' + getSourceName()

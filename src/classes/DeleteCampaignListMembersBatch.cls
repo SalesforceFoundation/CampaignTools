@@ -54,8 +54,8 @@ public class DeleteCampaignListMembersBatch extends BatchableSequence.Batch impl
      *
      * @param rootSegmentId The "campaign list" id
      */
-    public DeleteCampaignListMembersBatch(Id rootSegmentId) {
-        this.rootSegmentId = rootSegmentId;
+    public DeleteCampaignListMembersBatch(Id rootSegmentId, Id campaignId) {
+        this(rootSegmentId, campaignId, false);
     }
 
     /**
@@ -66,7 +66,7 @@ public class DeleteCampaignListMembersBatch extends BatchableSequence.Batch impl
      * @param isFinalCleanup Is this the final cleanup pass?
      */
     public DeleteCampaignListMembersBatch(Id rootSegmentId, Id campaignId, Boolean isFinalCleanup) {
-        this(rootSegmentId);
+        this.rootSegmentId = rootSegmentId;
         this.campaignId = campaignId;
         this.isFinalCleanup = isFinalCleanup;
     }
@@ -91,8 +91,22 @@ public class DeleteCampaignListMembersBatch extends BatchableSequence.Batch impl
      * @return void
      */
     public void execute(Database.BatchableContext bc, List<Member__c> scope) {
-        delete scope;
-        Database.emptyRecycleBin(scope);
+        try {
+            delete scope;
+            Database.emptyRecycleBin(scope);
+        } catch (Exception e) {
+            CampaignList.Service service = CampaignList.getService();
+            service.unlockCampaignAndMarkFailed(
+                campaignId,
+                String.format(
+                    Label.CampaignToolsDeleteCampaignListMembersExecuteException,
+                    new List<String>{
+                        rootSegmentId
+                    }
+                )
+            );
+            service.abortJob(service.getJobId(bc));
+        }
     }
 
     /**
