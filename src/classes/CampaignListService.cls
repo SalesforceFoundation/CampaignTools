@@ -64,7 +64,7 @@ public class CampaignListService implements CampaignList.Service {
         CampaignList.Segment segmentTree = CampaignList.getSegmentMapper().getSegmentTreeByRootId(rootSegmentId);
 
         batchSequence.add(new DeleteCampaignMembersBatch(campaignId), 5000);
-        batchSequence.add(new DeleteCampaignListMembersBatch(rootSegmentId), 5000);
+        batchSequence.add(new DeleteCampaignListMembersBatch(rootSegmentId, campaignId), 5000);
 
         Iterator<CampaignList.Segment> segmentTreeIterator = segmentTree.iterator();
 
@@ -72,7 +72,7 @@ public class CampaignListService implements CampaignList.Service {
             CampaignList.Segment next = segmentTreeIterator.next();
             if (next instanceof CampaignListSegment.SourceSegment) {
                 CampaignListSegment.SourceSegment sourceSegment = (CampaignListSegment.SourceSegment) next;
-                batchSequence.add(sourceSegment.getBatchProcessor());
+                batchSequence.add(sourceSegment.getBatchProcessor(campaignId));
             }
         }
 
@@ -128,6 +128,41 @@ public class CampaignListService implements CampaignList.Service {
         update c;
     }
 
+    /**
+     * @description In the event of an error during a Campaign refresh, we need to unlock the Campaign, mark it as failed, and log the error on the Campaign.
+     *
+     * @param campaignId The id of the Campaign to unlock and mark as failed
+     * @param errorMessage The error message to log to the Campaign record (max 255 chars)
+     */
+    public void unlockCampaignAndMarkFailed(Id campaignId, String errorMessage) {
+        Campaign c = [
+            SELECT
+                Campaign_List_Mutex__c,
+                Campaign_List_Update_Status__c,
+                Campaign_List_Error_Message__c
+            FROM Campaign
+            WHERE Id = :campaignId
+            FOR UPDATE
+        ];
+
+        c.Campaign_List_Mutex__c = null;
+        c.Campaign_List_Update_Status__c = 'Failed';
+        c.Campaign_List_Error_Message__c = errorMessage;
+
+        update c;
+    }
+
+    /**
+     * @description Get the number of slots available in the FlexQueue, if we
+     * wanted to make sure at least maxFreeSlots would be left available.  This
+     * will query the number of 'Holding' jobs in the FlexQueue, calculate how
+     * many slots are available in the FlexQueue without exceeding the
+     * 'Holding' limit, while reserving space for maxFreeSlots to remain
+     * available.
+     *
+     * @param maxFreeSlots How many slots we want to reserve as being available
+     * @return Integer The number of jobs that can be added to the FlexQueue while leaving at least maxFreeSlots remaining
+     */
     public Integer getFlexQueueCapacity(Integer maxFreeSlots) {
         Integer holdingJobCount = queryHoldingJobCount();
         Integer freeSlots = Math.max(100 - holdingJobCount, 0);
@@ -135,6 +170,12 @@ public class CampaignListService implements CampaignList.Service {
         return capacity;
     }
 
+    /**
+     * @description Query the number of jobs in the FlexQueue that are in
+     * 'Holding' status.
+     *
+     * @return Integer
+     */
     private Integer queryHoldingJobCount() {
         return [
             SELECT COUNT()
@@ -143,8 +184,33 @@ public class CampaignListService implements CampaignList.Service {
         ];
     }
 
+    /**
+     * @description Wrapper around System.enqueueJob().
+     *
+     * @param job The Queueable to pass to System.enqueueJob()
+     * @return Id The Id of the AsyncApexJob that was enqueued.
+     */
     public Id enqueueJob(Queueable job) {
         return System.enqueueJob(job);
+    }
+
+    /**
+     * @description Wrapper around Database.BatchableContext.getJobId()
+     *
+     * @param bc The BatchableContext to get the id of
+     * @return Id
+     */
+    public Id getJobId(Database.BatchableContext bc) {
+        return bc.getJobId();
+    }
+
+    /**
+     * @description Wrapper around System.abortJob()
+     *
+     * @param jobId The id of the AsyncApexJob to abort
+     */
+    public void abortJob(Id jobId) {
+        System.abortJob(jobId);
     }
 
     public virtual class CustomException extends Exception {}

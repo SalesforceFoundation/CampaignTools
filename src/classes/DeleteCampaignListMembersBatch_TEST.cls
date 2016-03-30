@@ -30,6 +30,8 @@
 @isTest
 private class DeleteCampaignListMembersBatch_TEST {
     private static testMethod void testDeleteCampaignListMembersBatch() {
+        Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+
         Segment__c rootSegment = new Segment__c();
         insert rootSegment;
 
@@ -50,7 +52,10 @@ private class DeleteCampaignListMembersBatch_TEST {
 
         System.assertEquals(200, listMemberCount);
 
-        DeleteCampaignListMembersBatch batch = new DeleteCampaignListMembersBatch(rootSegment.Id);
+        DeleteCampaignListMembersBatch batch = new DeleteCampaignListMembersBatch(
+            rootSegment.Id,
+            campaignId
+        );
         batch.setScope(200);
 
         Test.startTest();
@@ -70,8 +75,12 @@ private class DeleteCampaignListMembersBatch_TEST {
 
     public static testMethod void testFinish() {
         Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
 
-        DeleteCampaignListMembersBatch batch = new DeleteCampaignListMembersBatch(rootSegmentId);
+        DeleteCampaignListMembersBatch batch = new DeleteCampaignListMembersBatch(
+            rootSegmentId,
+            campaignId
+        );
 
         CampaignList_TEST.ServiceStub listServiceStub = new CampaignList_TEST.ServiceStub();
 
@@ -81,13 +90,20 @@ private class DeleteCampaignListMembersBatch_TEST {
         mutexStub.releaseLock = true;
 
         CampaignList_TEST.MutexStubFactory mutexFactory = new CampaignList_TEST.MutexStubFactory();
-        mutexFactory.m = mutexStub;
+        mutexFactory.createReturn = mutexStub;
         CampaignList.setMutexFactory(mutexFactory);
 
         batch.finish(null);
 
-        System.assertEquals(null, listServiceStub.updatedCampaignId);
-        System.assertEquals(null, listServiceStub.updatedStatus);
+        System.assertEquals(
+            null,
+            listServiceStub.updateCampaignStatusCampaignId
+        );
+
+        System.assertEquals(
+            null,
+            listServiceStub.updateCampaignStatusStatus
+        );
     }
 
     public static testMethod void testFinishFinalCleanup() {
@@ -104,12 +120,52 @@ private class DeleteCampaignListMembersBatch_TEST {
         mutexStub.releaseLock = true;
 
         CampaignList_TEST.MutexStubFactory mutexFactory = new CampaignList_TEST.MutexStubFactory();
-        mutexFactory.m = mutexStub;
+        mutexFactory.createReturn = mutexStub;
         CampaignList.setMutexFactory(mutexFactory);
 
         batch.finish(null);
 
-        System.assertEquals(campaignId, listServiceStub.updatedCampaignId);
-        System.assertEquals(CampaignList.UpdateStatus.Completed, listServiceStub.updatedStatus);
+        System.assertEquals(
+            campaignId,
+            listServiceStub.updateCampaignStatusCampaignId
+        );
+
+        System.assertEquals(
+            CampaignList.UpdateStatus.Completed,
+            listServiceStub.updateCampaignStatusStatus
+        );
+    }
+
+    private static testMethod void testExecuteHandlesException() {
+        Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+        Id jobId = CampaignList_TEST.getNextId(AsyncApexJob.sObjectType);
+
+        CampaignList_TEST.ServiceStub service = new CampaignList_TEST.ServiceStub();
+        service.getJobIdReturn = jobId;
+        CampaignList.setService(service);
+
+        DeleteCampaignListMembersBatch batch = new DeleteCampaignListMembersBatch(
+            rootSegmentId,
+            campaignId
+        );
+
+        batch.execute(null, null);
+
+        System.assertEquals(
+            campaignId,
+            service.unlockCampaignAndMarkFailedCampaignId
+        );
+
+        System.assert(
+            service.unlockCampaignAndMarkFailedErrorMessage.contains(
+                rootSegmentId
+            )
+        );
+
+        System.assertEquals(
+            jobId,
+            service.abortJobJobId
+        );
     }
 }

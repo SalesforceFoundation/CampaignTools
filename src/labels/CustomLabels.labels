@@ -41,6 +41,38 @@
         <value>Could not update campaign {0}.</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsDeleteCampaignListMembersExecuteException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsDeleteCampaignListMembersExecuteException</shortDescription>
+        <value>There was an error while trying to delete the temporary member records, as specified by campaign list with id {0}.</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListFromCampaignExecuteException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListFromCampaignExecuteException</shortDescription>
+        <value>There was an error while retrieving contacts or leads from the source campaign with id {0}, as specified by campaign list with id {1}</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListFromReportExecuteException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListFromReportExecuteException</shortDescription>
+        <value>There was an error while reading rows from report with id {0}, as specified by campaign list {1}.</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListFromReportStartException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListFromReportStartException</shortDescription>
+        <value>There was an error while trying to begin reading from report with id {0}, as specified by campaign list {1}.</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsListRefreshPageTitle</fullName>
         <categories>CampaignTools</categories>
         <language>en_US</language>
@@ -103,6 +135,14 @@
         <protected>true</protected>
         <shortDescription>CampaignToolsListRefreshStatusQueuedMessage</shortDescription>
         <value>The refresh process could take a while.  You can stay on this page to monitor the progress of the refresh process, or you can navigate away from this page and the refresh process will continue to run in the background.</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListToCampaignExecuteException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListToCampaignExecuteException</shortDescription>
+        <value>There was an error while populating this campaign with campaign members, as specified by campaign list with id {0}.</value>
     </labels>
     <labels>
         <fullName>CampaignToolsNoSavedCampaignList</fullName>

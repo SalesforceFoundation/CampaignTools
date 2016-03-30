@@ -47,7 +47,7 @@ private class CampaignListToCampaignBatch_TEST {
         insert member2;
 
         CampaignList_TEST.SegmentStub rootSegmentStub = new CampaignList_TEST.SegmentStub();
-        rootSegmentStub.segmentId = rootSegment.Id;
+        rootSegmentStub.getIdReturn = rootSegment.Id;
 
         CampaignListToCampaignBatch batch = new CampaignListToCampaignBatch(null, rootSegmentStub);
 
@@ -73,8 +73,11 @@ private class CampaignListToCampaignBatch_TEST {
 
         Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
 
-        CampaignList_TEST.SegmentStub rootSegment = new CampaignList_TEST.SegmentStub();
-        rootSegment.acceptIds.add(member1.Id);
+        SegmentMeetsCriteriaStub rootSegment = new SegmentMeetsCriteriaStub();
+        rootSegment.meetsCriteriaReturnMap = new Map<Id, Boolean>{
+            member1.Id => true,
+            member2.Id => false
+        };
 
         CampaignList_TEST.MemberMapperStub mapperStub = new CampaignList_TEST.MemberMapperStub();
         CampaignList.setMemberMapper(mapperStub);
@@ -86,9 +89,27 @@ private class CampaignListToCampaignBatch_TEST {
             new List<Member__c>{member1, member2}
         );
 
-        System.assertEquals(campaignId, mapperStub.campaignId);
-        System.assertEquals(1, mapperStub.members.size());
-        System.assertEquals(member1.Id, mapperStub.members.get(0).getId());
+        System.assertEquals(
+            campaignId,
+            mapperStub.addMembersToCampaignCampaignId
+        );
+
+        System.assertEquals(
+            1,
+            mapperStub.addMembersToCampaignMembers.size()
+        );
+
+        System.assertEquals(
+            member1.Id,
+            mapperStub.addMembersToCampaignMembers.get(0).getId()
+        );
+    }
+
+    private class SegmentMeetsCriteriaStub extends CampaignList_TEST.SegmentStub {
+        public Map<Id, Boolean> meetsCriteriaReturnMap;
+        public override Boolean meetsCriteria(CampaignList.Member m) {
+            return meetsCriteriaReturnMap.get(m.getId());
+        }
     }
 
     public static testMethod void testExecuteBatch() {
@@ -96,7 +117,7 @@ private class CampaignListToCampaignBatch_TEST {
         mutexStub.releaseLock = true;
 
         CampaignList_TEST.MutexStubFactory mutexFactory = new CampaignList_TEST.MutexStubFactory();
-        mutexFactory.m = mutexStub;
+        mutexFactory.createReturn = mutexStub;
         CampaignList.setMutexFactory(mutexFactory);
 
         CampaignList_TEST.SegmentStub rootSegment = new CampaignList_TEST.SegmentStub();
@@ -112,5 +133,45 @@ private class CampaignListToCampaignBatch_TEST {
         Test.stopTest();
 
         System.assertEquals(AsyncApexJob.sObjectType, jobId.getSobjectType());
+    }
+
+    public static testMethod void testExecuteHandlesException() {
+        Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+        Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id jobId = CampaignList_TEST.getNextId(AsyncApexJob.sObjectType);
+
+        CampaignList_TEST.SegmentStub rootSegment = new CampaignList_TEST.SegmentStub();
+        rootSegment.getIdReturn = rootSegmentId;
+
+        CampaignList_TEST.MemberMapperStub memberMapper = new CampaignList_TEST.MemberMapperStub();
+        memberMapper.addMembersToCampaignException = new CampaignList_TEST.MockException();
+        CampaignList.setMemberMapper(memberMapper);
+
+        CampaignList_TEST.ServiceStub service = new CampaignList_TEST.ServiceStub();
+        service.getJobIdReturn = jobId;
+        CampaignList.setService(service);
+
+        CampaignListToCampaignBatch batch = new CampaignListToCampaignBatch(
+            campaignId,
+            rootSegment
+        );
+
+        batch.execute(null, new List<Member__c>());
+
+        System.assertEquals(
+            campaignId,
+            service.unlockCampaignAndMarkFailedCampaignId
+        );
+
+        System.assert(
+            service.unlockCampaignAndMarkFailedErrorMessage.contains(
+                rootSegmentId
+            )
+        );
+
+        System.assertEquals(
+            jobId,
+            service.abortJobJobId
+        );
     }
 }

@@ -31,11 +31,13 @@
 private class CampaignListFromCampaignBatch_TEST {
     private static testMethod void testCampaignListFromCampaignBatch() {
         Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id targetCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
 
         CampaignList_TEST.TestCampaign testCampaign = new CampaignList_TEST.TestCampaign('Test', 100, 100);
 
         CampaignListFromCampaignBatch batch = new CampaignListFromCampaignBatch(
             rootSegmentId,
+            targetCampaignId,
             testCampaign.campaign.Id,
             testCampaign.campaign.Name
         );
@@ -56,17 +58,82 @@ private class CampaignListFromCampaignBatch_TEST {
         for (Contact c : testCampaign.contacts) {
             relatedIds.add(c.Id);
         }
+
         for (Lead l : testCampaign.leads) {
             relatedIds.add(l.Id);
         }
 
         System.assertEquals(
             relatedIds,
-            new Set<Id>(memberMapperStub.relatedIds)
+            new Set<Id>(memberMapperStub.updateByRelatedIdsAndSourceRelatedIds)
         );
 
-        System.assertEquals(rootSegmentId, memberMapperStub.rootSegmentId);
-        System.assertEquals(testCampaign.campaign.Id, memberMapperStub.sourceId);
-        System.assertEquals(testCampaign.campaign.Name, memberMapperStub.sourceName);
+        System.assertEquals(
+            rootSegmentId,
+            memberMapperStub.updateByRelatedIdsAndSourceRootSegmentId
+        );
+
+        System.assertEquals(
+            testCampaign.campaign.Id,
+            memberMapperStub.updateByRelatedIdsAndSourceSourceId
+        );
+
+        System.assertEquals(
+            testCampaign.campaign.Name,
+            memberMapperStub.updateByRelatedIdsAndSourceSourceName
+        );
+    }
+
+    private static testMethod void testCampaignListFromCampaignBatchHandlesException() {
+        CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
+        CampaignList_TEST.MemberMapperStub memberMapperStub = new CampaignList_TEST.MemberMapperStub();
+
+        memberMapperStub.updateByRelatedIdsAndSourceException = new CampaignList_TEST.MockException();
+
+        Id jobId = CampaignList_TEST.getNextId(AsyncApexJob.sObjectType);
+        serviceStub.getJobIdReturn = jobId;
+
+        CampaignList.setService(serviceStub);
+        CampaignList.setMemberMapper(memberMapperStub);
+
+        Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id targetCampaignId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id sourceCampaignId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        String sourceCampaignName = 'Test Source Campaign';
+
+        CampaignListFromCampaignBatch batch = new CampaignListFromCampaignBatch(
+            rootSegmentId,
+            targetCampaignId,
+            sourceCampaignId,
+            sourceCampaignName
+        );
+
+        Test.startTest();
+
+        batch.execute(null, new List<CampaignMember>());
+
+        Test.stopTest();
+
+        System.assertEquals(
+            targetCampaignId,
+            serviceStub.unlockCampaignAndMarkFailedCampaignId
+        );
+
+        System.assert(
+            serviceStub.unlockCampaignAndMarkFailedErrorMessage.contains(
+                sourceCampaignId
+            )
+        );
+
+        System.assert(
+            serviceStub.unlockCampaignAndMarkFailedErrorMessage.contains(
+                rootSegmentId
+            )
+        );
+
+        System.assertEquals(
+            jobId,
+            serviceStub.abortJobJobId
+        );
     }
 }

@@ -39,8 +39,11 @@ public abstract class CampaignList {
         void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId);
         void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock);
         void updateCampaignStatus(Id campaignId, UpdateStatus status);
+        void unlockCampaignAndMarkFailed(Id campaignId, String errorMessage);
         Integer getFlexQueueCapacity(Integer maxFreeSlots);
         Id enqueueJob(Queueable job);
+        Id getJobId(Database.BatchableContext bc);
+        void abortJob(Id jobId);
     }
 
     public interface ReportService {

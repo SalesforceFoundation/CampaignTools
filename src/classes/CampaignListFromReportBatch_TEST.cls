@@ -29,62 +29,32 @@
 */
 @isTest
 private class CampaignListFromReportBatch_TEST {
-    private static testMethod void testGetValueIteratorReturnsPresetIterable() {
-        List<Id> testIterable = new List<Id>{
-            CampaignList_TEST.getNextId(Contact.sObjectType)
-        };
-
-        CampaignListFromReportBatch batch = new CampaignListFromReportBatch(
-            CampaignList_TEST.getNextId(Segment__c.sObjectType),
-            CampaignList_TEST.getNextId(Report.sObjectType),
-            'Test_Column_Name',
-            'Test Source Name'
-        );
-
-        batch.idIterator = testIterable;
-
-        System.assertEquals(testIterable, batch.getIdIterable());
-    }
-
-    private static testMethod void testGetValueIteratorReturnsDefaultIterable() {
-        Id testRootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
-        Id testReportId = CampaignList_TEST.getNextId(Report.sObjectType);
-        CampaignListFromReportBatch batch = new CampaignListFromReportBatch(
-            testRootSegmentId,
-            testReportId,
-            'Test_Column_Name',
-            'Test Source Name'
-        );
-
-        ReportService.ReportRowIdIterableIterator actualIterator = (ReportService.ReportRowIdIterableIterator) batch.getIdIterable();
-
-        System.assertNotEquals(null, actualIterator);
-        System.assertEquals(testReportId, actualIterator.reportId);
-        System.assertEquals('Test_Column_Name', actualIterator.columnName);
-    }
-
     private static testMethod void testCampaignListFromReportBatchProcessesIdsFromIterable() {
         Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id testTargetCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
         Id sourceId = CampaignList_TEST.getNextId(Report.sObjectType);
         String sourceName = 'Test';
 
         CampaignListFromReportBatch batch = new CampaignListFromReportBatch(
             rootSegmentId,
+            testTargetCampaignId,
             sourceId,
             'Test_Column_Name',
             sourceName
         );
-        
+
         List<Id> relatedIds = new List<Id>();
-        
+
         for (Integer i = 1; i <= 200; i++) {
             relatedIds.add(CampaignList_TEST.getNextId(Contact.sObjectType));
         }
-        
-        batch.idIterator = relatedIds;
-        
+
+        IdIterableFactoryStub factoryStub = new IdIterableFactoryStub();
+        factoryStub.createReturn = relatedIds;
+        batch.idIterableFactory = factoryStub;
+
         CampaignList_TEST.MemberMapperStub listMemberStub = new CampaignList_TEST.MemberMapperStub();
-        CampaignList.setMemberMapper(listMemberStub);                
+        CampaignList.setMemberMapper(listMemberStub);
 
         batch.setScope(200);
 
@@ -93,10 +63,123 @@ private class CampaignListFromReportBatch_TEST {
         batch.executeBatch();
 
         Test.stopTest();
-        
-        System.assertEquals(relatedIds, listMemberStub.relatedIds);
-        System.assertEquals(rootSegmentId, listMemberStub.rootSegmentId);
-        System.assertEquals(sourceId, listMemberStub.sourceId);
-        System.assertEquals(sourceName, listMemberStub.sourceName);
+
+        System.assertEquals(relatedIds, listMemberStub.updateByRelatedIdsAndSourceRelatedIds);
+        System.assertEquals(rootSegmentId, listMemberStub.updateByRelatedIdsAndSourceRootSegmentId);
+        System.assertEquals(sourceId, listMemberStub.updateByRelatedIdsAndSourceSourceId);
+        System.assertEquals(sourceName, listMemberStub.updateByRelatedIdsAndSourceSourceName);
+    }
+
+    private static testMethod void testStartHandlesException() {
+        Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id testTargetCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+        Id sourceId = CampaignList_TEST.getNextId(Report.sObjectType);
+        String sourceName = 'Test';
+        Id jobId = CampaignList_TEST.getNextId(AsyncApexJob.sObjectType);
+
+        CampaignListFromReportBatch batch = new CampaignListFromReportBatch(
+            rootSegmentId,
+            testTargetCampaignId,
+            sourceId,
+            'Test_Column_Name',
+            sourceName
+        );
+
+        IdIterableFactoryStub factoryStub = new IdIterableFactoryStub();
+        factoryStub.createException = new CampaignList_TEST.MockException();
+        batch.idIterableFactory = factoryStub;
+
+        CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
+
+        serviceStub.getJobIdReturn = jobId;
+        CampaignList.setService(serviceStub);
+
+        batch.start(null);
+
+        System.assertEquals(
+            testTargetCampaignId,
+            serviceStub.unlockCampaignAndMarkFailedCampaignId
+        );
+
+        System.assert(
+            serviceStub.unlockCampaignAndMarkFailedErrorMessage.contains(
+                sourceId
+            )
+        );
+
+        System.assert(
+            serviceStub.unlockCampaignAndMarkFailedErrorMessage.contains(
+                rootSegmentId
+            )
+        );
+
+        System.assertEquals(
+            jobId,
+            serviceStub.abortJobJobId
+        );
+    }
+
+    private static testMethod void testExecuteHandlesException() {
+        Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id testTargetCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+        Id sourceId = CampaignList_TEST.getNextId(Report.sObjectType);
+        String sourceName = 'Test';
+        Id jobId = CampaignList_TEST.getNextId(AsyncApexJob.sObjectType);
+
+        CampaignListFromReportBatch batch = new CampaignListFromReportBatch(
+            rootSegmentId,
+            testTargetCampaignId,
+            sourceId,
+            'Test_Column_Name',
+            sourceName
+        );
+
+        CampaignList_TEST.MemberMapperStub memberMapperStub = new CampaignList_TEST.MemberMapperStub();
+        memberMapperStub.updateByRelatedIdsAndSourceException = new CampaignList_TEST.MockException();
+        CampaignList.setMemberMapper(memberMapperStub);
+
+        CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
+        serviceStub.getJobIdReturn = jobId;
+        CampaignList.setService(serviceStub);
+
+        batch.execute(null, new List<Id>());
+
+        System.assertEquals(
+            testTargetCampaignId,
+            serviceStub.unlockCampaignAndMarkFailedCampaignId
+        );
+
+        System.assert(
+            serviceStub.unlockCampaignAndMarkFailedErrorMessage.contains(
+                sourceId
+            )
+        );
+
+        System.assert(
+            serviceStub.unlockCampaignAndMarkFailedErrorMessage.contains(
+                rootSegmentId
+            )
+        );
+
+        System.assertEquals(
+            jobId,
+            serviceStub.abortJobJobId
+        );
+    }
+
+    private class IdIterableFactoryStub implements CampaignListFromReportBatch.IdIterableFactory {
+        public Id createReportId;
+        public String createIdColumnName;
+        public Iterable<Id> createReturn;
+        public Exception createException;
+        public Iterable<Id> create(Id reportId, String idColumnName) {
+            this.createReportId = reportId;
+            this.createIdColumnName = idColumnName;
+            if (null != this.createException) {
+                throw this.createException;
+            } else {
+                return this.createReturn;
+            }
+        }
     }
 }

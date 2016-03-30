@@ -678,8 +678,8 @@ private class CampaignListRefreshSchedulable_TEST {
         CampaignListRefreshSchedulable.CampaignGraph cg = new CampaignListRefreshSchedulable.CampaignGraph();
         cg.nodes = tn.nodes;
 
-        CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
-        serviceStub.flexQueueCapacity = 10;
+        ServiceStubUpdateList serviceStub = new ServiceStubUpdateList();
+        serviceStub.getFlexQueueCapacityReturn = 10;
         CampaignList.setService(serviceStub);
 
         CampaignListRefreshSchedulable.Worker w = new CampaignListRefreshSchedulable.Worker(cg);
@@ -690,40 +690,16 @@ private class CampaignListRefreshSchedulable_TEST {
 
         Test.stopTest();
 
-        System.assertEquals(50, serviceStub.maxFreeSlots);
-
-        System.assertEquals(2, serviceStub.updateCampaignIdList.size());
-        System.assertEquals(2, serviceStub.updateRootSegmentIdList.size());
-        System.assertEquals(2, serviceStub.updateCampaignFromCampaignListAcquireLockList.size());
-
-        Set<Id> expectedReadySet = new Set<Id>{
-            tn.campaignId1,
-            tn.campaignId3
+        Set<UpdateCall> expectedCalls = new Set<UpdateCall>{
+            new UpdateCall(tn.campaignId1, tn.cn1.campaignListId, false),
+            new UpdateCall(tn.campaignId3, tn.cn3.campaignListId, false)
         };
 
-        Set<Id> expectedRootSegmentIdSet = new Set<Id>{
-            tn.cn1.campaignListId,
-            tn.cn3.campaignListId
-        };
+        Set<UpdateCall> actualCalls = new Set<UpdateCall>(serviceStub.calls);
 
-        for (Integer i = 0; i < 2; i++) {
-            System.assert(
-                expectedReadySet.contains(
-                    serviceStub.updateCampaignIdList.get(i)
-                )
-            );
-
-            System.assert(
-                expectedRootSegmentIdSet.contains(
-                    serviceStub.updateRootSegmentIdList.get(i)
-                )
-            );
-
-            System.assertEquals(
-                false,
-                serviceStub.updateCampaignFromCampaignListAcquireLockList.get(i)
-            );
-        }
+        System.assertEquals(50, serviceStub.getFlexQueueCapacityMaxFreeSlots);
+        System.assertEquals(2, serviceStub.calls.size());
+        System.assertEquals(expectedCalls, actualCalls);
 
         CampaignListRefreshSchedulable.Worker nextWorker = (CampaignListRefreshSchedulable.Worker) serviceStub.enqueueJobJob;
 
@@ -731,6 +707,40 @@ private class CampaignListRefreshSchedulable_TEST {
             w.cg,
             nextWorker.cg
         );
+    }
+
+    private class UpdateCall {
+        public Id campaignId;
+        public Id rootSegmentId;
+        public Boolean acquireLock;
+        public UpdateCall(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
+            this.campaignId = campaignId;
+            this.rootSegmentId = rootSegmentId;
+            this.acquireLock = acquireLock;
+        }
+        public Integer hashCode() {
+            System.debug('in hashcode');
+            System.debug(this);
+            return ((Object) campaignId).hashCode();
+        }
+        public Boolean equals(Object other) {
+            System.debug('in equals');
+            System.debug(this);
+            UpdateCall o = (UpdateCall) other;
+            System.debug(o);
+            return (
+                campaignId == o.campaignId
+                && rootSegmentId == o.rootSegmentId
+                && acquireLock == o.acquireLock
+            );
+        }
+    }
+
+    private class ServiceStubUpdateList extends CampaignList_TEST.ServiceStub {
+        public List<UpdateCall> calls = new List<UpdateCall>();
+        public override void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
+            calls.add(new UpdateCall(campaignId, rootSegmentId, acquireLock));
+        }
     }
 
     @isTest

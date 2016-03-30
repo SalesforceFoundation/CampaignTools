@@ -42,31 +42,39 @@ public class CampaignListFromCampaignBatch extends BatchableSequence.Batch imple
     private Id rootSegmentId;
 
     /**
+     * @description The id of the Campaign being refreshed
+     */
+    @TestVisible
+    private Id targetCampaignId;
+
+    /**
      * @description The id of the Campaign from which to gather potential
      * members
      */
     @TestVisible
-    private Id campaignId;
+    private Id sourceCampaignId;
 
     /**
      * @description The name of the Campaign from which to gather potential
      * members
      */
     @TestVisible
-    private String campaignName;
+    private String sourceCampaignName;
 
     /**
      * @description Construct the batch process to gather potential members
      * from a given campaign for a given campaign list.
      *
      * @param rootSegmentId The id of the "campaign list" which the members should be added to
-     * @param campaignId The id of the Campaign from which to gather potential members
-     * @param campaignName The name of the Campaign from which to gather potential members
+     * @param targetCampaignId The id of the Campaign being refreshed
+     * @param sourceCampaignId The id of the Campaign from which to gather potential members
+     * @param sourceCampaignName The name of the Campaign from which to gather potential members
      */
-    public CampaignListFromCampaignBatch(Id rootSegmentId, Id campaignId, String campaignName) {
+    public CampaignListFromCampaignBatch(Id rootSegmentId, Id targetCampaignId, Id sourceCampaignId, String sourceCampaignName) {
         this.rootSegmentId = rootSegmentId;
-        this.campaignId = campaignId;
-        this.campaignName = campaignName;
+        this.targetCampaignId = targetCampaignId;
+        this.sourceCampaignId = sourceCampaignId;
+        this.sourceCampaignName = sourceCampaignName;
     }
 
     /**
@@ -77,7 +85,7 @@ public class CampaignListFromCampaignBatch extends BatchableSequence.Batch imple
      */
     public Database.QueryLocator start(Database.BatchableContext bc) {
         return Database.getQueryLocator(
-            'SELECT ContactId, LeadId FROM CampaignMember WHERE CampaignId = :campaignId'
+            'SELECT ContactId, LeadId FROM CampaignMember WHERE CampaignId = :sourceCampaignId'
         );
     }
 
@@ -90,23 +98,38 @@ public class CampaignListFromCampaignBatch extends BatchableSequence.Batch imple
      * @return void
      */
     public void execute(Database.BatchableContext bc, List<CampaignMember> campaignMembers) {
-        Set<Id> ids = new Set<Id>();
+        try {
+            Set<Id> ids = new Set<Id>();
 
-        for (CampaignMember cm : campaignMembers) {
-            if (null != cm.ContactId) {
-                ids.add(cm.ContactId);
+            for (CampaignMember cm : campaignMembers) {
+                if (null != cm.ContactId) {
+                    ids.add(cm.ContactId);
+                }
+                if (null != cm.LeadId) {
+                    ids.add(cm.LeadId);
+                }
             }
-            if (null != cm.LeadId) {
-                ids.add(cm.LeadId);
-            }
+
+            CampaignList.getMemberMapper().updateByRelatedIdsAndSource(
+                new List<Id>(ids),
+                rootSegmentId,
+                sourceCampaignId,
+                sourceCampaignName
+            );
+        } catch (Exception e) {
+            CampaignList.Service service = CampaignList.getService();
+            service.unlockCampaignAndMarkFailed(
+                targetCampaignId,
+                String.format(
+                    Label.CampaignToolsListFromCampaignExecuteException,
+                    new List<String>{
+                        sourceCampaignId,
+                        rootSegmentId
+                    }
+                )
+            );
+            service.abortJob(service.getJobId(bc));
         }
-
-        CampaignList.getMemberMapper().updateByRelatedIdsAndSource(
-            new List<Id>(ids),
-            rootSegmentId,
-            campaignId,
-            campaignName
-        );
     }
 
     /**
