@@ -90,22 +90,36 @@ public class CampaignList_TEST {
     }
 
     public virtual class MemberMapperStub implements CampaignList.MemberMapper {
-        public List<CampaignList.Member> addMembersToCampaignMembers;
-        public Id addMembersToCampaignCampaignId;
-        public Exception addMembersToCampaignException;
+        public Id updateAndDeleteCampaignMembersCampaignId;
+        public CampaignList.Segment updateAndDeleteCampaignMembersRootSegment;
+        public List<CampaignMember> updateAndDeleteCampaignMembersCampaignMembers;
+        public Exception updateAndDeleteCampaignMembersException;
+        public Id insertCampaignMembersCampaignId;
+        public CampaignList.Segment insertCampaignMembersRootSegment;
+        public List<Member__c> insertCampaignMembersMembers;
+        public Exception insertCampaignMembersException;
         public List<Id> updateByRelatedIdsAndSourceRelatedIds;
         public Id updateByRelatedIdsAndSourceRootSegmentId;
         public Id updateByRelatedIdsAndSourceSourceId;
         public String updateByRelatedIdsAndSourceSourceName;
         public Exception updateByRelatedIdsAndSourceException;
-        public virtual void addMembersToCampaign(List<CampaignList.Member> members, Id campaignId) {
-            this.addMembersToCampaignMembers = members;
-            this.addMembersToCampaignCampaignId = campaignId;
-            if (null != this.addMembersToCampaignException) {
-                throw this.addMembersToCampaignException;
+        public void updateAndDeleteCampaignMembers(Id campaignId, CampaignList.Segment rootSegment, List<CampaignMember> campaignMembers) {
+            this.updateAndDeleteCampaignMembersCampaignId = campaignId;
+            this.updateAndDeleteCampaignMembersRootSegment = rootSegment;
+            this.updateAndDeleteCampaignMembersCampaignMembers = campaignMembers;
+            if (null != this.updateAndDeleteCampaignMembersException) {
+                throw this.updateAndDeleteCampaignMembersException;
             }
         }
-        public virtual void updateByRelatedIdsAndSource(List<Id> relatedIds, Id rootSegmentId, Id sourceId, String sourceName) {
+        public void insertCampaignMembers(Id campaignId, CampaignList.Segment rootSegment, List<Member__c> members) {
+            this.insertCampaignMembersCampaignId = campaignId;
+            this.insertCampaignMembersRootSegment = rootSegment;
+            this.insertCampaignMembersMembers = members;
+            if (null != this.insertCampaignMembersException) {
+                throw this.insertCampaignMembersException;
+            }
+        }
+        public void updateByRelatedIdsAndSource(List<Id> relatedIds, Id rootSegmentId, Id sourceId, String sourceName) {
             this.updateByRelatedIdsAndSourceRelatedIds = relatedIds;
             this.updateByRelatedIdsAndSourceRootSegmentId = rootSegmentId;
             this.updateByRelatedIdsAndSourceSourceId = sourceId;
@@ -114,6 +128,7 @@ public class CampaignList_TEST {
                 throw this.updateByRelatedIdsAndSourceException;
             }
         }
+
     }
 
     public virtual class SegmentMapperStub implements CampaignList.SegmentMapper {
@@ -196,6 +211,43 @@ public class CampaignList_TEST {
         }
         public virtual void abortJob(Id jobId) {
             this.abortJobJobId = jobId;
+        }
+    }
+
+    public virtual class MemberStub implements CampaignList.Member {
+        public Id getIdReturn;
+        public Id getRelatedIdReturn;
+        public Id addSourceSourceId;
+        public String addSourceSourceName;
+        public Id isFromSourceSourceId;
+        public Boolean isFromSourceReturn;
+        public CampaignList.Segment meetsCriteriaSegment;
+        public Boolean meetsCriteriaReturn;
+        public Member__c getSObjectReturn;
+        public CampaignMember getCampaignMemberReturn;
+        public Id getId() {
+            return getIdReturn;
+        }
+        public Id getRelatedId() {
+            return getRelatedIdReturn;
+        }
+        public void addSource(Id sourceId, String sourceName) {
+            addSourceSourceId = sourceId;
+            addSourceSourceName = sourceName;
+        }
+        public Boolean isFromSource(Id sourceId) {
+            isFromSourceSourceId = sourceId;
+            return isFromSourceReturn;
+        }
+        public Boolean meetsCriteria(CampaignList.Segment segment) {
+            meetsCriteriaSegment = segment;
+            return meetsCriteriaReturn;
+        }
+        public Member__c getSObject() {
+            return getSObjectReturn;
+        }
+        public CampaignMember getCampaignMember() {
+            return getCampaignMemberReturn;
         }
     }
 

@@ -73,6 +73,14 @@
         <value>There was an error while trying to begin reading from report with id {0}, as specified by campaign list {1}.</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsListInsertMembersExecuteException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListInsertMembersExecuteException</shortDescription>
+        <value>There was an error while inserting new campaign members, as specified by campaign list with id {0}.</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsListRefreshPageTitle</fullName>
         <categories>CampaignTools</categories>
         <language>en_US</language>
@@ -137,12 +145,12 @@
         <value>The refresh process could take a while.  You can stay on this page to monitor the progress of the refresh process, or you can navigate away from this page and the refresh process will continue to run in the background.</value>
     </labels>
     <labels>
-        <fullName>CampaignToolsListToCampaignExecuteException</fullName>
+        <fullName>CampaignToolsListUpdateMembersExecuteException</fullName>
         <categories>CampaignTools,Exceptions</categories>
         <language>en_US</language>
         <protected>false</protected>
-        <shortDescription>CampaignToolsListToCampaignExecuteException</shortDescription>
-        <value>There was an error while populating this campaign with campaign members, as specified by campaign list with id {0}.</value>
+        <shortDescription>CampaignToolsListUpdateMembersExecuteException</shortDescription>
+        <value>There was an error while updating existing campaign members, as specified by campaign list with id {0}.</value>
     </labels>
     <labels>
         <fullName>CampaignToolsNoSavedCampaignList</fullName>

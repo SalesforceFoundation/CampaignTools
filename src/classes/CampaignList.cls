@@ -61,8 +61,9 @@ public abstract class CampaignList {
     }
 
     public interface MemberMapper {
+        void updateAndDeleteCampaignMembers(Id campaignId, Segment rootSegment, List<CampaignMember> campaignMembers);
+        void insertCampaignMembers(Id campaignId, Segment rootSegment, List<Member__c> members);
         void updateByRelatedIdsAndSource(List<Id> relatedIds, Id rootSegmentId, Id sourceId, String sourceName);
-        void addMembersToCampaign(List<Member> members, Id campaignId);
     }
 
     public interface Segment extends Iterable<Segment>{

@@ -34,7 +34,7 @@
  * from a campaign list's sources that match the campaign list's inclusion
  * criteria
  */
-public class CampaignListToCampaignBatch extends BatchableSequence.Batch implements Database.Batchable<sObject> {
+public class CampaignListUpdateMembersBatch extends BatchableSequence.Batch implements Database.Batchable<sObject> {
     /** @description The id of the Campaign to populate */
     @TestVisible
     private Id campaignId;
@@ -51,7 +51,7 @@ public class CampaignListToCampaignBatch extends BatchableSequence.Batch impleme
      * @param campaignId The id of the Campaign to populate
      * @param rootSegment The "campaign list" root segment
      */
-    public CampaignListToCampaignBatch(Id campaignId, CampaignList.Segment rootSegment) {
+    public CampaignListUpdateMembersBatch(Id campaignId, CampaignList.Segment rootSegment) {
         this.campaignId = campaignId;
         this.rootSegment = rootSegment;
     }
@@ -63,9 +63,8 @@ public class CampaignListToCampaignBatch extends BatchableSequence.Batch impleme
      * @return Database.QueryLocator The Member__c records from the specified campaign list
      */
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        Id rootSegmentId = rootSegment.getId();
         return Database.getQueryLocator(
-            'SELECT Contact__c, Lead__c, Root_Segment__c, Sources__c, Source_Names__c FROM Member__c WHERE Root_Segment__c = :rootSegmentId'
+            'SELECT CampaignId, LeadId, ContactId, Source_Names__c FROM CampaignMember WHERE CampaignId = :campaignId'
         );
     }
 
@@ -78,24 +77,19 @@ public class CampaignListToCampaignBatch extends BatchableSequence.Batch impleme
      *
      * @return void
      */
-    public void execute(Database.BatchableContext bc, List<Member__c> scope) {
+    public void execute(Database.BatchableContext bc, List<CampaignMember> campaignMembers) {
         try {
-            List<CampaignList.Member> eligibleMembers = new List<CampaignList.Member>();
-
-            for (Member__c m : scope) {
-                CampaignList.Member member = new CampaignListMember(m);
-                if (member.meetsCriteria(rootSegment)) {
-                    eligibleMembers.add(member);
-                }
-            }
-
-            CampaignList.getMemberMapper().addMembersToCampaign(eligibleMembers, campaignId);
+            CampaignList.getMemberMapper().updateAndDeleteCampaignMembers(
+                campaignId,
+                rootSegment,
+                campaignMembers
+            );
         } catch (Exception e) {
             CampaignList.Service service = CampaignList.getService();
             service.unlockCampaignAndMarkFailed(
                 campaignId,
                 String.format(
-                    Label.CampaignToolsListToCampaignExecuteException,
+                    Label.CampaignToolsListUpdateMembersExecuteException,
                     new List<String>{
                         rootSegment.getId()
                     }

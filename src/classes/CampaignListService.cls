@@ -63,7 +63,6 @@ public class CampaignListService implements CampaignList.Service {
         BatchableSequence.Interface_x batchSequence = CampaignList.getBatchableSequenceFactory().create();
         CampaignList.Segment segmentTree = CampaignList.getSegmentMapper().getSegmentTreeByRootId(rootSegmentId);
 
-        batchSequence.add(new DeleteCampaignMembersBatch(campaignId), 5000);
         batchSequence.add(new DeleteCampaignListMembersBatch(rootSegmentId, campaignId), 5000);
 
         Iterator<CampaignList.Segment> segmentTreeIterator = segmentTree.iterator();
@@ -76,7 +75,8 @@ public class CampaignListService implements CampaignList.Service {
             }
         }
 
-        batchSequence.add(new CampaignListToCampaignBatch(campaignId, segmentTree), 10000);
+        batchSequence.add(new CampaignListUpdateMembersBatch(campaignId, segmentTree), 3000);
+        batchSequence.add(new CampaignListInsertMembersBatch(campaignId, segmentTree), 3000);
         batchSequence.add(new DeleteCampaignListMembersBatch(rootSegmentId, campaignId, true), 5000);
 
         if (acquireLock) {

@@ -12,6 +12,8 @@
         <members>CampaignListFromCampaignBatch_TEST</members>
         <members>CampaignListFromReportBatch</members>
         <members>CampaignListFromReportBatch_TEST</members>
+        <members>CampaignListInsertMembersBatch</members>
+        <members>CampaignListInsertMembersBatch_TEST</members>
         <members>CampaignListMember</members>
         <members>CampaignListMemberMapper</members>
         <members>CampaignListMemberMapper_TEST</members>
@@ -25,8 +27,8 @@
         <members>CampaignListSegment_TEST2</members>
         <members>CampaignListService</members>
         <members>CampaignListService_TEST</members>
-        <members>CampaignListToCampaignBatch</members>
-        <members>CampaignListToCampaignBatch_TEST</members>
+        <members>CampaignListUpdateMembersBatch</members>
+        <members>CampaignListUpdateMembersBatch_TEST</members>
         <members>CampaignList_CTRL</members>
         <members>CampaignList_TEST</members>
         <members>DeleteCampaignListMembersBatch</members>
@@ -98,6 +100,7 @@
         <members>CampaignToolsListFromCampaignExecuteException</members>
         <members>CampaignToolsListFromReportExecuteException</members>
         <members>CampaignToolsListFromReportStartException</members>
+        <members>CampaignToolsListInsertMembersExecuteException</members>
         <members>CampaignToolsListRefreshPageTitle</members>
         <members>CampaignToolsListRefreshStatusAbortedHeading</members>
         <members>CampaignToolsListRefreshStatusCompletedHeading</members>
@@ -106,7 +109,7 @@
         <members>CampaignToolsListRefreshStatusProcessingMessage</members>
         <members>CampaignToolsListRefreshStatusQueuedHeading</members>
         <members>CampaignToolsListRefreshStatusQueuedMessage</members>
-        <members>CampaignToolsListToCampaignExecuteException</members>
+        <members>CampaignToolsListUpdateMembersExecuteException</members>
         <members>CampaignToolsNoSavedCampaignList</members>
         <members>CampaignToolsReleaseLockException</members>
         <members>JobProgressCompletedLabel</members>
