@@ -1,5 +1,5 @@
 <apex:component controller="PageMessages_CTRL" selfClosing="true">
-    <apex:stylesheet value="{!URLFOR($Resource.LightningDesignSystem, 'assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.LightningDesignSystem, '1_0_2/assets/styles/salesforce-lightning-design-system-vf.min.css')}"/>
 
     <style class="text/css">
         /* fix bug in notify container that sets z-index too high and prevents

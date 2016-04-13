@@ -1,0 +1,18 @@
+<aura:component controller="CampaignListBuilder_CTRL">
+    <aura:attribute name="rootSegmentId" type="Id"/>
+    <aura:attribute name="campaignId" type="Id"/>
+    <aura:attribute name="segmentData" type="Object"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="addSegmentEvent" event="c:CampaignListSegmentUpdateEvent" action="{!c.handleAddSegment}"/>
+    <aura:handler name="addGroupEvent" event="c:CampaignListSegmentUpdateEvent" action="{!c.handleAddGroup}"/>
+    <aura:handler name="deleteSegmentEvent" event="c:CampaignListSegmentUpdateEvent" action="{!c.handleDeleteSegment}"/>
+
+    <aura:handler event="c:CampaignListEditorSaveEvent" action="{!c.handleSave}"/>
+
+    <c:CampaignListSegment segment="{!v.segmentData.inclusionSegment}" allowEmpty="false"/>
+    <h3 class="slds-m-vertical--medium slds-text-heading--small">
+        {!$Label.c.CampaignToolsListEditorExcludes}
+    </h3>
+    <c:CampaignListSegment segment="{!v.segmentData.exclusionSegment}" allowEmpty="false"/>
+</aura:component>

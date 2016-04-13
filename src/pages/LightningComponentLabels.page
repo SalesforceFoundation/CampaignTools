@@ -1,0 +1,27 @@
+<apex:page >
+    <apex:outputText value="{!$Label.CampaignToolsListEditorAddGroup}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorAddSource}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorAndJoin}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorCampaignName}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorCampaignType}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorCancel}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorCloseModal}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorDelete}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorEmptyIdColumn}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorExcludes}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorFindCampaign}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorFindReport}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorMethodException}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorOrJoin}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorReportColumn}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorReportName}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorReportType}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSave}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSaveError}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSaveSuccessful}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSelectIdColumn}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSelectSourceType}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSourceType}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorTitle}"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorYouAreHere}"/>
+</apex:page>

@@ -41,7 +41,7 @@
                         </div>
                         <div class="slds-card__body slds-p-horizontal--small">
                             <div id="spinner" class="slds-spinner--medium">
-                                <img src="{!URLFOR($Resource.LightningDesignSystem, '/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." />
+                                <img src="{!URLFOR($Resource.LightningDesignSystem, '1_0_2/assets/images/spinners/slds_spinner.gif')}" alt="Loading..." />
                             </div>
                             <p id="update_status_body"></p>
                         </div>

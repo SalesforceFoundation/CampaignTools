@@ -49,6 +49,206 @@
         <value>There was an error while trying to delete the temporary member records, as specified by campaign list with id {0}.</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsListEditorAddGroup</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorAddGroup</shortDescription>
+        <value>Add Group</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorAddSource</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorAddSource</shortDescription>
+        <value>Add Source</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorAndJoin</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorAndJoin</shortDescription>
+        <value>AND...</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorCampaignName</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorCampaignName</shortDescription>
+        <value>Campaign Name</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorCampaignType</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorCampaignType</shortDescription>
+        <value>Campaign</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorCancel</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorCancel</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorCloseModal</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorCloseModal</shortDescription>
+        <value>Close</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorDelete</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorDelete</shortDescription>
+        <value>Delete</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorEmptyIdColumn</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorEmptyIdColumn</shortDescription>
+        <value>--</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorExcludes</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorExcludes</shortDescription>
+        <value>Excludes</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorFindCampaign</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorFindCampaign</shortDescription>
+        <value>Find Campaign</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorFindReport</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorFindReport</shortDescription>
+        <value>Find Report</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorMethodException</fullName>
+        <categories>CampaignTools,CampaignListEditor,Exceptions</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorMethodException</shortDescription>
+        <value>Component no longer valid after Apex controller method called</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorOrJoin</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorOrJoin</shortDescription>
+        <value>OR...</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorReportColumn</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorReportColumn</shortDescription>
+        <value>Report Column</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorReportName</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorReportName</shortDescription>
+        <value>Report Name</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorReportType</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorReportType</shortDescription>
+        <value>Report</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorSave</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorSave</shortDescription>
+        <value>Save</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorSaveError</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorSaveError</shortDescription>
+        <value>Save Error</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorSaveSuccessful</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorSaveSuccessful</shortDescription>
+        <value>Campaign list saved successfully</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorSelectIdColumn</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorSelectIdColumn</shortDescription>
+        <value>Select Id Column</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorSelectSourceType</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorSelectSourceType</shortDescription>
+        <value>Select Source Type</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorSourceType</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorSourceType</shortDescription>
+        <value>Source Type</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorTitle</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorTitle</shortDescription>
+        <value>Define Campaign List</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorYouAreHere</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CampaignToolsListEditorYouAreHere</shortDescription>
+        <value>You are here:</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsListFromCampaignExecuteException</fullName>
         <categories>CampaignTools,Exceptions</categories>
         <language>en_US</language>

@@ -10,10 +10,10 @@
 
     <aura:registerEvent name="autocompleteEvent" type="c:autocompleteEvent"/>
 
-    <ltng:require scripts="/resource/jquery,/resource/jqueryui/jqueryui/jquery-ui.js,"
+    <ltng:require scripts="/resource/jquery,/resource/jqueryui/jqueryui/jquery-ui.js"
                   styles="/resource/jqueryui/jqueryui/jquery-ui.css" afterScriptsLoaded="{!c.doInit}" />
-    <div style="display:inline"> <!-- this div needed by autocomplete to work! -->
+    <div> <!-- this div needed by autocomplete to work! -->
         <ui:inputText value="{!v.value}" label="{!v.inputLabel}" placeholder="{!v.placeholder}"
-                      class="autocomplete slds-form-element__control slds-input" />
+                      class="autocomplete slds-input" />
     </div>
 </aura:component>

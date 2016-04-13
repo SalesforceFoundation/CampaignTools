@@ -1,3 +1,0 @@
-<aura:event type="APPLICATION" description="event fired from the Source component when the delete button is clicked." >
-    <aura:attribute name="cseg" type="Object"/>
-</aura:event>

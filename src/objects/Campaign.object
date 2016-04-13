@@ -80,7 +80,7 @@
         <availability>online</availability>
         <displayType>button</displayType>
         <linkType>page</linkType>
-        <masterLabel>Edit Campaign List</masterLabel>
+        <masterLabel>Define Campaign List</masterLabel>
         <openType>replace</openType>
         <page>CampaignList</page>
         <protected>false</protected>
