@@ -90,32 +90,31 @@ private class CampaignListService_TEST {
 
         List<BatchableSequence.Batch> batches = bsStub.bs.batches;
 
-        System.assert(batches.get(0) instanceof DeleteCampaignMembersBatch);
-        System.assert(batches.get(1) instanceof DeleteCampaignListMembersBatch);
-        System.assert(batches.get(4) instanceof CampaignListToCampaignBatch);
+        System.assert(batches.get(0) instanceof DeleteCampaignListMembersBatch);
+        System.assert(batches.get(3) instanceof CampaignListUpdateMembersBatch);
+        System.assert(batches.get(4) instanceof CampaignListInsertMembersBatch);
         System.assert(batches.get(5) instanceof DeleteCampaignListMembersBatch);
 
-        DeleteCampaignMembersBatch deleteCampaignMembersBatch = (DeleteCampaignMembersBatch) batches.get(0);
-        DeleteCampaignListMembersBatch deleteCampaignListMembersBatch1 = (DeleteCampaignListMembersBatch) batches.get(1);
+        DeleteCampaignListMembersBatch deleteCampaignListMembersBatch1 = (DeleteCampaignListMembersBatch) batches.get(0);
 
         CampaignListFromReportBatch reportBatch;
         CampaignListFromCampaignBatch campaignBatch;
 
-        if (batches.get(2) instanceof CampaignListFromReportBatch) {
-            reportBatch = (CampaignListFromReportBatch) batches.get(2);
-            campaignBatch = (CampaignListFromCampaignBatch) batches.get(3);
-        } else {
-            reportBatch = (CampaignListFromReportBatch) batches.get(3);
+        if (batches.get(1) instanceof CampaignListFromReportBatch) {
+            reportBatch = (CampaignListFromReportBatch) batches.get(1);
             campaignBatch = (CampaignListFromCampaignBatch) batches.get(2);
+        } else {
+            reportBatch = (CampaignListFromReportBatch) batches.get(2);
+            campaignBatch = (CampaignListFromCampaignBatch) batches.get(1);
         }
 
         System.assertNotEquals(null, reportBatch);
         System.assertNotEquals(null, campaignBatch);
 
-        CampaignListToCampaignBatch campaignListToCampaignBatch = (CampaignListToCampaignBatch) batches.get(4);
+        CampaignListUpdateMembersBatch campaignListUpdateMembersBatch = (CampaignListUpdateMembersBatch) batches.get(3);
+        CampaignListInsertMembersBatch campaignListInsertMembersBatch = (CampaignListInsertMembersBatch) batches.get(4);
         DeleteCampaignListMembersBatch deleteCampaignListMembersBatch2 = (DeleteCampaignListMembersBatch) batches.get(5);
 
-        System.assertEquals(destinationCampaignId, deleteCampaignMembersBatch.campaignId);
         System.assertEquals(rootSegment.Id, deleteCampaignListMembersBatch1.rootSegmentId);
         System.assertEquals(rootSegment.Id, reportBatch.rootSegmentId);
         System.assertEquals(sourceReportId, reportBatch.reportId);
@@ -123,8 +122,10 @@ private class CampaignListService_TEST {
         System.assertEquals(rootSegment.Id, campaignBatch.rootSegmentId);
         System.assertEquals(destinationCampaignId, campaignBatch.targetCampaignId);
         System.assertEquals(sourceCampaignId, campaignBatch.sourceCampaignId);
-        System.assertEquals(rootSegment.Id, campaignListToCampaignBatch.rootSegment.getId());
-        System.assertEquals(destinationCampaignId, campaignListToCampaignBatch.campaignId);
+        System.assertEquals(rootSegment.Id, campaignListUpdateMembersBatch.rootSegment.getId());
+        System.assertEquals(destinationCampaignId, campaignListUpdateMembersBatch.campaignId);
+        System.assertEquals(rootSegment.Id, campaignListInsertMembersBatch.rootSegment.getId());
+        System.assertEquals(destinationCampaignId, campaignListInsertMembersBatch.campaignId);
         System.assertEquals(rootSegment.Id, deleteCampaignListMembersBatch2.rootSegmentId);
     }
 

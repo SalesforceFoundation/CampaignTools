@@ -32,7 +32,7 @@
  * @group CampaignTools
  * @description A mapper class for CampaignListMember objects
  */
-public class CampaignListMemberMapper implements CampaignList.MemberMapper {
+public virtual class CampaignListMemberMapper implements CampaignList.MemberMapper {
     /**
      * @description Given a list of related record ids, i.e. Contact or Lead
      * record ids, a campaign list id, and the id and name of a source, i.e. a
@@ -62,22 +62,170 @@ public class CampaignListMemberMapper implements CampaignList.MemberMapper {
     }
 
     /**
-     * @description Create CampaignMember objects from the given list of CampaignListMembers and add them to the specified Campaign.
+     * @description Given a list of temporary Member__c objects, if any of
+     * these temporary member records need to have a corresponding
+     * CampaignMember created for the given campaignId, then insert the
+     * corresponding CampaignMember.  Delete the temporary member records that
+     * have been processed.
      *
-     * @param members The list of CampaignListMembers that should be added to the campaign as CampaignMembers
-     * @param campaignId The id of the Campaign that the CampaignMembers should be added to
-     * @return void
+     * @param campaignId The id of the campaign to create CampaignMembers for
+     * @param rootSegment The CampaignList.Segment object to use when determining eligibility for temporary member records
+     * @param members The list of temporary member records to create CampaignMember records from (if any need to be created)
      */
-    public void addMembersToCampaign(List<CampaignList.Member> members, Id campaignId) {
-        List<CampaignMember> campaignMembers = new List<CampaignMember>();
+    public void insertCampaignMembers(Id campaignId, CampaignList.Segment rootSegment, List<Member__c> members) {
+        Set<Id> relatedIds = getRelatedIds(members);
 
-        for (CampaignList.Member member : members) {
-            CampaignMember cm = member.getCampaignMember();
-            cm.CampaignId = campaignId;
-            campaignMembers.add(cm);
+        List<CampaignMember> existingMembers = queryCampaignMembersByRelatedIds(
+            campaignId,
+            relatedIds
+        );
+
+        Map<Id, Id> campaignMemberIdsByRelatedIds = getCampaignMemberIdsByRelatedIds(
+            existingMembers
+        );
+
+        List<CampaignMember> campaignMembersToInsert = new List<CampaignMember>();
+        List<Member__c> membersToDelete = new List<Member__c>();
+
+        for (Member__c m : members) {
+            CampaignList.Member member = new CampaignListMember(m);
+            if (!campaignMemberIdsByRelatedIds.containsKey(member.getRelatedId())) {
+                if (member.meetsCriteria(rootSegment)) {
+                    CampaignMember cm = member.getCampaignMember();
+                    cm.CampaignId = campaignId;
+                    campaignMembersToInsert.add(cm);
+                }
+                membersToDelete.add(m);
+            }
         }
 
-        insert campaignMembers;
+        insert campaignMembersToInsert;
+        delete membersToDelete;
+        Database.emptyRecycleBin(membersToDelete);
+    }
+
+    /**
+     * @description Given a list of CampaignMembers, determine if any of these
+     * records have a corresponding temporary member record that meets the
+     * criteria of the given rootSegment, and update or delete the
+     * campaignMember as necessary.  Delete the temporary member records that
+     * have been processed.
+     *
+     * @param campaignId The id of the Campaign the CampaignMembers belong to
+     * @param rootSegment The root segment to use when determining whether temporary member records meet criteria
+     * @param campaignMembers The list of CampaignMember objects to maybe update or delete
+     */
+    public void updateAndDeleteCampaignMembers(Id campaignId, CampaignList.Segment rootSegment, List<CampaignMember> campaignMembers) {
+        Map<Id, CampaignList.Member> relatedMembers = getByRelatedIds(
+            new List<Id>(
+                getCampaignMemberIdsByRelatedIds(campaignMembers).keySet()
+            ),
+            rootSegment.getId()
+        );
+
+        List<CampaignMember> campaignMembersToUpdate = new List<CampaignMember>();
+        List<CampaignMember> campaignMembersToDelete = new List<CampaignMember>();
+
+        for (CampaignMember cm : campaignMembers) {
+            Id relatedId = getCampaignMemberRelatedId(cm);
+            if (relatedMembers.containsKey(relatedId)) {
+                CampaignList.Member relatedMember = relatedMembers.get(
+                    relatedId
+                );
+                if (relatedMember.meetsCriteria(rootSegment)) {
+                    CampaignMember relatedCampaignMember = relatedMember.getCampaignMember();
+                    relatedCampaignMember.Id = cm.Id;
+                    campaignMembersToUpdate.add(relatedCampaignMember);
+                } else {
+                    campaignMembersToDelete.add(cm);
+                }
+            } else {
+                campaignMembersToDelete.add(cm);
+            }
+        }
+
+        update campaignMembersToUpdate;
+        delete campaignMembersToDelete;
+        deleteMembers(relatedMembers.values());
+    }
+
+    /**
+     * @description Extract a set of related Contact/Lead ids from the given list of Member__c objects
+     *
+     * @param members A list of Member__c objects from which to extract Contact/Lead ids
+     * @return Set<Id>
+     */
+    @TestVisible
+    private virtual Set<Id> getRelatedIds(List<Member__c> members) {
+        Set<Id> relatedIds = new Set<Id>();
+
+        for (Member__c m : members) {
+            CampaignList.Member member = new CampaignListMember(m);
+            relatedIds.add(member.getRelatedId());
+        }
+
+        return relatedIds;
+    }
+
+    /**
+     * @description Query for CampaignMembers where the related Contact id or Lead id is in the given set of ids
+     *
+     * @param campaignId The id of the Campaign the CampaignMembers belong to
+     * @param relatedIds The ids of the related Contact or Leads to use when finding CampaignMembers
+     * @return List<CampaignMember>
+     */
+    @TestVisible
+    private virtual List<CampaignMember> queryCampaignMembersByRelatedIds(Id campaignId, Set<Id> relatedIds) {
+        return [
+            SELECT
+                CampaignId,
+                ContactId,
+                LeadId
+            FROM CampaignMember
+            WHERE CampaignId = :campaignId
+            AND (
+                ContactId IN :relatedIds
+                OR LeadId IN :relatedIds
+            )
+        ];
+    }
+
+    /**
+     * @description Get a map of related Contact or Lead id to the CampaignMember id that it comes from
+     *
+     * @param campaignMembers A list of campaign members to extract the related ids from
+     * @return Map<Id, Id>
+     */
+    @TestVisible
+    private virtual Map<Id, Id> getCampaignMemberIdsByRelatedIds(List<CampaignMember> campaignMembers) {
+        Map<Id, Id> existingCampaignMembersByRelatedId = new Map<Id, Id>();
+
+        for (CampaignMember cm : campaignMembers) {
+            Id relatedId = getCampaignMemberRelatedId(cm);
+            if (null != relatedId) {
+                existingCampaignMembersByRelatedId.put(relatedId, cm.Id);
+            }
+        }
+
+        return existingCampaignMembersByRelatedId;
+    }
+
+
+    /**
+     * @description Given a CampaignMember record, extract and return its related id (i.e. the related ContactId or LeadId for the CampaignMember)
+     *
+     * @param cm The CampaignMember to extract the related id from
+     * @return Id The ContactId or LeadId from the CampaignMember
+     */
+    @TestVisible
+    private virtual Id getCampaignMemberRelatedId(CampaignMember cm) {
+        if (null != cm.ContactId) {
+            return cm.ContactId;
+        } else if (null != cm.LeadId) {
+            return cm.LeadId;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -119,6 +267,18 @@ public class CampaignListMemberMapper implements CampaignList.MemberMapper {
         }
 
         return memberMap;
+    }
+
+    /**
+     * @description Given a list of CampaignListMember objects, delete these
+     * objects from the database.
+     *
+     * @param member The member objects to delete
+     */
+    private void deleteMembers(List<CampaignList.Member> members) {
+        List<Member__c> memberObjects = getMemberSObjects(members);
+        delete memberObjects;
+        Database.emptyRecycleBin(memberObjects);
     }
 
     /**

@@ -187,66 +187,298 @@ private class CampaignListMemberMapper_TEST {
         );
     }
 
-    private static testMethod void testAddMembersToCampaign() {
-        List<CampaignListMember> listMembers = new List<CampaignListMember>();
+    private static testMethod void testQueryCampaignMembersByRelatedIds() {
+        // calling queryCampaignMembersByRelatedIds should return
+        // CampaignMembers that have ContactId or LeadId in the given set of
+        // ids
 
-        Contact testContact = new Contact(LastName = 'Test Contact');
-        insert testContact;
+        Campaign campaign1 = new Campaign(Name = 'Test Campaign 1');
+        Campaign campaign2 = new Campaign(Name = 'Test Campaign 2');
 
-        CampaignListMember member1 = new CampaignListMember(testContact.Id, null);
-        listMembers.add(member1);
+        insert campaign1;
+        insert campaign2;
 
-        Lead testLead = new Lead(
-            LastName = 'Test Lead',
-            Company = 'Test Company'
-        );
-        insert testLead;
+        Contact contact1 = new Contact(LastName = 'Test Contact 1');
+        Contact contact2 = new Contact(LastName = 'Test Contact 2');
 
-        CampaignListMember member2 = new CampaignListMember(testLead.Id, null);
-        listMembers.add(member2);
+        insert contact1;
+        insert contact2;
 
-        member1.addSource(null, 'Test Source 1');
-        member1.addSource(null, 'Test Source 2');
-        member2.addSource(null, 'Test Source 2');
+        Lead lead1 = new Lead(LastName = 'Test Lead 1', Company = 'Test');
+        Lead lead2 = new Lead(LastName = 'Test Lead 2', Company = 'Test');
 
-        Campaign testCampaign = new Campaign(Name = 'Test Campaign');
-        insert testCampaign;
+        insert lead1;
+        insert lead2;
 
-        Test.startTest();
+        CampaignMember cm1 = new CampaignMember(CampaignId = campaign1.Id, ContactId = contact1.Id);
+        CampaignMember cm2 = new CampaignMember(CampaignId = campaign1.Id, ContactId = contact2.Id);
+        CampaignMember cm3 = new CampaignMember(CampaignId = campaign2.Id, ContactId = contact1.Id);
+        CampaignMember cm4 = new CampaignMember(CampaignId = campaign1.Id, LeadId = lead1.Id);
+        CampaignMember cm5 = new CampaignMember(CampaignId = campaign1.Id, LeadId = lead2.Id);
+        CampaignMember cm6 = new CampaignMember(CampaignId = campaign2.Id, LeadId = lead1.Id);
+
+        insert new List<CampaignMember>{cm1, cm2, cm3, cm4, cm5, cm6};
+
+        Set<Id> relatedIds = new Set<Id>{contact1.Id, lead1.Id};
+
+        CampaignListMemberMapper mm = new CampaignListMemberMapper();
+        List<CampaignMember> campaignMembers = mm.queryCampaignMembersByRelatedIds(campaign1.Id, relatedIds);
+
+
+        System.assertEquals(2, campaignMembers.size());
+
+        Set<Id> actualRelatedIds = new Set<Id>();
+
+        for (CampaignMember cm : campaignMembers) {
+            System.assertEquals(campaign1.Id, cm.CampaignId);
+
+            if (null != cm.ContactId) {
+                actualRelatedIds.add(cm.ContactId);
+            }
+
+            if (null != cm.LeadId) {
+                actualRelatedIds.add(cm.LeadId);
+            }
+        }
+
+        System.assertEquals(relatedIds, actualRelatedIds);
+    }
+
+    @isTest
+    private static void testInsertCampaignMembers() {
+        // Given 4 Member__c records:
+        // m1 meets criteria and is associated with cm1
+        // m2 does not meet criteria and has no associated CampaignMember
+        // m3 meets criteria and has no associated CampaignMember
+        // m4 does not meet criteria and is associated with cm2
+
+        // and 3 CampaignMember records:
+        // cm1 is associated with m1
+        // cm2 is associated m4
+        // cm3 doesn't have an associated Member__c
+
+        // after calling insertCampaignMembers()
+
+        // A CampaignMember associated with m4 should have been inserted.  The
+        // remaining CampaignMember records should not have been modified.  The
+        // m2 and m3 records should have been deleted, since they've been
+        // processed and any necessary CampaignMembers have been inserted.
+
+        TestData td = new TestData();
 
         CampaignListMemberMapper mapper = new CampaignListMemberMapper();
 
-        mapper.addMembersToCampaign(listMembers, testCampaign.Id);
+        Test.startTest();
+
+        mapper.insertCampaignMembers(
+            td.c.Id,
+            td.rootSegment,
+            new List<Member__c>{td.m1, td.m2, td.m3, td.m4}
+        );
 
         Test.stopTest();
 
-        List<CampaignMember> createdMembers = [
+
+        Integer numberOfCampaignMembers = [SELECT COUNT() FROM CampaignMember];
+
+        CampaignMember cm1 = [SELECT Id FROM CampaignMember WHERE Id = :td.cm1.Id];
+        CampaignMember cm2 = [SELECT Id FROM CampaignMember WHERE Id = :td.cm2.Id];
+        CampaignMember cm3 = [SELECT Id FROM CampaignMember WHERE Id = :td.cm3.Id];
+        CampaignMember cm4 = [
             SELECT
-                ContactId,
+                CampaignId,
                 LeadId,
                 Source_Names__c
             FROM CampaignMember
-            WHERE CampaignId = :testCampaign.Id
+            WHERE Id NOT IN (:td.cm1.Id, :td.cm2.Id, :td.cm3.Id)
         ];
 
-        System.assertEquals(2, createdMembers.size());
+        System.assertEquals(4, numberOfCampaignMembers);
 
-        for (CampaignMember cm : createdMembers) {
-            Set<String> sourceNames = new Set<String>(cm.Source_Names__c.split(';'));
+        System.assertEquals(td.cm1.Id, cm1.Id);
+        System.assertEquals(td.cm2.Id, cm2.Id);
+        System.assertEquals(td.cm3.Id, cm3.Id);
 
-            if (cm.ContactId == member1.getRelatedId()) {
-                System.assertEquals(member1.getRelatedId(), cm.ContactId);
-                System.assertEquals(
-                    new Set<String>{'Test Source 1', 'Test Source 2'},
-                    sourceNames
-                );
-            } else if (cm.LeadId == member2.getRelatedId()) {
-                System.assertEquals(member2.getRelatedId(), cm.LeadId);
-                System.assertEquals(
-                    new Set<String>{'Test Source 2'},
-                    sourceNames
-                );
-            }
+        System.assertEquals(td.c.Id, cm4.CampaignId);
+        System.assertEquals(td.m3.Lead__c, cm4.LeadId);
+        System.assertEquals('Campaign: Test Source 1', cm4.Source_Names__c);
+
+        Integer numberOfMembers = [SELECT COUNT() FROM Member__c];
+
+        Member__c m1 = [SELECT Id FROM Member__c WHERE Id = :td.m1.Id];
+        Member__c m4 = [SELECT Id FROM Member__c WHERe Id = :td.m4.Id];
+
+        System.assertEquals(2, numberOfMembers);
+        System.assertEquals(td.m1.Id, m1.Id);
+        System.assertEquals(td.m4.Id, m4.Id);
+    }
+
+    @isTest
+    private static void testUpdateAndDeleteCampaignMembers() {
+        // Given 4 Member__c records:
+        // m1 meets criteria and is associated with cm1
+        // m2 does not meet criteria and has no associated CampaignMember
+        // m3 meets criteria and has no associated CampaignMember
+        // m4 does not meet criteria and is associated with cm2
+
+        // and 3 CampaignMember records:
+        // cm1 is associated with m1
+        // cm2 is associated m4
+        // cm3 doesn't have an associated Member__c
+
+        // after calling updateAndDeleteCampaignMembers()
+
+        // cm1 should have been updated to reflect m1
+        // cm2 should have been deleted since m4 does not meet criteria
+        // cm3 should have been deleted since it does not have a corresponding member
+        // m1 and m4 should have been deleted, since they've been processed
+
+        TestData td = new TestData();
+
+        CampaignListMemberMapper mapper = new CampaignListMemberMapper();
+
+        Test.startTest();
+
+        mapper.updateAndDeleteCampaignMembers(
+            td.c.Id,
+            td.rootSegment,
+            new List<CampaignMember>{td.cm1, td.cm2, td.cm3}
+        );
+
+        Test.stopTest();
+
+        Integer numberOfCampaignMembers = [SELECT COUNT() FROM CampaignMember];
+
+        CampaignMember cm1 = [
+            SELECT
+                CampaignId,
+                ContactId,
+                Source_Names__c
+            FROM CampaignMember
+            WHERE Id = :td.cm1.Id
+        ];
+
+        System.assertEquals(1, numberOfCampaignMembers);
+
+        System.assertEquals(td.c.Id, cm1.CampaignId);
+        System.assertEquals(td.m1.Contact__c, cm1.ContactId);
+        System.assertEquals('Campaign: Test Source 1', cm1.Source_Names__c);
+
+        Integer numberOfMembers = [SELECT COUNT() FROM Member__c];
+
+        Member__c m2 = [SELECT Id FROM Member__c WHERE Id = :td.m2.Id];
+        Member__c m3 = [SELECT Id FROM Member__c WHERe Id = :td.m3.Id];
+
+        System.assertEquals(2, numberOfMembers);
+        System.assertEquals(td.m2.Id, m2.Id);
+        System.assertEquals(td.m3.Id, m3.Id);
+    }
+
+    /**
+     * @description A class that inserts and allows referencing of test data
+     */
+    private class TestData {
+        public Id sourceId;
+        public Segment__c s;
+        public CampaignList.Segment rootSegment;
+        public Campaign c;
+        public Contact ct1;
+        public Contact ct2;
+        public Contact ct3;
+        public Lead ld1;
+        public Lead ld2;
+        public Member__c m1;
+        public Member__c m2;
+        public Member__c m3;
+        public Member__c m4;
+        public CampaignMember cm1;
+        public CampaignMember cm2;
+        public CampaignMember cm3;
+
+        public TestData() {
+            // will create and insert:
+
+            // 4 Member__c records:
+            // m1 meets criteria and is associated with cm1
+            // m2 does not meet criteria and has no associated CampaignMember
+            // m3 meets criteria and has no associated CampaignMember
+            // m4 does not meet criteria and is associated with cm2
+
+            // 3 CampaignMember records:
+            // cm1 is associated with m1
+            // cm2 is associated m4
+            // cm3 doesn't have an associated Member__c
+
+            sourceId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+
+            s = new Segment__c(
+                Operation__c = 'SOURCE',
+                Exclude_Source__c = false,
+                Source_ID__c = sourceId
+            );
+            insert s;
+
+            rootSegment = new CampaignListSegment.CampaignSourceSegment(
+                s.Id,
+                s.Id,
+                s.Id,
+                false,
+                sourceId
+            );
+
+            c = new Campaign(Name = 'Test Campaign');
+            insert c;
+
+            ct1 = new Contact(LastName = 'Test Contact 1');
+            ct2 = new Contact(LastName = 'Test Contact 2');
+            ct3 = new Contact(LastName = 'Test Contact 3');
+            ld1 = new Lead(LastName = 'Test Lead 1', Company = 'Test Company');
+            ld2 = new Lead(LastName = 'Test Lead 2', Company = 'Test Company');
+
+            insert new List<sObject>{ct1, ct2, ct3, ld1, ld2};
+
+            m1 = new Member__c(
+                Contact__c = ct1.Id,
+                Root_Segment__c = s.Id,
+                Source_Names__c = JSON.serialize(new Set<String>{'Campaign: Test Source 1'}),
+                Sources__c = JSON.serialize(new Set<Id>{sourceId})
+            );
+
+            m2 = new Member__c(
+                Contact__c = ct2.Id,
+                Root_Segment__c = s.Id
+            );
+
+            m3 = new Member__c(
+                Lead__c = ld1.Id,
+                Root_Segment__c = s.Id,
+                Source_Names__c = JSON.serialize(new Set<String>{'Campaign: Test Source 1'}),
+                Sources__c = JSON.serialize(new Set<Id>{sourceId})
+            );
+
+            m4 = new Member__c(
+                Lead__c = ld2.Id,
+                Root_Segment__c = s.Id
+            );
+
+            insert new List<Member__c>{m1, m2, m3, m4};
+
+            cm1 = new CampaignMember(
+                CampaignId = c.Id,
+                ContactId = ct1.Id
+            );
+
+            cm2 = new CampaignMember(
+                CampaignId = c.Id,
+                LeadId = ld2.Id
+            );
+
+            cm3 = new CampaignMember(
+                CampaignId = c.Id,
+                ContactId = ct3.Id
+            );
+
+            insert new List<CampaignMember>{cm1, cm2, cm3};
         }
     }
 }
