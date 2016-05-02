@@ -1,9 +1,9 @@
 <aura:component >
-    <aura:attribute name="message" type="Object" required="true"/>
-    <aura:attribute name="index" type="Integer" required="true"/>
-    <aura:attribute name="useToast" type="Boolean" default="true"/>
+    <aura:attribute name="message" type="Object" required="true" access="public"/>
+    <aura:attribute name="index" type="Integer" required="true" access="public"/>
+    <aura:attribute name="useToast" type="Boolean" default="true" access="public"/>
     <aura:attribute name="messageTheme" type="String" access="private"/>
-    
+
     <aura:handler name="init" value="{!this}" action="{!c.setMessageTheme}"/>
     <aura:handler name="change" value="{!v.message}" action="{!c.setMessageTheme}"/>
 

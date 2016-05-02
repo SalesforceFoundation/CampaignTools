@@ -52,7 +52,6 @@
     </types>
     <types>
         <members>CampaignList</members>
-        <members>LightningComponentLabels</members>
         <members>ProcessSegmentBTN</members>
         <name>ApexPage</name>
     </types>

@@ -1,6 +1,6 @@
 <aura:component >
-    <aura:attribute name="useToast" type="Boolean" default="false"/>
-    <aura:attribute access="private" name="messages" type="List" default="[]"/>
+    <aura:attribute name="useToast" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="messages" type="List" default="[]" access="private"/>
 
     <aura:handler event="c:AddPageMessageEvent" action="{!c.handleAddPageMessage}"/>
     <aura:handler event="c:RemovePageMessageEvent" action="{!c.handleRemovePageMessage}"/>

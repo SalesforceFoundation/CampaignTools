@@ -61,8 +61,8 @@
         // Groups without child segments look weird in the UI.  This method
         // will find those empty groups and add a placeholder segment to them
         // to make it more clear for the user that a group exists there.
-        if (segment.segmentType == 'AND_SEGMENT' || segment.segmentType == 'OR_SEGMENT') {
-            if (segment.children.length == 0) {
+        if (segment.segmentType === 'AND_SEGMENT' || segment.segmentType === 'OR_SEGMENT') {
+            if (segment.children.length === 0) {
                 this.addSegment(segment);
             } else {
                 for (i in segment.children) {
@@ -193,12 +193,12 @@
         if (segment.parent) {
             var siblings = segment.parent.children;
             siblings.splice(siblings.indexOf(segment), 1);
-            if (siblings.length == 0) {
+            if (siblings.length === 0) {
                 this.deleteSegment(segment.parent);
             }
         }
     },
-    
+
     addPageMessage: function (severity, summary, detail) {
         var addPageMessageEvent = $A.get('e.c:AddPageMessageEvent');
         addPageMessageEvent.setParams(
@@ -225,7 +225,7 @@
 
                 var state = response.getState();
 
-                if ('ERROR' == state) {
+                if ('ERROR' === state) {
                     return callback(response.getError());
                 }
 

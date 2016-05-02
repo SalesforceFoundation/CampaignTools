@@ -1,7 +1,7 @@
 <aura:component controller="CampaignListBuilder_CTRL">
-    <aura:attribute name="rootSegmentId" type="Id"/>
-    <aura:attribute name="campaignId" type="Id"/>
-    <aura:attribute name="segmentData" type="Object"/>
+    <aura:attribute name="rootSegmentId" type="Id" access="public"/>
+    <aura:attribute name="campaignId" type="Id" access="public"/>
+    <aura:attribute name="segmentData" type="Object" access="private"/>
 
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
     <aura:handler name="addSegmentEvent" event="c:CampaignListSegmentUpdateEvent" action="{!c.handleAddSegment}"/>

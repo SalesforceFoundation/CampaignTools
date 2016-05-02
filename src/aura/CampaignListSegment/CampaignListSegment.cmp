@@ -1,8 +1,8 @@
 <aura:component >
-    <aura:attribute name="segment" type="Object"/>
-    <aura:attribute name="allowEmpty" default="true" type="Boolean"/>
-    <aura:attribute name="isLast" default="true" type="Boolean"/>
-    <aura:attribute name="parentGroupingType" type="String"/>
+    <aura:attribute name="segment" type="Object" access="public"/>
+    <aura:attribute name="allowEmpty" default="true" type="Boolean" access="public"/>
+    <aura:attribute name="isLast" default="true" type="Boolean" access="public"/>
+    <aura:attribute name="parentGroupingType" type="String" access="public"/>
 
     <aura:registerEvent name="addSegmentEvent" type="c:CampaignListSegmentUpdateEvent"/>
     <aura:registerEvent name="addGroupEvent" type="c:CampaignListSegmentUpdateEvent"/>

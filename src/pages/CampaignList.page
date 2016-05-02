@@ -95,4 +95,34 @@
                 );
             });
         </script>
+
+    <!-- These labels are referenced in various parts of the CT ui.  We need to
+    include a reference to them somewhere, otherwise the packaging spider won't
+    know that they are dependencies.  This is ugly, but it is the currently
+    recommended way to get the spider to package labels. -->
+    <apex:outputText value="{!$Label.CampaignToolsListEditorAddGroup}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorAddSource}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorAndJoin}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorCampaignName}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorCampaignType}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorCancel}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorCloseModal}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorDelete}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorEmptyIdColumn}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorExcludes}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorFindCampaign}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorFindReport}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorMethodException}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorOrJoin}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorReportColumn}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorReportName}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorReportType}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSave}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSaveError}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSaveSuccessful}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSelectIdColumn}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSelectSourceType}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSourceType}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorTitle}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorYouAreHere}" rendered="false"/>
 </apex:page>

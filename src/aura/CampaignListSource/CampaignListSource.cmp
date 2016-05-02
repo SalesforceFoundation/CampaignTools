@@ -1,6 +1,6 @@
 <aura:component controller="CampaignListBuilder_CTRL">
-    <aura:attribute name="source" type="Object"/>
-    <aura:attribute name="allowDelete" default="true" type="Boolean"/>
+    <aura:attribute name="source" type="Object" access="public"/>
+    <aura:attribute name="allowDelete" default="true" type="Boolean" access="public"/>
     <aura:registerEvent name="deleteSegmentEvent" type="c:CampaignListSegmentUpdateEvent"/>
     <aura:handler name="change" value="{!v.source}" action="{!c.handleSourceChange}"/>
 

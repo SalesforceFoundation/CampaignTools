@@ -8,14 +8,14 @@
         );
         removeMessageEvent.fire();
     },
-    
+
     setMessageTheme: function (component, event, helper) {
         var message = component.get('v.message');
-        
+
         if (!message) return;
-        
+
         var messageTheme;
-        
+
         switch (message.severity) {
             case 'confirm':
                 messageTheme = 'success';
@@ -32,7 +32,7 @@
                 messageTheme = 'info';
                 break;
         }
-        
+
         component.set('v.messageTheme', messageTheme);
     }
 })
