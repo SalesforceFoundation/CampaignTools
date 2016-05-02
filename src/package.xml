@@ -56,14 +56,18 @@
         <name>ApexPage</name>
     </types>
     <types>
-        <members>CampaignListApp</members>
-        <members>CampaignListCmp</members>
-        <members>Source</members>
-        <members>SourceMultiList</members>
-        <members>addCSegmentEvent</members>
+        <members>AddPageMessageEvent</members>
+        <members>CampaignListEditor</members>
+        <members>CampaignListEditorApp</members>
+        <members>CampaignListEditorSaveEvent</members>
+        <members>CampaignListSegment</members>
+        <members>CampaignListSegmentUpdateEvent</members>
+        <members>CampaignListSource</members>
+        <members>PageMessage</members>
+        <members>PageMessages</members>
+        <members>RemovePageMessageEvent</members>
         <members>autocomplete</members>
         <members>autocompleteEvent</members>
-        <members>deleteCSegmentEvent</members>
         <members>svg</members>
         <name>AuraDefinitionBundle</name>
     </types>
@@ -97,6 +101,31 @@
         <members>CampaignToolsCantFinishUpdateException</members>
         <members>CampaignToolsCantUpdateException</members>
         <members>CampaignToolsDeleteCampaignListMembersExecuteException</members>
+        <members>CampaignToolsListEditorAddGroup</members>
+        <members>CampaignToolsListEditorAddSource</members>
+        <members>CampaignToolsListEditorAndJoin</members>
+        <members>CampaignToolsListEditorCampaignName</members>
+        <members>CampaignToolsListEditorCampaignType</members>
+        <members>CampaignToolsListEditorCancel</members>
+        <members>CampaignToolsListEditorCloseModal</members>
+        <members>CampaignToolsListEditorDelete</members>
+        <members>CampaignToolsListEditorEmptyIdColumn</members>
+        <members>CampaignToolsListEditorExcludes</members>
+        <members>CampaignToolsListEditorFindCampaign</members>
+        <members>CampaignToolsListEditorFindReport</members>
+        <members>CampaignToolsListEditorMethodException</members>
+        <members>CampaignToolsListEditorOrJoin</members>
+        <members>CampaignToolsListEditorReportColumn</members>
+        <members>CampaignToolsListEditorReportName</members>
+        <members>CampaignToolsListEditorReportType</members>
+        <members>CampaignToolsListEditorSave</members>
+        <members>CampaignToolsListEditorSaveError</members>
+        <members>CampaignToolsListEditorSaveSuccessful</members>
+        <members>CampaignToolsListEditorSelectIdColumn</members>
+        <members>CampaignToolsListEditorSelectSourceType</members>
+        <members>CampaignToolsListEditorSourceType</members>
+        <members>CampaignToolsListEditorTitle</members>
+        <members>CampaignToolsListEditorYouAreHere</members>
         <members>CampaignToolsListFromCampaignExecuteException</members>
         <members>CampaignToolsListFromReportExecuteException</members>
         <members>CampaignToolsListFromReportStartException</members>

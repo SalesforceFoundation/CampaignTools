@@ -1,7 +1,7 @@
 <apex:component controller="JobProgress_CTRL" selfClosing="true">
     <apex:includeScript value="{!URLFOR($Resource.transparencyjs)}"/>
     <apex:includeScript value="{!URLFOR($Resource.momentjs)}"/>
-    <apex:stylesheet value="{!URLFOR($Resource.LightningDesignSystem, 'assets/styles/salesforce-lightning-design-system-vf.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.LightningDesignSystem, '1_0_2/assets/styles/salesforce-lightning-design-system-vf.min.css')}"/>
     <apex:attribute name="cNumberOfJobs"
         type="Integer"
         default="20"

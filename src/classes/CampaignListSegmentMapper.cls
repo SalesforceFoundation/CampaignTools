@@ -408,16 +408,21 @@ public class CampaignListSegmentMapper implements CampaignList.SegmentMapper {
             } else if (CampaignList.SegmentType.OR_SEGMENT == segmentType) {
                 segment = new CampaignListSegment.OrSegment(segmentId, rootSegmentId, parentId, isExclusion);
             } else if (CampaignList.SegmentType.CAMPAIGN_SOURCE_SEGMENT == segmentType) {
+                if (null == sourceId) return null;
                 segment = new CampaignListSegment.CampaignSourceSegment(segmentId, rootSegmentId, parentId, isExclusion, sourceId);
                 ((CampaignListSegment.SourceSegment) segment).setSourceName(sourceName);
             } else if (CampaignList.SegmentType.REPORT_SOURCE_SEGMENT == segmentType) {
+                if (null == sourceId) return null;
                 segment = new CampaignListSegment.ReportSourceSegment(segmentId, rootSegmentId, parentId, isExclusion, sourceId, columnName);
                 ((CampaignListSegment.SourceSegment) segment).setSourceName(sourceName);
             }
 
             if (null != children) {
                 for (SegmentData child : children) {
-                    segment.addChild(child.getConcreteInstance());
+                    CampaignList.Segment childSegment = child.getConcreteInstance();
+                    if (null != childSegment) {
+                        segment.addChild(childSegment);
+                    }
                 }
             }
 
