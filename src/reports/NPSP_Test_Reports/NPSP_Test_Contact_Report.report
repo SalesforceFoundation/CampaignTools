@@ -51,7 +51,7 @@
     <description>This report is intended only to be referenced by NPSP for testing purposes.</description>
     <filter>
         <criteriaItems>
-            <column>DESCRIPTION</column>
+            <column>DEPARTMENT</column>
             <operator>equals</operator>
             <value>NPSP Test Contact</value>
         </criteriaItems>
