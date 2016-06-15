@@ -1,5 +1,5 @@
 ({
-    render: function(component, helper) {
+    render: function(component) {
         //grab attributes from the component markup
         var classname = component.get("v.class");
         var xlinkhref = component.get("v.xlinkHref");

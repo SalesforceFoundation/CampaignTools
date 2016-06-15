@@ -1,4 +1,4 @@
-<aura:component controller="AutocompleteController">
+<aura:component controller="AutocompleteController" implements="c:namespaceAware">
     <aura:attribute name="sObjectType" required="true" type="String" description="Name of the sObject that will be filtered" />
     <aura:attribute name="fields" type="String[]" default="" description="List of fields to get with each record"/>
     <aura:attribute name="limit" type="Integer" default="10" description="Limits the number of sObjects returned to this value" />
@@ -10,8 +10,8 @@
 
     <aura:registerEvent name="autocompleteEvent" type="c:autocompleteEvent"/>
 
-    <ltng:require scripts="/resource/jquery,/resource/jqueryui/jqueryui/jquery-ui.js"
-                  styles="/resource/jqueryui/jqueryui/jquery-ui.css" afterScriptsLoaded="{!c.doInit}" />
+    <ltng:require scripts="{!v.nsPrefix == 'camptools' ? '/resource/camptools__jquery,/resource/camptools__jqueryui/jqueryui/jquery-ui.js' : '/resource/jquery,/resource/jqueryui/jqueryui/jquery-ui.js'}"
+                  styles="{!v.nsPrefix == 'camptools' ? '/resource/camptools__jqueryui/jqueryui/jquery-ui.css' : '/resource/jqueryui/jqueryui/jquery-ui.css'}" afterScriptsLoaded="{!c.doInit}" />
     <div> <!-- this div needed by autocomplete to work! -->
         <ui:inputText value="{!v.value}" label="{!v.inputLabel}" placeholder="{!v.placeholder}"
                       class="autocomplete slds-input" />
