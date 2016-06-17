@@ -52,13 +52,10 @@
 
     setParentReferences: function (segment, parent_) {
         segment.parent = parent_;
-        if (!$A.util.isEmpty(segment.children)) {
-            segment.children.forEach(
-                function (child) {
-                    this.setParentReferences(child, segment);
-                },
-                this
-            );
+        if (segment.children) {
+            for (var i = 0; i < segment.children.length; i += 1) {
+                this.setParentReferences(segment.children[i], segment);
+            }
         }
     },
 
@@ -70,12 +67,9 @@
             if (segment.children.length === 0) {
                 this.addSegment(segment);
             } else {
-                segment.children.forEach(
-                    function (child) {
-                        this.fillEmptyGroups(child);
-                    },
-                    this
-                );
+                for (var i = 0; i < segment.children.length; i += 1) {
+                    this.fillEmptyGroups(segment.children[i]);
+                }
             }
         }
     },
@@ -248,7 +242,7 @@
 
                 var state = response.getState();
 
-                if ('ERROR' === state) {
+                if (state === 'ERROR') {
                     return callback(response.getError());
                 }
 

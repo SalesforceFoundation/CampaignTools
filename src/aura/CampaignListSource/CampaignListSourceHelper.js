@@ -6,7 +6,7 @@
     },
 
     updateReportColumns: function(component, helper, sourceSegment) {
-        if (!sourceSegment || 'REPORT_SOURCE_SEGMENT' !== sourceSegment.segmentType) {
+        if (!sourceSegment || sourceSegment.segmentType !== 'REPORT_SOURCE_SEGMENT') {
             return;
         }
         var columnNameComponent = component.find("columnName");
