@@ -1,67 +1,30 @@
 public with sharing class AutocompleteController {
-
     @AuraEnabled
-    public static List<sObject> getSuggestions(String sObjectType, String term, String fieldsToGet, Integer limitSize) {
-        // Determine if user has read access to sObjectType
-        Schema.DescribeSObjectResult dsor = getSObjectDescribe(sObjectType);
-        if (!userCanReadSObject(dsor)) {
-            return new List<sObject>();
-        }
+    public static List<sObject> getSuggestions(String sObjectType, String term) {
+        try {
+            Boolean objectAccessible = false;
+            Boolean nameFieldAccessible = false;
 
-        Set<String> accessibleFields = new Set<String>();
-
-        // Determine if user has read access to Name field
-        if (!userCanReadSobjectField(dsor, 'Name')) {
-            return new List<sObject>();
-        }
-        accessibleFields.add('Name');
-
-        // Determine if user has read access to each additional requested field
-        List<String> fieldsList = fieldsToGet.split('.');
-        for (String field : fieldsList) {
-            if (userCanReadSobjectField(dsor, field.trim())) {
-                accessibleFields.add(field.trim());
+            if (sObjectType == 'Campaign') {
+                objectAccessible = Campaign.sObjectType.getDescribe().isAccessible();
+                nameFieldAccessible = Campaign.Name.getDescribe().isAccessible();
+            } else if (sObjectType == 'Report') {
+                objectAccessible = Report.sObjectType.getDescribe().isAccessible();
+                nameFieldAccessible = Report.Name.getDescribe().isAccessible();
             }
-        }
 
-        String soql = 
-            ' SELECT ' + String.join(new List<String>(accessibleFields), ', ') +
-            ' FROM '   + sObjectType +
-            ' WHERE Name Like \'%' + String.escapeSingleQuotes(term) + '%\'' +
-            ' ORDER By Name ' +
-            ' LIMIT ' + limitSize;
-        return Database.query(soql);
-    }
-
-    public static Schema.DescribeSObjectResult getSObjectDescribe(String sObjectType) {
-        List<Schema.DescribeSObjectResult> dsors = Schema.describeSObjects(new List<String>{sObjectType});
-        if (!dsors.isEmpty()) {
-            Schema.DescribeSObjectResult dsor = dsors.get(0);
-            if (dsor.getName() == sObjectType) {
-                return dsor;
+            if (!objectAccessible || !nameFieldAccessible) {
+                return new List<sObject>();
             }
-        }
-        return null;
-    }
 
-    public static Boolean userCanReadSObject(Schema.DescribeSObjectResult dsor) {
-        if (dsor == null) {
-            return false;
-        } else {
-            return dsor.isAccessible();
-        }
-    }
-
-    public static Boolean userCanReadSobjectField(Schema.DescribeSObjectResult dsor, String fieldName) {
-        if (dsor == null) {
-            return false;
-        } else {
-            Map<String, Schema.SObjectField> sofs = dsor.fields.getMap();
-            if (!sofs.containsKey(fieldName)) { // warning, case sensitive
-                return false;
-            } else {
-                return sofs.get(fieldName).getDescribe().isAccessible();
-            }
+            // '%', '_', and '\' all are special characters in LIKE syntax.
+            // We escape them here by prepending those characters with a backslash
+            String preparedTerm = '%' + term.replaceAll('([%_\\\\])', '\\\\$0') + '%';
+            String soql = 'SELECT Name FROM {0} WHERE Name LIKE :preparedTerm ORDER BY Name LIMIT 10';
+            String query = String.format(soql, new List<String>{sObjectType});
+            return Database.query(query);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
         }
     }
 }

@@ -1,7 +1,5 @@
 <aura:component controller="AutocompleteController" implements="c:namespaceAware">
     <aura:attribute name="sObjectType" required="true" type="String" description="Name of the sObject that will be filtered" />
-    <aura:attribute name="fields" type="String[]" default="" description="List of fields to get with each record"/>
-    <aura:attribute name="limit" type="Integer" default="10" description="Limits the number of sObjects returned to this value" />
     <aura:attribute name="inputLabel" type="String" default="" description="Label for text input"/>
     <aura:attribute name="placeholder" type="String" default="" description="Placeholder text to display when empty" />
     <aura:attribute name="value" type="String" description="initial value to display" />

@@ -14,13 +14,10 @@
             delay: 500,
             source: function(request, response) {
                 var action = component.get("c.getSuggestions");
-                var fieldsToGet = component.get("v.fields");
 
                 action.setParams({
                     "sObjectType": component.get("v.sObjectType"),
-                    "term": request.term,
-                    "fieldsToGet": fieldsToGet.join(),
-                    "limitSize": component.get("v.limit")
+                    "term": request.term
                 });
 
                 action.setCallback(this, function(a) {

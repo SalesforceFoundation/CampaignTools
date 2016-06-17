@@ -39,7 +39,6 @@
                                 autocompleteEvent="{!c.handleAutocomplete}"
                                 placeholder="{!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorFindReport : $Label.c.CampaignToolsListEditorFindReport)}"
                                 value="{!v.source.sourceName}"
-                                fields=""
                                 nsPrefix="{!v.nsPrefix}"
                                 />
                         </div>
@@ -68,7 +67,6 @@
                                 autocompleteEvent="{!c.handleAutocomplete}"
                                 placeholder="{!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorFindCampaign : $Label.c.CampaignToolsListEditorFindCampaign)}"
                                 value="{!v.source.sourceName}"
-                                fields=""
                                 nsPrefix="{!v.nsPrefix}"
                                 />
                         </div>
