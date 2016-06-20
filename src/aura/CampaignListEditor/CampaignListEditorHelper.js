@@ -52,8 +52,10 @@
 
     setParentReferences: function (segment, parent_) {
         segment.parent = parent_;
-        for (i in segment.children) {
-            this.setParentReferences(segment.children[i], segment);
+        if (segment.children) {
+            for (var i = 0; i < segment.children.length; i += 1) {
+                this.setParentReferences(segment.children[i], segment);
+            }
         }
     },
 
@@ -65,7 +67,7 @@
             if (segment.children.length === 0) {
                 this.addSegment(segment);
             } else {
-                for (i in segment.children) {
+                for (var i = 0; i < segment.children.length; i += 1) {
                     this.fillEmptyGroups(segment.children[i]);
                 }
             }
@@ -99,7 +101,6 @@
     querySegmentTree: function (component, rootSegmentId, callback) {
         // Get the segmentTree corresponding to rootSegmentId by calling the
         // getSerializedSegmentTree Apex controller method
-        var this_ = this;
         this.apexControllerMethod(
             component,
             'c.getSerializedSegmentTree',
@@ -107,12 +108,18 @@
                 rootSegmentId: rootSegmentId
             },
             function (err, serializedSegmentTree) {
-                if (err) return callback(err);
+                if (err) {
+                    return callback(err);
+                }
+
+                var segmentTree;
+
                 try {
-                    var segmentTree = JSON.parse(serializedSegmentTree);
+                    segmentTree = JSON.parse(serializedSegmentTree);
                 } catch (e) {
                     return callback([e]);
                 }
+
                 return callback(null, segmentTree);
             }
         );
@@ -127,11 +134,13 @@
 
         var this_ = this;
         var next = function (err, segmentTree) {
-            if (err) return callback(err);
+            if (err) {
+                return callback(err);
+            }
             this_.fillEmptyGroups(segmentTree);
             this_.setParentReferences(segmentTree, null);
-            callback(null, this_.getSubtreesForUI(segmentTree));
-        }
+            return callback(null, this_.getSubtreesForUI(segmentTree));
+        };
 
         if (rootSegmentId) {
             this.querySegmentTree(component, rootSegmentId, next);
@@ -158,9 +167,11 @@
                 campaignId: campaignId,
                 csegRoot: serializedSegmentTree
             },
-            function (err, result) {
-                if (err) return callback(err);
-                callback(null);
+            function (err) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null);
             }
         );
     },
@@ -218,14 +229,20 @@
             this,
             function (response) {
                 if (!component.isValid()) {
+                    var methodExceptionLabel;
+                    if (component.get('v.nsPrefix') === 'camptools') {
+                        methodExceptionLabel = '$Label.camptools.CampaignToolsEditorMethodException';
+                    } else {
+                        methodExceptionLabel = '$Label.c.CampaignToolsEditorMethodException';
+                    }
                     return callback([new Error(
-                        $A.get('$Label.c.CampaignToolsEditorMethodException')
+                        $A.get(methodExceptionLabel)
                     )]);
                 }
 
                 var state = response.getState();
 
-                if ('ERROR' === state) {
+                if (state === 'ERROR') {
                     return callback(response.getError());
                 }
 

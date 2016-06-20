@@ -1,5 +1,5 @@
 ({
-    removeMessage: function (component, event, helper) {
+    removeMessage: function (component) {
         var removeMessageEvent = $A.get('e.c:RemovePageMessageEvent');
         removeMessageEvent.setParams(
             {
@@ -9,10 +9,12 @@
         removeMessageEvent.fire();
     },
 
-    setMessageTheme: function (component, event, helper) {
+    setMessageTheme: function (component) {
         var message = component.get('v.message');
 
-        if (!message) return;
+        if (!message) {
+            return;
+        }
 
         var messageTheme;
 

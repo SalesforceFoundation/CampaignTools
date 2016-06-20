@@ -5,7 +5,9 @@
             component,
             rootSegmentId,
             function (err, segmentTreeData) {
-                if (err) throw err[0];
+                if (err) {
+                    throw err[0];
+                }
                 component.set('v.segmentData', segmentTreeData);
             }
         );
@@ -38,15 +40,27 @@
             segmentData,
             function (err) {
                 if (err) {
+                    var saveErrorLabel;
+                    if (component.get('v.nsPrefix') === 'camptools') {
+                        saveErrorLabel = '$Label.camptools.CampaignToolsListEditorSaveError';
+                    } else {
+                        saveErrorLabel = '$Label.c.CampaignToolsListEditorSaveError';
+                    }
                     helper.addPageMessage(
                         'error',
-                        $A.get('$Label.c.CampaignToolsListEditorSaveError'),
+                        $A.get(saveErrorLabel),
                         err[0].message
                     );
                 } else {
+                    var saveSuccessLabel;
+                    if (component.get('v.nsPrefix') === 'camptools') {
+                        saveSuccessLabel = '$Label.camptools.CampaignToolsListEditorSaveSuccessful';
+                    } else {
+                        saveSuccessLabel = '$Label.c.CampaignToolsListEditorSaveSuccessful';
+                    }
                     helper.addPageMessage(
                         'confirm',
-                        $A.get('$Label.c.CampaignToolsListEditorSaveSuccessful')
+                        $A.get(saveSuccessLabel)
                     );
                 }
             }
