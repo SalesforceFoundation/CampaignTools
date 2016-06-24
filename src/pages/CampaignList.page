@@ -101,7 +101,8 @@
                 $Lightning.createComponent(
                     pageMessagesCmp,
                     {
-                        useToast: {!IF(OR($User.UIThemeDisplayed == 'Theme4d', $User.UIThemeDisplayed == 'Theme4t'), 'true', 'false')}
+                        useToast: {!IF(OR($User.UIThemeDisplayed == 'Theme4d', $User.UIThemeDisplayed == 'Theme4t'), 'true', 'false')},
+                        nsPrefix: nsPrefix
                     },
                     "pageMessages",
                     function (component) {}
@@ -111,7 +112,8 @@
                     campaignListEditorCmp,
                     {
                         campaignId : '{!Campaign.Id}',
-                        rootSegmentId: '{!Campaign.Campaign_List__c}'
+                        rootSegmentId: '{!Campaign.Campaign_List__c}',
+                        nsPrefix: nsPrefix
                     },
                     "lightning",
                     function(component) {}
