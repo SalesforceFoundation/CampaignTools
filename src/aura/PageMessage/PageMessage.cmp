@@ -1,4 +1,4 @@
-<aura:component >
+<aura:component implements="c:namespaceAware">
     <aura:attribute name="message" type="Object" required="true" access="public"/>
     <aura:attribute name="index" type="Integer" required="true" access="public"/>
     <aura:attribute name="useToast" type="Boolean" default="true" access="public"/>
@@ -20,7 +20,7 @@
             >
             <c:svg class="slds-button__icon slds-button__icon--large"
                ariaHidden="true"
-               xlinkHref="/resource/LightningDesignSystem/1_0_2/assets/icons/utility-sprite/svg/symbols.svg#close"
+               xlinkHref="{!(v.nsPrefix == 'camptools' ? '/resource/camptools__LightningDesignSystem/1_0_2/assets/icons/utility-sprite/svg/symbols.svg#close' : '/resource/LightningDesignSystem/1_0_2/assets/icons/utility-sprite/svg/symbols.svg#close')}"
                />
             <span class="slds-assistive-text">
                 {$!Label.c.CampaignToolsListEditorCloseModal}

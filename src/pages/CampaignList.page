@@ -1,5 +1,6 @@
 <apex:page standardController="Campaign" standardStylesheets="false" docType="html-5.0">
         <apex:includeLightning />
+        <apex:includeScript value="/soap/ajax/37.0/connection.js"/>
         <apex:stylesheet value="{!URLFOR($Resource.LightningDesignSystem, '1_0_2/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
 
         <style type="text/css">
@@ -62,38 +63,84 @@
         </div>
 
         <script>
-            document.getElementById('saveEditor').addEventListener(
-                'click',
-                function () {
-                    var $Aura = (window.opener && window.opener.$A) || window.$A;
-                    if (!$Aura) return;
-                    var saveEvent = $Aura.get("e.c:CampaignListEditorSaveEvent");
-                    if (saveEvent) {
-                        saveEvent.fire();
-                    }
-                }
-            );
 
-            $Lightning.use("c:CampaignListEditorApp", function() {
+            function getNamespace() {
+                sforce.connection.sessionId = '{!$Api.Session_ID}';
+                var currentPageIsNamespaced = sforce.connection.query("SELECT Id FROM ApexPage WHERE NamespacePrefix = 'camptools' AND Name = 'CampaignList' LIMIT 1");
+
+                var nsPrefix;
+
+                if (currentPageIsNamespaced && currentPageIsNamespaced.size > 0) {
+                    nsPrefix = 'camptools';
+                } else {
+                    nsPrefix = 'c';
+                }
+
+                return nsPrefix;
+            }
+
+            function addSaveHandler(nsPrefix) {
+                var campaignListEditorSaveEvent = 'e.' + nsPrefix + ':CampaignListEditorSaveEvent';
+                document.getElementById('saveEditor').addEventListener(
+                    'click',
+                    function () {
+                        var $Aura = (window.opener && window.opener.$A) || window.$A;
+                        if (!$Aura) return;
+                        var saveEvent = $Aura.get(campaignListEditorSaveEvent);
+                        if (saveEvent) {
+                            saveEvent.fire();
+                        }
+                    }
+                );
+            }
+
+            function createComponents(nsPrefix) {
+                var campaignListEditorCmp = nsPrefix + ':CampaignListEditor';
+                var pageMessagesCmp = nsPrefix + ':PageMessages';
+
                 $Lightning.createComponent(
-                    "c:PageMessages",
+                    pageMessagesCmp,
                     {
-                        useToast: {!IF(OR($User.UIThemeDisplayed == 'Theme4d', $User.UIThemeDisplayed == 'Theme4t'), 'true', 'false')}
+                        useToast: {!IF(OR($User.UIThemeDisplayed == 'Theme4d', $User.UIThemeDisplayed == 'Theme4t'), 'true', 'false')},
+                        nsPrefix: nsPrefix
                     },
                     "pageMessages",
                     function (component) {}
                 );
 
                 $Lightning.createComponent(
-                    "c:CampaignListEditor",
+                    campaignListEditorCmp,
                     {
                         campaignId : '{!Campaign.Id}',
-                        rootSegmentId: '{!Campaign.Campaign_List__c}'
+                        rootSegmentId: '{!Campaign.Campaign_List__c}',
+                        nsPrefix: nsPrefix
                     },
                     "lightning",
                     function(component) {}
                 );
-            });
+            }
+
+            function createApp(nsPrefix) {
+                var campaignListEditorApp = nsPrefix + ':CampaignListEditorApp';
+                $Lightning.use(
+                    campaignListEditorApp,
+                    function () {
+                        createComponents(nsPrefix);
+                    }
+                );
+            }
+
+            function init() {
+                var nsPrefix = getNamespace();
+                addSaveHandler(nsPrefix);
+                createApp(nsPrefix);
+            }
+
+            if (document.readyState !== 'loading') {
+                init();
+            } else {
+                document.addEventListener('DOMContentLoaded', init);
+            }
         </script>
 
     <!-- These labels are referenced in various parts of the CT ui.  We need to
