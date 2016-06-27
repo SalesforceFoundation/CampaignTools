@@ -1,4 +1,4 @@
-<aura:component >
+<aura:component implements="c:namespaceAware">
     <aura:attribute name="useToast" type="Boolean" default="false" access="public"/>
     <aura:attribute name="messages" type="List" default="[]" access="private"/>
 
@@ -8,7 +8,7 @@
     <div class="slds">
         <div class="{!(v.useToast ? 'slds-notify-container' : '')}">
             <aura:iteration items="{!v.messages}" var="message" indexVar="i">
-                <c:PageMessage message="{!message}" index="{!i}" useToast="{!v.useToast}"/>
+                <c:PageMessage message="{!message}" index="{!i}" useToast="{!v.useToast}" nsPrefix="{!v.nsPrefix}"/>
             </aura:iteration>
         </div>
     </div>
