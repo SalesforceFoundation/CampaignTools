@@ -4,6 +4,7 @@
     <aura:registerEvent name="deleteSegmentEvent" type="c:CampaignListSegmentUpdateEvent"/>
 
     <aura:handler name="change" value="{!v.source}" action="{!c.handleSourceChange}"/>
+    <aura:handler event="c:autocompleteSelectListOption" name="optionSelected" action="{!c.handleAutocomplete}" />
 
             <div class="slds-grid">
                 <div class="slds-form-element slds-col--padded slds-size--1-of-5 slds-grow-none">
@@ -35,12 +36,19 @@
                             {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorReportName : $Label.c.CampaignToolsListEditorReportName)}
                         </label>
                         <div class="slds-form-element__control">
-                            <c:autocomplete sObjectType="Report"
-                                autocompleteEvent="{!c.handleAutocomplete}"
+                            <c:autocomplete aura:id="reportautocomplete"
+                                label=""
+                                value="{!v.source.sourceId}"
+                                displayValue="{!v.source.sourceName}"
                                 placeholder="{!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorFindReport : $Label.c.CampaignToolsListEditorFindReport)}"
-                                value="{!v.source.sourceName}"
-                                nsPrefix="{!v.nsPrefix}"
-                                />
+                                searchContext="{!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorReportType : $Label.c.CampaignToolsListEditorReportType)}">
+                                <aura:set attribute="dataProvider">
+                                    <c:CampaignListSourceDataProvider sObjectType="Report"/>
+                                </aura:set>
+                                <aura:set attribute="itemTemplate">
+                                    <c:autocompleteOption value="{!item}" displayValue="{!item.label}" iconSprite="standard" iconName="report"/>
+                                </aura:set>
+                            </c:autocomplete>
                         </div>
                     </div>
                     <div class="slds-form-element slds-col--padded slds-size--1-of-5 slds-grow-none">
@@ -63,12 +71,19 @@
                             {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorCampaignName : $Label.c.CampaignToolsListEditorCampaignName)}
                         </label>
                         <div class="slds-form-element__control">
-                            <c:autocomplete sObjectType="Campaign"
-                                autocompleteEvent="{!c.handleAutocomplete}"
+                            <c:autocomplete aura:id="campaignautocomplete"
+                                label=""
+                                value="{!v.source.sourceId}"
+                                displayValue="{!v.source.sourceName}"
                                 placeholder="{!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorFindCampaign : $Label.c.CampaignToolsListEditorFindCampaign)}"
-                                value="{!v.source.sourceName}"
-                                nsPrefix="{!v.nsPrefix}"
-                                />
+                                searchContext="{!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorCampaignType : $Label.c.CampaignToolsListEditorCampaignType)}">
+                                <aura:set attribute="dataProvider">
+                                    <c:CampaignListSourceDataProvider sObjectType="Campaign"/>
+                                </aura:set>
+                                <aura:set attribute="itemTemplate">
+                                    <c:autocompleteOption value="{!item}" displayValue="{!item.label}" iconSprite="standard" iconName="campaign"/>
+                                </aura:set>
+                            </c:autocomplete>
                         </div>
                     </div>
                 </aura:if>

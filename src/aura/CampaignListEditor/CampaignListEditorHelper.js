@@ -131,7 +131,6 @@
         // segmentTree.
         // Once a segmentTree is loaded, pluck out the two relevant subtrees
         // for the UI.
-
         var this_ = this;
         var next = function (err, segmentTree) {
             if (err) {

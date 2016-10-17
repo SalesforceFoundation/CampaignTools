@@ -63,11 +63,15 @@
         <members>CampaignListSegment</members>
         <members>CampaignListSegmentUpdateEvent</members>
         <members>CampaignListSource</members>
+        <members>CampaignListSourceDataProvider</members>
         <members>PageMessage</members>
         <members>PageMessages</members>
         <members>RemovePageMessageEvent</members>
         <members>autocomplete</members>
         <members>autocompleteEvent</members>
+        <members>autocompleteOption</members>
+        <members>autocompleteSelectListOption</members>
+        <members>dataProviderInterface</members>
         <members>namespaceAware</members>
         <members>svg</members>
         <name>AuraDefinitionBundle</name>

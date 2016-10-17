@@ -28,7 +28,7 @@
     },
 
     handleAutocomplete: function(component, event) {
-        var selOpt = event.getParam('selectedOption');
+        var selOpt = event.getParam('value');
         var sourceSegment = component.get("v.source");
         sourceSegment.sourceName = selOpt.label;
         sourceSegment.sourceId = selOpt.value;

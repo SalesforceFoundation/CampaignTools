@@ -13,19 +13,10 @@
         role="alert"
         class="{!'slds-notify slds-notify--toast slds-theme--' + v.messageTheme + (v.useToast ? '' : ' disable-slds-toast')}"
         >
-
-        <button
-            class="{!'slds-button slds-notify__close' + (v.messageTheme != 'warning' ? ' slds-button--icon-inverse' : '')}"
-            onclick="{!c.removeMessage}"
-            >
-            <c:svg class="slds-button__icon slds-button__icon--large"
-               ariaHidden="true"
-               xlinkHref="{!(v.nsPrefix == 'camptools' ? '/resource/camptools__LightningDesignSystem/1_0_2/assets/icons/utility-sprite/svg/symbols.svg#close' : '/resource/LightningDesignSystem/1_0_2/assets/icons/utility-sprite/svg/symbols.svg#close')}"
-               />
-            <span class="slds-assistive-text">
-                {$!Label.c.CampaignToolsListEditorCloseModal}
-            </span>
-        </button>
+        <lightning:buttonIcon iconName="utility:close" onclick="{!c.removeMessage}" size="large"
+            variant="{!'bare' + (v.messageTheme != 'warning' ? '-inverse' : '')}"
+            class="{!'slds-notify__close'}"
+            alternativeText="{$!Label.c.CampaignToolsListEditorCloseModal}"/>
         <div class="notify__content">
             <h2 class="slds-text-heading--small">
                 {!v.message.summary}
