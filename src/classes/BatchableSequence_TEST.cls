@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class BatchableSequence_TEST {
+private with sharing class BatchableSequence_TEST {
     private static testMethod void testAddBatchWithoutScopeAddsDefaultScope() {
         BatchableSequence bs = new BatchableSequence();
         ConcreteBatch batch = new ConcreteBatch();

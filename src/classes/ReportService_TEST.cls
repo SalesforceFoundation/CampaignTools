@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class ReportService_TEST {
+private with sharing class ReportService_TEST {
     @isTest(SeeAllData=True)
     public static void testGetIdColumnsReturnsIdColumns() {
         Map<String, String> expectedColumns = new Map<String, String>{

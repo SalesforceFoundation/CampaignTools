@@ -1,16 +1,16 @@
 public with sharing class AutocompleteController {
     @AuraEnabled
     public static List<ProviderResult> getSuggestions(String sObjectType, String term) {
+        List<ProviderResult> providerResults = new List<ProviderResult>();
         try {
+            Map<String, Schema.SObjectType> gd = Schema.getGlobalDescribe();
             Boolean objectAccessible = false;
             Boolean nameFieldAccessible = false;
-
-            if (sObjectType == 'Campaign') {
-                objectAccessible = Campaign.sObjectType.getDescribe().isAccessible();
-                nameFieldAccessible = Campaign.Name.getDescribe().isAccessible();
-            } else if (sObjectType == 'Report') {
-                objectAccessible = Report.sObjectType.getDescribe().isAccessible();
-                nameFieldAccessible = Report.Name.getDescribe().isAccessible();
+            if (gd.containsKey(sObjectType) && gd.get(sObjectType).getDescribe().fields.getMap().containsKey('Name')) {
+                Map<String, SObjectField> fields = gd.get(sObjectType).getDescribe().fields.getMap();
+                DescribeFieldResult fieldDescribe = fields.get('Name').getDescribe();
+                objectAccessible = gd.get(sObjectType).getDescribe().isAccessible();
+                nameFieldAccessible = fields.get('Name').getDescribe().isAccessible();
             }
 
             if (!objectAccessible || !nameFieldAccessible) {
@@ -23,8 +23,7 @@ public with sharing class AutocompleteController {
             String soql = 'SELECT Name FROM {0} WHERE Name LIKE :preparedTerm ORDER BY Name LIMIT 10';
             String query = String.format(soql, new List<String>{sObjectType});
             List<SObject> results = Database.query(query);
-            List<ProviderResult> providerResults = new List<ProviderResult>();
-    
+
             for (SObject so : results) {
                 ProviderResult result = new ProviderResult();
                 result.value = so.Id;

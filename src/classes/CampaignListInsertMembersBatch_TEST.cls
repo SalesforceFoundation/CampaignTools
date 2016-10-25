@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignListInsertMembersBatch_TEST {
+private with sharing class CampaignListInsertMembersBatch_TEST {
     @isTest
     private static void testConstructor() {
         // The constructor should persist the given campaignId and rootSegment

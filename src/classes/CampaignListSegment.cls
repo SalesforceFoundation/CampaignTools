@@ -34,7 +34,7 @@
  * list.  A "segment" of a campaign list is one part of the criteria that
  * defines the campaign list.
  */
-public abstract class CampaignListSegment implements CampaignList.Segment {
+public with sharing abstract class CampaignListSegment implements CampaignList.Segment {
     /** @description This segment's id */
     private Id segmentId;
 

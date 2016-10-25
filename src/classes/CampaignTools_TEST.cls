@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2015 Salesforce.org
+    Copyright (c) 2016 Salesforce.org
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,33 +28,17 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private with sharing class DeleteCampaignMembersBatch_TEST {
-    private static testMethod void testDeleteCampaignMembersBatch() {
-        CampaignList_TEST.TestCampaign tc = new CampaignList_TEST.TestCampaign('Test', 100, 100);
-
-        Integer memberCount = [
-            SELECT COUNT()
-            FROM CampaignMember
-            WHERE CampaignId = :tc.campaign.Id
-        ];
-
-        System.assertEquals(200, memberCount);
-
-        DeleteCampaignMembersBatch batch = new DeleteCampaignMembersBatch(tc.campaign.Id);
-        batch.setScope(200);
-
-        Test.startTest();
-
-        batch.executeBatch();
-
-        Test.stopTest();
-
-        Integer remainingMemberCount = [
-            SELECT COUNT()
-            FROM CampaignMember
-            WHERE CampaignId = :tc.campaign.Id
-        ];
-
-        System.assertEquals(0, remainingMemberCount);
+private class CampaignTools_TEST {
+	/*********************************************************************************************************
+    * @description Tests getting namespace
+    */
+	public static testmethod void TestNamespacePrefixFixups() {
+        if (CampaignTools_UTIL.getNamespace()!='') {
+            system.assertEquals(CampaignTools_UTIL.getNamespace()+'__foo', CampaignTools_UTIL.StrTokenNSPrefix('foo'));
+            system.assertEquals(CampaignTools_UTIL.getNamespace()+'__foo__c', CampaignTools_UTIL.StrTokenNSPrefix('foo__c'));     
+        } else {
+            system.assertEquals('foo', CampaignTools_UTIL.StrTokenNSPrefix('foo'));
+            system.assertEquals('foo__c', CampaignTools_UTIL.StrTokenNSPrefix('foo__c'));          
+        }
     }
 }

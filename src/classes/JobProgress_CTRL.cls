@@ -45,6 +45,7 @@ public with sharing class JobProgress_CTRL {
             List<AsyncApexJob> jobs = new List<AsyncApexJob>();
 
             try {
+                CampaignTools_UTIL.checkObjectReadAccess('AsyncApexJob');
                 jobs = [
                     SELECT
                     ApexClass.Name,

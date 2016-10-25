@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignListService_TEST {
+private with sharing class CampaignListService_TEST {
     private static testMethod void testUpdateCampaignFromCampaignList() {
         Id sourceReportId = CampaignList_TEST.getNextId(Report.sObjectType);
         Id sourceCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);

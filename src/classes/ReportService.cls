@@ -33,7 +33,7 @@
  * @description A service class that provides methods for interacting with
  * reports via the Analytics API.
  */
-public class ReportService implements CampaignList.ReportService {
+public with sharing class ReportService implements CampaignList.ReportService {
     /**
      * @description Retrieve the labels and ids of columns of type ID_TYPE from
      * the given report.  Returns a Map<String, String> where the column id is

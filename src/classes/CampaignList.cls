@@ -33,7 +33,7 @@
  * @description This class holds interface definitions for other objects in the
  * CampaignTools group, as well as some service locator methods.
  */
-public abstract class CampaignList {
+public with sharing abstract class CampaignList {
 
     public interface Service {
         void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId);

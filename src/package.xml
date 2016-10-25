@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Campaign Tools</fullName>
+    <fullName>Campaign+Tools</fullName>
     <types>
         <members>AutocompleteController</members>
         <members>BatchableSequence</members>
@@ -8,6 +8,8 @@
         <members>CampaignList</members>
         <members>CampaignListBuilder_CTRL</members>
         <members>CampaignListBuilder_TEST</members>
+        <members>CampaignListEditor_CTRL</members>
+        <members>CampaignListEditor_TEST</members>
         <members>CampaignListFromCampaignBatch</members>
         <members>CampaignListFromCampaignBatch_TEST</members>
         <members>CampaignListFromReportBatch</members>
@@ -29,8 +31,9 @@
         <members>CampaignListService_TEST</members>
         <members>CampaignListUpdateMembersBatch</members>
         <members>CampaignListUpdateMembersBatch_TEST</members>
-        <members>CampaignList_CTRL</members>
         <members>CampaignList_TEST</members>
+        <members>CampaignTools_TEST</members>
+        <members>CampaignTools_UTIL</members>
         <members>DeleteCampaignListMembersBatch</members>
         <members>DeleteCampaignListMembersBatch_TEST</members>
         <members>DeleteCampaignMembersBatch</members>
@@ -157,6 +160,10 @@
         <members>PageMessagesError</members>
         <members>PageMessagesFatal</members>
         <members>PageMessagesWarning</members>
+        <members>PermissionCreateException</members>
+        <members>PermissionDeleteException</members>
+        <members>PermissionReadException</members>
+        <members>PermissionUpdateException</members>
         <name>CustomLabel</name>
     </types>
     <types>
@@ -189,5 +196,5 @@
         <members>Campaign.Refresh_Campaign_List</members>
         <name>WebLink</name>
     </types>
-    <version>35.0</version>
+    <version>37.0</version>
 </Package>

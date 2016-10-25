@@ -1,6 +1,5 @@
-<apex:page standardController="Campaign" standardStylesheets="false" docType="html-5.0">
+<apex:page standardController="Campaign" extensions="CampaignListEditor_CTRL" title="{!$Label.CampaignToolsListEditorTitle}" standardStylesheets="false" docType="html-5.0">
         <apex:includeLightning />
-        <apex:includeScript value="/soap/ajax/37.0/connection.js"/>
         <apex:stylesheet value="{!URLFOR($Resource.LightningDesignSystem, '1_0_2/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
 
         <style type="text/css">
@@ -65,14 +64,10 @@
         <script>
 
             function getNamespace() {
-                sforce.connection.sessionId = '{!$Api.Session_ID}';
-                var currentPageIsNamespaced = sforce.connection.query("SELECT Id FROM ApexPage WHERE NamespacePrefix = 'camptools' AND Name = 'CampaignList' LIMIT 1");
 
-                var nsPrefix;
+                var nsPrefix = '{!namespace}';
 
-                if (currentPageIsNamespaced && currentPageIsNamespaced.size > 0) {
-                    nsPrefix = 'camptools';
-                } else {
+                if (nsPrefix === '') {
                     nsPrefix = 'c';
                 }
 
@@ -81,17 +76,24 @@
 
             function addSaveHandler(nsPrefix) {
                 var campaignListEditorSaveEvent = 'e.' + nsPrefix + ':CampaignListEditorSaveEvent';
-                document.getElementById('saveEditor').addEventListener(
-                    'click',
-                    function () {
-                        var $Aura = (window.opener && window.opener.$A) || window.$A;
-                        if (!$Aura) return;
-                        var saveEvent = $Aura.get(campaignListEditorSaveEvent);
-                        if (saveEvent) {
-                            saveEvent.fire();
+                var element = document.getElementById('saveEditor');
+                var hasPerms = {!hasPerms};
+
+                if (hasPerms) {
+                    element.addEventListener(
+                        'click',
+                        function () {
+                            var $Aura = (window.opener && window.opener.$A) || window.$A;
+                            if (!$Aura) return;
+                            var saveEvent = $Aura.get(campaignListEditorSaveEvent);
+                            if (saveEvent) {
+                                saveEvent.fire();
+                            }
                         }
-                    }
-                );
+                    );
+                } else {
+                    element.setAttribute('disabled', 'true');
+                }
             }
 
             function createComponents(nsPrefix) {

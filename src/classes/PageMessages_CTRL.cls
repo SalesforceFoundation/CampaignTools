@@ -32,7 +32,7 @@
 * @group Utilities
 * @description Controller for SLDS styled page messages component
 */
-public class PageMessages_CTRL {
+public with sharing class PageMessages_CTRL {
     /**
      * @description Get the current context's page messages in the form of a
      * container class that can be used within Visualforce

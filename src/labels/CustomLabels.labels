@@ -472,4 +472,36 @@
         <shortDescription>Warning</shortDescription>
         <value>Warning</value>
     </labels>
+    <labels>
+        <fullName>PermissionCreateException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>PermissionCreateException</shortDescription>
+        <value>User does not have permissions to create {0}.</value>
+    </labels>
+    <labels>
+        <fullName>PermissionDeleteException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>PermissionDeleteException</shortDescription>
+        <value>User does not have permissions to delete {0}.</value>
+    </labels>
+    <labels>
+        <fullName>PermissionReadException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>PermissionReadException</shortDescription>
+        <value>User does not have permissions to view {0}.</value>
+    </labels>
+    <labels>
+        <fullName>PermissionUpdateException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>PermissionUpdateException</shortDescription>
+        <value>User does not have permissions to update {0}.</value>
+    </labels>
 </CustomLabels>

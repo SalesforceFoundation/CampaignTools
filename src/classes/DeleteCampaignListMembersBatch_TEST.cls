@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class DeleteCampaignListMembersBatch_TEST {
+private with sharing class DeleteCampaignListMembersBatch_TEST {
     private static testMethod void testDeleteCampaignListMembersBatch() {
         Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
 

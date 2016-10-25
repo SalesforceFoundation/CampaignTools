@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2015 Salesforce.org
+    Copyright (c) 2016 Salesforce.org
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -29,52 +29,48 @@
 */
 /**
 * @author Salesforce.org
-* @date 2015
+* @date 2016
 *
 * @group CampaignTools
 *
-* @description Apex controller for the Lightning CampaignListBuilder app.
+* @description Apex extension for the Lightning CampaignList page.
 *
 */
+public with sharing class CampaignListEditor_CTRL {
+    
+    private static String plainNamespace;
+    private static Boolean hasPerms;
+    
+    public CampaignListEditor_CTRL(ApexPages.StandardController controller) {}
 
-public with sharing class CampaignListBuilder_CTRL {
     /*******************************************************************************************************
-    * @description Static method to check permissions required for editing the campaign list
-    * throws an exception if the user does not have all required permissions
+    * @description Finds the namespace for the current context.
+    * @return string The current namespace as a string, or a blank string if we're not in a namespaced context.
     ********************************************************************************************************/
-    @AuraEnabled
-    public static void checkPerms() {
-        try {
-            CampaignTools_UTIL.checkCampaignListPermission();
-        } catch (CampaignTools_UTIL.PermsException ex) {
-            throw new AuraHandledException(ex.getMessage());
+    public static String getNamespace() {       
+        if (null == plainNamespace) {
+            String currentClassName = CampaignListEditor_CTRL.class.getName();
+    		plainNamespace = currentClassName.contains('.') ? currentClassName.substringBefore('.') : '';
         }
+
+        return plainNamespace;
     }
 
-    @AuraEnabled
-    public static String getSerializedSegmentTree(Id rootSegmentId) {
-        CampaignList.SegmentMapper mapper = new CampaignListSegmentMapper();
-        return JSON.serialize(mapper.getSegmentTreeByRootId(rootSegmentId));
+    /*******************************************************************************************************
+    * @description Checks all required permissions for the page to function correctly, user must have
+    * proper access to the Campaign and Segment Objects and Fields
+    * @return Boolean true when the user has all permissions
+    ********************************************************************************************************/
+    public static Boolean getHasPerms() {
+    	if (null == hasPerms) {
+    		try {
+	    		CampaignTools_UTIL.checkCampaignListPermission();
+	    		hasPerms = true;
+	    	} catch (CampaignTools_UTIL.PermsException ex) {
+	    		hasPerms = false;
+	    	}
+    	}
+    	
+    	return hasPerms;
     }
-
-    @AuraEnabled
-    public static boolean saveCSegmentTree(ID campaignId, string csegRoot) {
-        CampaignList.SegmentMapper mapper = new CampaignListSegmentMapper();
-        CampaignList.Segment segmentTree = mapper.deserializeSegmentFromJSON(csegRoot);
-        Id rootSegmentId = mapper.upsertSegmentTreeByRootSegment(segmentTree);
-        update new Campaign(Id = campaignId, Campaign_List__c = rootSegmentId);
-        return true;
-    }
-
-    @AuraEnabled
-    public static Map<String, String> getReportIdColumns(Id reportId) {
-        try {
-            CampaignList.ReportService service = CampaignList.getReportService();
-            return service.getIdColumns(reportId);
-        } catch (Exception e) {
-            throw new NoColumnsException();
-        }
-    }
-
-    public class NoColumnsException extends Exception {}
 }

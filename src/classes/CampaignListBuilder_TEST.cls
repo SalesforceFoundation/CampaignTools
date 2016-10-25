@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignListBuilder_TEST {
+private with sharing class CampaignListBuilder_TEST {
     public static testMethod void testGetReportIdColumnsReturnsIdColumns() {
         Id reportId = CampaignList_TEST.getNextId(Report.sObjectType);
 
@@ -63,6 +63,34 @@ private class CampaignListBuilder_TEST {
         }
 
         System.assert(exceptionThrown);
+    }
+
+    public static testMethod void testCheckPerms() {
+        Boolean exceptionThrown;
+
+        try {
+            CampaignListBuilder_CTRL.checkPerms();
+            exceptionThrown = false;
+        } catch (AuraHandledException ex) {
+            exceptionThrown = true;
+        }
+
+        System.assert(!exceptionThrown, 'An exception should not be thrown and the user should have permission.');
+    }
+
+
+    public static testMethod void testCheckWithoutPerms() {
+        Boolean exceptionThrown;
+
+        try {
+            CampaignTools_UTIL.throwException = true;
+            CampaignListBuilder_CTRL.checkPerms();
+            exceptionThrown = false;
+        } catch (AuraHandledException ex) {
+            exceptionThrown = true;
+        }
+
+        System.assert(exceptionThrown, 'An exception should be thrown and the user should not have permission.');
     }
 
     private class ReportServiceWithResultsStub implements CampaignList.ReportService {

@@ -39,6 +39,10 @@ public with sharing class ProcessSegmentBTN_CTRL {
      * @description The campaign retrieved from the standard controller
      */
     private Campaign campaign;
+    /**
+     * @description True when permissions error occurs on page
+     */
+    private static Boolean hasPerms;
 
     /**
     * @description Constructor
@@ -46,6 +50,17 @@ public with sharing class ProcessSegmentBTN_CTRL {
     */
     public ProcessSegmentBTN_CTRL(ApexPages.StandardController controller) {
         campaign = (Campaign) controller.getRecord();
+        // Check if user has all required permissions for batch processing
+        try {
+            CampaignTools_UTIL.checkCampaignBatchPermission();
+            hasPerms = true;
+        } catch(CampaignTools_UTIL.PermsException ex) {
+            hasPerms = false;
+            ApexPages.addMessage(new ApexPages.Message(
+                ApexPages.Severity.ERROR,
+                ex.getMessage()
+            ));
+        }
     }
 
     /**
@@ -55,6 +70,10 @@ public with sharing class ProcessSegmentBTN_CTRL {
     * @return PageReference
     */
     public PageReference refreshCampaignList() {
+        if (!hasPerms) {
+            return null;
+        }
+
         if (campaign.Campaign_List__c == null) {
             ApexPages.addMessage(new ApexPages.Message(
                 ApexPages.Severity.ERROR,
@@ -94,6 +113,11 @@ public with sharing class ProcessSegmentBTN_CTRL {
      */
     @RemoteAction
     public static String getCampaignListUpdateStatus(Id campaignId) {
+        try {
+            CampaignTools_UTIL.checkFieldReadAccess('Campaign', 'Campaign_List_Update_Status__c');
+        } catch(CampaignTools_UTIL.PermsException ex) {
+            return null;
+        }
         Campaign c = [
             SELECT Campaign_List_Update_Status__c
             FROM Campaign

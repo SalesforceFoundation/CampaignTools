@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignListSegment_TEST {
+private with sharing class CampaignListSegment_TEST {
     private static testMethod void testAndSegment() {
         Id segmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
         Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);

@@ -69,6 +69,62 @@ private with sharing class ProcessSegmentBTN_TEST {
     }
 
     @isTest
+    private static void testRefreshCampaignListActionWithoutPermissions() {
+        Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+        Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+
+        Campaign c = new Campaign(
+            Id = campaignId,
+            Campaign_List__c = rootSegmentId
+        );
+
+        CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
+        CampaignList.setService(serviceStub);
+        CampaignTools_UTIL.throwException = true;
+
+        Test.startTest();
+
+        ApexPages.StandardController sc = new ApexPages.StandardController(c);
+        ProcessSegmentBTN_CTRL btn = new ProcessSegmentBTN_CTRL(sc);
+        PageReference pr = btn.refreshCampaignList();
+
+        Test.stopTest();
+
+        List<Apexpages.Message> msgs = ApexPages.getMessages();
+        for (Apexpages.Message msg : msgs) {
+            System.assertEquals(ApexPages.Severity.ERROR, msg.getSeverity(), 'An Error message should be added to the page.');
+        }
+    }
+
+    @isTest
+    private static void testGetCampaignUpdateStatus() {
+        Campaign testCampaign = new Campaign(Name='Test Campaign', Campaign_List_Update_Status__c = 'Completed');
+        insert testCampaign;
+
+        Test.startTest();
+
+        String status = ProcessSegmentBTN_CTRL.getCampaignListUpdateStatus(testCampaign.Id);
+
+        Test.stopTest();
+
+        System.assertEquals('Completed', status, 'The test campaign status should be returned.');
+    }
+
+    @isTest
+    private static void testGetCampaignUpdateStatusWithoutPerms() {
+        Campaign testCampaign = new Campaign(Name='Test Campaign', Campaign_List_Update_Status__c = 'Completed');
+        insert testCampaign;
+
+        Test.startTest();
+        CampaignTools_UTIL.throwException = true;
+        String status = ProcessSegmentBTN_CTRL.getCampaignListUpdateStatus(testCampaign.Id);
+
+        Test.stopTest();
+
+        System.assertEquals(null, status, 'The test campaign status should return null when permissions are missing.');
+    }
+
+    @isTest
     private static void testCampaignWithNoListIssuesErrorAndDoesNotCallService() {
         Id campaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
 

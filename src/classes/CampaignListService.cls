@@ -33,7 +33,7 @@
  * @description A service class that provides methods to perform actions
  * related to campaign lists.
  */
-public class CampaignListService implements CampaignList.Service {
+public with sharing class CampaignListService implements CampaignList.Service {
     /**
      * @description Given a Campaign id and a corresponding "campaign list" id,
      * clear the Campaign's CampaignMembers and repopulate the Campaign with

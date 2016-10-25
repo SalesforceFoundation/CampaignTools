@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignListSegmentMapper_TEST {
+private with sharing class CampaignListSegmentMapper_TEST {
     @isTest(SeeAllData=True)
     private static void testGetSourceNamesByIds() {
         Campaign testCampaign = new Campaign(Name='Test Campaign');

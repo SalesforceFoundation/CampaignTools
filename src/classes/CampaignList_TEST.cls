@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-public class CampaignList_TEST {
+public with sharing class CampaignList_TEST {
     private static Integer nextId = 1;
 
     public static Id getNextId(Schema.SObjectType sObjectType) {
