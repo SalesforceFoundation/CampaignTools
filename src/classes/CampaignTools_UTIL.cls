@@ -32,7 +32,7 @@
  * @group CampaignTools
  * @description A utility class that checks the CRUD and FLS required for all SOQL
  * and DML operations. The checks are done immediately and will throw an error when
- * any permission required to fully utilize Campaign Tools.
+ * any permission is missing that is required to fully utilize Campaign Tools.
  */
 public with sharing class CampaignTools_UTIL {
 
@@ -109,7 +109,7 @@ public with sharing class CampaignTools_UTIL {
     }
 
     /*******************************************************************************************************
-    * @description Static method to check permissions required for editing the campaign list
+    * @description Static method to check permissions required for processing the campaign refresh
     * when permissions are not available an error will be thrown
     ********************************************************************************************************/
     public static void checkCampaignBatchPermission() {
@@ -129,7 +129,7 @@ public with sharing class CampaignTools_UTIL {
 
     /*******************************************************************************************************
     * @description Finds the namespace for the current context.
-    * @return string The current namespace as a string, or a blank string if we're not in a namespaced context.
+    * @return String The current namespace as a string, or a blank string if we're not in a namespaced context.
     ********************************************************************************************************/
     @TestVisible
     private static String getNamespace() {       
@@ -214,16 +214,16 @@ public with sharing class CampaignTools_UTIL {
     * @description Static method adds the current namespace to a string if we're in a managed context, 
     * with double underscore notation. If we're not in a managed context, returns the string itself.
     * @param str Token name.
-    * @return Token name, with namespace prefix and double underscore if in a managed package.
+    * @return String with namespace prefix and double underscore if in a managed package.
     ********************************************************************************************************/
-    public static string StrTokenNSPrefix(string str) {
+    public static String StrTokenNSPrefix(String str) {
         if (getNamespace() == '') return str;
         return getNamespace() + '__' + str;
     }
 
     /*******************************************************************************************************
     * @description Static method checks if running user field read access for a set of fields
-    * @param objectName the name of the object to check read access
+    * @param objectName the name of the object the field belongs to
     * @param fieldNames the set of field names to check read access
     ********************************************************************************************************/
     public static void checkReadAccess(String objectName, Set<String> fieldNames) {
@@ -250,6 +250,7 @@ public with sharing class CampaignTools_UTIL {
     /*******************************************************************************************************
     * @description Static method checks if running user has field read access and throws error
     * if the field is not accessible
+    * @param objectName the name of the object the field belongs to
     * @param fieldNames the set of field names to check read access
     ********************************************************************************************************/
     public static void checkFieldReadAccess(String objectName, String fieldName) {
@@ -264,7 +265,7 @@ public with sharing class CampaignTools_UTIL {
 
     /*******************************************************************************************************
     * @description Static method checks if running user has field create access for a set of fields
-    * @param objectName the name of the object to check create access
+    * @param objectName the name of the object the field belongs to
     * @param fieldNames the set of field names to check create access
     ********************************************************************************************************/
     public static void checkCreateAccess(String objectName, Set<String> fieldNames) {
@@ -291,6 +292,7 @@ public with sharing class CampaignTools_UTIL {
     /*******************************************************************************************************
     * @description Static method checks if running user has field create access and throws error
     * if the field is not creatable
+    * @param objectName the name of the object the field belongs to
     * @param fieldNames the set of field names to check create access
     ********************************************************************************************************/
     public static void checkFieldCreateAccess(String objectName, String fieldName) {
@@ -305,7 +307,7 @@ public with sharing class CampaignTools_UTIL {
 
     /*******************************************************************************************************
     * @description Static method checks if running user has field update access for a set of fields
-    * @param objectName the name of the object to check update access
+    * @param objectName the name of the object the field belongs to
     * @param fieldNames the set of field names to check update access
     ********************************************************************************************************/
     public static void checkUpdateAccess(String objectName, Set<String> fieldNames) {
@@ -318,6 +320,7 @@ public with sharing class CampaignTools_UTIL {
     /*******************************************************************************************************
     * @description Static method checks if running user has field update access and throws error
     * if the field is not updateable
+    * @param objectName the name of the object the field belongs to
     * @param fieldNames the set of field names to check update access
     ********************************************************************************************************/
     public static void checkFieldUpdateAccess(String objectName, String fieldName) {
