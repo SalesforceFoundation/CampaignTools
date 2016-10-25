@@ -33,7 +33,7 @@
 *
 * @group CampaignTools
 *
-* @description Apex extension for the Lightning CampaignList page.
+* @description Apex extension for the Visualforce CampaignList page.
 *
 */
 public with sharing class CampaignListEditor_CTRL {
