@@ -118,7 +118,7 @@ public with sharing class CampaignTools_UTIL {
         checkUpdateAccess('Campaign', campBatchUpdateFields);
         checkReadAccess('Campaign', campBatchReadFields);
 
-        checkObjectDeleteAccess('Member__c');
+        checkObjectDeleteAccess('CampaignMember');
         checkUpdateAccess('CampaignMember', campmemberBatchUpdateFields);
         checkCreateAccess('CampaignMember', campMemberBatchCreateFields);
 
@@ -254,8 +254,7 @@ public with sharing class CampaignTools_UTIL {
     * @param fieldNames the set of field names to check read access
     ********************************************************************************************************/
     public static void checkFieldReadAccess(String objectName, String fieldName) {
-        fieldName = fieldName.contains('__c') ? StrTokenNSPrefix(fieldName) : fieldName;
-        objectName = objectName.contains('__c') ? StrTokenNSPrefix(objectName) : objectName;
+        fieldName = objectName.contains('__c') ? StrTokenNSPrefix(fieldName) : fieldName;
         if (!getFieldDescribe(objectName, fieldName).isAccessible() || throwException) {
         	throw new PermsException(String.format(
                 Label.PermissionReadException, 
@@ -297,8 +296,7 @@ public with sharing class CampaignTools_UTIL {
     * @param fieldNames the set of field names to check create access
     ********************************************************************************************************/
     public static void checkFieldCreateAccess(String objectName, String fieldName) {
-        fieldName = fieldName.contains('__c') ? StrTokenNSPrefix(fieldName) : fieldName;
-        objectName = objectName.contains('__c') ? StrTokenNSPrefix(objectName) : objectName;
+        fieldName = objectName.contains('__c') ? StrTokenNSPrefix(fieldName) : fieldName;
         if (!getFieldDescribe(objectName, fieldName).isCreateable() || throwException) {
             throw new PermsException(String.format(
                 Label.PermissionUpdateException, 
@@ -326,8 +324,7 @@ public with sharing class CampaignTools_UTIL {
     * @param fieldNames the set of field names to check update access
     ********************************************************************************************************/
     public static void checkFieldUpdateAccess(String objectName, String fieldName) {
-        fieldName = fieldName.contains('__c') ? StrTokenNSPrefix(fieldName) : fieldName;
-        objectName = objectName.contains('__c') ? StrTokenNSPrefix(objectName) : objectName;
+        fieldName = objectName.contains('__c') ? StrTokenNSPrefix(fieldName) : fieldName;
         if (!getFieldDescribe(objectName, fieldName).isUpdateable() || throwException) {
         	throw new PermsException(String.format(
                 Label.PermissionUpdateException, 
