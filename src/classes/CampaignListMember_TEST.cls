@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignListMember_TEST {
+private with sharing class CampaignListMember_TEST {
     private static testMethod void testContactMemberFromSObject() {
         Id memberId = CampaignList_TEST.getNextId(Member__c.sObjectType);
         Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);

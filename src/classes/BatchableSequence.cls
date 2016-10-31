@@ -35,7 +35,7 @@
  * Batchable in the sequence upon finishing.  You can use this class to cause a
  * series of Batchable classes to execute in serial order.
  */
-public class BatchableSequence implements Interface_x {
+public with sharing class BatchableSequence implements Interface_x {
     public interface Interface_x {
         Batch add(Batch b);
         Batch add(Batch b, Integer scope);

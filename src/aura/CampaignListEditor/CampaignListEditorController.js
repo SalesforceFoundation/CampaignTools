@@ -1,12 +1,25 @@
 ({
     doInit: function (component, event, helper) {
         var rootSegmentId = component.get('v.rootSegmentId');
+        helper.verifyPermissions(
+            component
+        );
         helper.loadSegmentTreeData(
             component,
             rootSegmentId,
             function (err, segmentTreeData) {
                 if (err) {
-                    throw err[0];
+                    var initErrorLabel;
+                    if (component.get('v.nsPrefix') === 'camptools') {
+                        initErrorLabel = '$Label.camptools.PageMessagesError';
+                    } else {
+                        initErrorLabel = '$Label.c.PageMessagesError';
+                    }
+                    helper.addPageMessage(
+                        'error',
+                        $A.get(initErrorLabel),
+                        err[0].message
+                    );
                 }
                 component.set('v.segmentData', segmentTreeData);
             }

@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignListMemberMapper_TEST {
+private with sharing class CampaignListMemberMapper_TEST {
     private static testMethod void testUpdateByRelatedIdsUpdatesMembersAndUpserts() {
         Contact contact1 = new Contact(LastName='Test Contact 1');
         insert contact1;

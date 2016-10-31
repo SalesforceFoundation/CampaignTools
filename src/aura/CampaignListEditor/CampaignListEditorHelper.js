@@ -125,13 +125,36 @@
         );
     },
 
+    verifyPermissions: function (component) {
+        var this_ = this;
+        this.apexControllerMethod(
+            component,
+            'c.checkPerms',
+            {},
+            function (err) {
+                if (err) {
+                    var initErrorLabel;
+                    if (component.get('v.nsPrefix') === 'camptools') {
+                        initErrorLabel = '$Label.camptools.PageMessagesError';
+                    } else {
+                        initErrorLabel = '$Label.c.PageMessagesError';
+                    }
+                    this_.addPageMessage(
+                        'error',
+                        $A.get(initErrorLabel),
+                        err[0].message
+                    );
+                }
+            }
+        );
+    },
+
     loadSegmentTreeData: function (component, rootSegmentId, callback) {
         // If a rootSegmentId is provided, then query for the segmentTree
         // corresponding to that rootSegmentId.  Otherwise, generate an empty
         // segmentTree.
         // Once a segmentTree is loaded, pluck out the two relevant subtrees
         // for the UI.
-
         var this_ = this;
         var next = function (err, segmentTree) {
             if (err) {

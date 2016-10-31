@@ -38,6 +38,19 @@
 */
 
 public with sharing class CampaignListBuilder_CTRL {
+    /*******************************************************************************************************
+    * @description Static method to check permissions required for editing the campaign list
+    * throws an exception if the user does not have all required permissions
+    ********************************************************************************************************/
+    @AuraEnabled
+    public static void checkPerms() {
+        try {
+            CampaignTools_UTIL.checkCampaignListPermission();
+        } catch (CampaignTools_UTIL.PermsException ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+
     @AuraEnabled
     public static String getSerializedSegmentTree(Id rootSegmentId) {
         CampaignList.SegmentMapper mapper = new CampaignListSegmentMapper();
@@ -51,13 +64,6 @@ public with sharing class CampaignListBuilder_CTRL {
         Id rootSegmentId = mapper.upsertSegmentTreeByRootSegment(segmentTree);
         update new Campaign(Id = campaignId, Campaign_List__c = rootSegmentId);
         return true;
-    }
-
-    @AuraEnabled
-    public static Campaign getCampaign(ID campaignId) {
-        if (campaignId == null)
-            return null;
-        return [select Id, Name, Campaign_List__c from Campaign where Id = :campaignId];
     }
 
     @AuraEnabled

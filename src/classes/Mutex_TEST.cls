@@ -1,5 +1,5 @@
 @isTest
-private class Mutex_TEST {
+private with sharing class Mutex_TEST {
     private static testMethod void testConstructorValidField() {
         Contact c = new Contact(LastName = 'Test Contact');
         insert c;

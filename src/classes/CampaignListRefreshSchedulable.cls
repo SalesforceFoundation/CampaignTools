@@ -44,6 +44,9 @@ public class CampaignListRefreshSchedulable implements Schedulable {
      * @param sc
      */
     public void execute(SchedulableContext sc) {
+        // Check if user has all required permissions for batch processing
+        CampaignTools_UTIL.checkCampaignBatchPermission();
+
         Map<Id, Campaign> campaigns = getCampaignsForAutoRefresh();
 
         lockAndMarkCampaignsAsQueued(campaigns);

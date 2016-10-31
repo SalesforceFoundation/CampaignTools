@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class DeleteCampaignMembersBatch_TEST {
+private with sharing class DeleteCampaignMembersBatch_TEST {
     private static testMethod void testDeleteCampaignMembersBatch() {
         CampaignList_TEST.TestCampaign tc = new CampaignList_TEST.TestCampaign('Test', 100, 100);
 

@@ -33,7 +33,7 @@
  * @description Tests for CampaignListRefreshSchedulable
  */
 @isTest
-private class CampaignListRefreshSchedulable_TEST {
+private with sharing class CampaignListRefreshSchedulable_TEST {
     @TestSetup
     private static void testData() {
         /*
@@ -654,6 +654,28 @@ private class CampaignListRefreshSchedulable_TEST {
             tn.nodes,
             w.cg.nodes
         );
+    }
+
+    @isTest
+    private static void testExecuteWithoutPerms() {
+        TestNodes tn = new TestNodes();
+        Boolean exceptionThrown = false;
+
+        CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
+        CampaignList.setService(serviceStub);
+
+        Test.startTest();
+        try {
+            CampaignTools_UTIL.throwException = true;
+            CampaignListRefreshSchedulable clrs = new CampaignListRefreshSchedulable();
+            clrs.execute(null);
+        } catch(CampaignTools_UTIL.PermsException ex) {
+            exceptionThrown = true;
+        }
+
+        Test.stopTest();
+
+        System.assert(exceptionThrown, 'A permissions exception should be thrown.');
     }
 
     @isTest

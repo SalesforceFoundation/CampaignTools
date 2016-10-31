@@ -33,7 +33,7 @@
  * @description Batch process for gathering potential campaign list members
  * from a given report.
  */
-public class CampaignListFromReportBatch extends BatchableSequence.Batch implements Database.Batchable<Id> {
+public with sharing class CampaignListFromReportBatch extends BatchableSequence.Batch implements Database.Batchable<Id> {
     /**
      * @description The id of the "campaign list" which the members should be
      * added to

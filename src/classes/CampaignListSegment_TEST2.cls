@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignListSegment_TEST2 {
+private with sharing class CampaignListSegment_TEST2 {
     private static testMethod void testCriteriaWithSingleSource() {
         /*
          * Criteria tree as s-expression:
