@@ -1,4 +1,4 @@
-public with sharing class AutocompleteController {
+public with sharing class AutocompleteController{
     @AuraEnabled
     public static List<ProviderResult> getSuggestions(String sObjectType, String term) {
         List<ProviderResult> providerResults = new List<ProviderResult>();
