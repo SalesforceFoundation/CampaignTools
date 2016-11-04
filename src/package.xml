@@ -2,7 +2,7 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Campaign+Tools</fullName>
     <types>
-        <members>AutocompleteController</members>
+        <members>Autocomplete_CTRL</members>
         <members>BatchableSequence</members>
         <members>BatchableSequence_TEST</members>
         <members>CampaignList</members>
