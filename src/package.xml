@@ -189,6 +189,8 @@
     </types>
     <types>
         <members>LightningDesignSystem</members>
+        <members>jquery</members>
+        <members>jqueryui</members>
         <members>momentjs</members>
         <members>transparencyjs</members>
         <name>StaticResource</name>
