@@ -1,0 +1,8 @@
+project:
+    name: CampaignTools
+    package:
+        name: Campaign Tools
+        namespace: camptools
+        api_version: 37.0
+    git:
+        release: rel/
