@@ -31,7 +31,7 @@
 private class CampaignListEditor_TEST {
 	
 	/*********************************************************************************************************
-    * @description Tests AutocompleteController with results
+    * @description Tests Autocomplete_CTRL with results
     */
     public static testMethod void testAutocompleteControllerWithResults() { 
         
@@ -40,7 +40,7 @@ private class CampaignListEditor_TEST {
 
         Test.startTest();
         
-        List<AutocompleteController.ProviderResult> listPR = AutocompleteController.getSuggestions('Campaign', 'Test');
+        List<Autocomplete_CTRL.ProviderResult> listPR = Autocomplete_CTRL.getSuggestions('Campaign', 'Test');
 
         Test.stopTest();
 
@@ -48,13 +48,13 @@ private class CampaignListEditor_TEST {
     }
 
     /*********************************************************************************************************
-    * @description Tests AutocompleteController without results
+    * @description Tests Autocomplete_CTRL without results
     */
     public static testMethod void testAutocompleteControllerWithoutResults() { 
         
         Test.startTest();
         
-        List<AutocompleteController.ProviderResult> listPR = AutocompleteController.getSuggestions('Campaign', 'Test');
+        List<Autocomplete_CTRL.ProviderResult> listPR = Autocomplete_CTRL.getSuggestions('Campaign', 'Test');
 
         Test.stopTest();
 
@@ -62,13 +62,13 @@ private class CampaignListEditor_TEST {
     }
 
     /*********************************************************************************************************
-    * @description Tests AutocompleteController with bad object Name
+    * @description Tests Autocomplete_CTRL with bad object Name
     */
     public static testMethod void testAutocompleteControllerWithBadObjectName() { 
         
         Test.startTest();
         
-        List<AutocompleteController.ProviderResult> listPR = AutocompleteController.getSuggestions('BadObjectName', 'Test');
+        List<Autocomplete_CTRL.ProviderResult> listPR = Autocomplete_CTRL.getSuggestions('BadObjectName', 'Test');
 
         Test.stopTest();
 
