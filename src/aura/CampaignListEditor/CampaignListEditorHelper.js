@@ -173,7 +173,7 @@
     saveSegmentData: function (component, campaignId, segmentData, callback) {
         var serializableProperties = [
             'segmentId', 'segmentType', 'rootSegmentId', 'parentId', 'sourceId',
-            'isExclusion', 'columnName', 'sourceName', 'children', status
+            'isExclusion', 'columnName', 'sourceName', 'children', 'status'
         ];
 
         var serializedSegmentTree = JSON.stringify(
