@@ -517,8 +517,7 @@ public with sharing abstract class CampaignListSegment implements CampaignList.S
                 getCampaignListId(),
                 campaignId,
                 sourceId,
-                'Campaign: ' + getSourceName(),
-                status
+                'Campaign: ' + getSourceName()
             );
 
             batch.setScope(10000);

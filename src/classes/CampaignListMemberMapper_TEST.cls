@@ -423,7 +423,8 @@ private with sharing class CampaignListMemberMapper_TEST {
                 s.Id,
                 s.Id,
                 false,
-                sourceId
+                sourceId,
+                ''
             );
 
             c = new Campaign(Name = 'Test Campaign');

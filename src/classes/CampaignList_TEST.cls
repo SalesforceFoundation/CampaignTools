@@ -212,6 +212,9 @@ public with sharing class CampaignList_TEST {
         public virtual void abortJob(Id jobId) {
             this.abortJobJobId = jobId;
         }
+        public virtual Map<String, String> getStatuses(Id campaignId) {
+            return new Map<String, String>();
+        }
     }
 
     public virtual class MemberStub implements CampaignList.Member {

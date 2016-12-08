@@ -256,7 +256,6 @@ public class CampaignListSegmentMapper implements CampaignList.SegmentMapper {
         segment still holds a reference to its children.
         */
         Iterator<CampaignList.Segment> segmentIterator = rootSegment.iterator();
-
         while(segmentIterator.hasNext()) {
             CampaignList.Segment next = segmentIterator.next();
             next.setParentId(null);
