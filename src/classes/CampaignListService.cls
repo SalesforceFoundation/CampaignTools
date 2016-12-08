@@ -35,6 +35,26 @@
  */
 public with sharing class CampaignListService implements CampaignList.Service {
     /**
+     * @description Retrieve the status available for the source campaign
+     * Returns a Map<String, String> where the campaign member status label is
+     * the key the value.
+     *
+     * @param campaignId The id of the campaign to find statuses
+     * @return Map<String, String>
+     */
+    public Map<String, String> getStatuses(Id campaignId) {
+        Map<String, String> statuses = new Map<String, String>();
+        for(CampaignMemberStatus status: [SELECT Label FROM CampaignMemberStatus WHERE CampaignId = :campaignId ORDER BY SortOrder ASC]) {
+            statuses.put(
+                status.Label,
+                status.Label
+            );
+        }
+
+        return statuses;
+    }
+
+    /**
      * @description Given a Campaign id and a corresponding "campaign list" id,
      * clear the Campaign's CampaignMembers and repopulate the Campaign with
      * CampaignMembers sourced from the campaign list's defined sources using

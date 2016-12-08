@@ -86,6 +86,19 @@
                             </c:autocomplete>
                         </div>
                     </div>
+                    <div class="slds-form-element slds-col--padded slds-size--1-of-5 slds-grow-none">
+                        <label class="slds-form-element__label">
+                            {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorStatus : $Label.c.CampaignToolsListEditorStatus)}
+                        </label>
+                        <div class="slds-form-element__control">
+                            <div class="slds-select_container">
+                                <ui:inputSelect class="slds-select"
+                                    aura:id="status"
+                                    change="{!c.handleStatus}"
+                                    />
+                            </div>
+                        </div>
+                    </div>
                 </aura:if>
                 <aura:if isTrue="{!v.allowDelete}">
                     <div class="slds-form-element slds-col--padded slds-grow-none slds-align-bottom">

@@ -100,6 +100,7 @@
         <members>Segment__c.Root_Segment__c</members>
         <members>Segment__c.Source_ID__c</members>
         <members>Segment__c.Source_Type__c</members>
+        <members>Segment__c.Status__c</members>
         <name>CustomField</name>
     </types>
     <types>
@@ -131,7 +132,9 @@
         <members>CampaignToolsListEditorSaveSuccessful</members>
         <members>CampaignToolsListEditorSelectIdColumn</members>
         <members>CampaignToolsListEditorSelectSourceType</members>
+        <members>CampaignToolsListEditorSelectStatus</members>
         <members>CampaignToolsListEditorSourceType</members>
+        <members>CampaignToolsListEditorStatus</members>
         <members>CampaignToolsListEditorTitle</members>
         <members>CampaignToolsListEditorYouAreHere</members>
         <members>CampaignToolsListFromCampaignExecuteException</members>

@@ -57,7 +57,8 @@ public with sharing class CampaignTools_UTIL {
         'Source_ID__c',
         'Exclude_Source__c',
         'Report_Column_Name__c',
-        'Root_Segment__c'
+        'Root_Segment__c',
+        'Status__c'
     };
     /** @description Set of campaign fields that require update access for editing campaign lists */
     private static Set<String> campListUpdateFields = new Set<String> {

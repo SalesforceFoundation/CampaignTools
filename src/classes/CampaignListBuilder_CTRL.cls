@@ -76,5 +76,14 @@ public with sharing class CampaignListBuilder_CTRL {
         }
     }
 
+    @AuraEnabled
+    public static Map<String, String> getStatuses(Id campaignId) {
+        try {
+            return CampaignList.getService().getStatuses(campaignId);
+        } catch (Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+
     public class NoColumnsException extends Exception {}
 }

@@ -164,12 +164,14 @@
     <apex:outputText value="{!$Label.CampaignToolsListEditorMethodException}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorOrJoin}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportColumn}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorStatus}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportName}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportType}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSave}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSaveError}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSaveSuccessful}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSelectIdColumn}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSelectStatus}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSelectSourceType}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSourceType}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorTitle}" rendered="false"/>

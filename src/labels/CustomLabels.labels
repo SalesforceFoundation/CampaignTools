@@ -225,12 +225,28 @@
         <value>Select Source Type</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsListEditorSelectStatus</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListEditorSelectStatus</shortDescription>
+        <value>Select Status</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsListEditorSourceType</fullName>
         <categories>CampaignTools,CampaignListEditor</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>CampaignToolsListEditorSourceType</shortDescription>
         <value>Source Type</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorStatus</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListEditorStatus</shortDescription>
+        <value>Status</value>
     </labels>
     <labels>
         <fullName>CampaignToolsListEditorTitle</fullName>
