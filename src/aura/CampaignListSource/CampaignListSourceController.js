@@ -6,9 +6,9 @@
 
     handleSourceType: function(component) {
         var selectCmp = component.find("sourceType");
-        var source = component.get('v.source');
-        source.segmentType = selectCmp.get("v.value");
-        component.set("v.source", source);
+        var segmentType = component.get('v.source.segmentType');
+        segmentType = selectCmp.get("v.value");
+        component.set("v.source.segmentType", segmentType);
     },
 
     handleColumnName: function(component) {

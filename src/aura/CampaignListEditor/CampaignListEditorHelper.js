@@ -46,7 +46,6 @@
         };
 
         this.setParentReferences(segmentTree, null);
-
         return segmentTree;
     },
 
@@ -90,7 +89,6 @@
             inclusionSegment = firstSubtree;
             exclusionSegment = secondSubtree;
         }
-
         return {
             segmentTree: segmentTree,
             inclusionSegment: inclusionSegment,
@@ -174,7 +172,7 @@
 
     saveSegmentData: function (component, campaignId, segmentData, callback) {
         var serializableProperties = [
-            'segmentType', 'rootSegmentId', 'parentId', 'sourceId',
+            'segmentId', 'segmentType', 'rootSegmentId', 'parentId', 'sourceId',
             'isExclusion', 'columnName', 'sourceName', 'children'
         ];
 
@@ -182,7 +180,6 @@
             segmentData.segmentTree,
             serializableProperties
         );
-
         this.apexControllerMethod(
             component,
             'c.saveCSegmentTree',
@@ -200,19 +197,28 @@
     },
 
     addSegment: function (group) {
-        group.children.push({
+        var segmentType;
+        var children = [];
+        children = group.children;
+        children.push({
+            segmentType: segmentType,
             isExclusion: false,
             parent: group
         });
+        group.children = children;
     },
 
     addGroup: function (group) {
+        var segmentType;
+        var children = [];
+        children = group.children;
         var newGroup = {
             segmentType: 'AND_SEGMENT',
             isExclusion: false,
             parent: group,
             children: [
                 {
+                    segmentType: segmentType,
                     isExclusion: false
                 }
             ]
@@ -220,13 +226,16 @@
 
         newGroup.children[0].parent = newGroup;
 
-        group.children.push(newGroup);
+        children.push(newGroup);
+        group.children = children;
     },
 
     deleteSegment: function (segment) {
         if (segment.parent) {
-            var siblings = segment.parent.children;
+            var siblings = [];
+            siblings = segment.parent.children;
             siblings.splice(siblings.indexOf(segment), 1);
+            segment.parent.children = siblings;
             if (siblings.length === 0) {
                 this.deleteSegment(segment.parent);
             }
