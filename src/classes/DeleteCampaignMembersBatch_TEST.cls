@@ -30,7 +30,7 @@
 @isTest
 private with sharing class DeleteCampaignMembersBatch_TEST {
     private static testMethod void testDeleteCampaignMembersBatch() {
-        CampaignList_TEST.TestCampaign tc = new CampaignList_TEST.TestCampaign('Test', 100, 100);
+        CampaignList_TEST.TestCampaign tc = new CampaignList_TEST.TestCampaign('Test', 100, 100, '');
 
         Integer memberCount = [
             SELECT COUNT()
