@@ -26,11 +26,11 @@
     handleStatus: function(component) {
         var selectCmp = component.find("status");
         var source = component.get('v.source');
-        var status = selectCmp.get("v.value");
-        if (status === '') {
-            delete source.status;
+        var statusIds = selectCmp.get("v.value");
+        if (statusIds === '') {
+            delete source.statusIds;
         } else {
-            source.status = status;
+            source.statusIds = statusIds;
         }
         component.set("v.source", source);
     },

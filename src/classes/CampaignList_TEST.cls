@@ -174,6 +174,8 @@ public with sharing class CampaignList_TEST {
         public Database.BatchableContext getJobIdBc;
         public Id getJobIdReturn;
         public Id abortJobJobId;
+        public Map<String,String> statusesMap;
+
         public virtual void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId) {
             this.updateCampaignFromCampaignListCampaignId = campaignId;
             this.updateCampaignFromCampaignListRootSegmentId = rootSegmentId;
@@ -213,7 +215,7 @@ public with sharing class CampaignList_TEST {
             this.abortJobJobId = jobId;
         }
         public virtual Map<String, String> getStatuses(Id campaignId) {
-            return new Map<String, String>();
+            return this.statusesMap;
         }
     }
 
@@ -292,7 +294,7 @@ public with sharing class CampaignList_TEST {
         public List<Lead> leads;
         public List<CampaignMember> campaignMembers;
 
-        public TestCampaign(String name, Integer numberOfContacts, Integer numberOfLeads) {
+        public TestCampaign(String name, Integer numberOfContacts, Integer numberOfLeads, String memberStatus) {
             campaign = new Campaign(Name = name);
             insert campaign;
 
@@ -321,14 +323,16 @@ public with sharing class CampaignList_TEST {
             for (Contact c : contacts) {
                 campaignMembers.add(new CampaignMember(
                     CampaignId = campaign.Id,
-                    ContactId = c.Id
+                    ContactId = c.Id,
+                    Status = memberStatus
                 ));
             }
 
             for (Lead l : leads) {
                 campaignMembers.add(new CampaignMember(
                     CampaignId = campaign.Id,
-                    LeadId = l.Id
+                    LeadId = l.Id,
+                    Status = memberStatus
                 ));
             }
 

@@ -65,6 +65,14 @@
         <value>Add Source</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsListEditorAllStatus</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListEditorAllStatus</shortDescription>
+        <value>All Statuses</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsListEditorAndJoin</fullName>
         <categories>CampaignTools,CampaignListEditor</categories>
         <language>en_US</language>
@@ -223,14 +231,6 @@
         <protected>false</protected>
         <shortDescription>CampaignToolsListEditorSelectSourceType</shortDescription>
         <value>Select Source Type</value>
-    </labels>
-    <labels>
-        <fullName>CampaignToolsListEditorSelectStatus</fullName>
-        <categories>CampaignTools,CampaignListEditor</categories>
-        <language>en_US</language>
-        <protected>true</protected>
-        <shortDescription>CampaignToolsListEditorSelectStatus</shortDescription>
-        <value>Select Status</value>
     </labels>
     <labels>
         <fullName>CampaignToolsListEditorSourceType</fullName>

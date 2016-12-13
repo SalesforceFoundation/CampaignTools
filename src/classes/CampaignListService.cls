@@ -36,8 +36,8 @@
 public with sharing class CampaignListService implements CampaignList.Service {
     /**
      * @description Retrieve the status available for the source campaign
-     * Returns a Map<String, String> where the campaign member status label is
-     * the key the value.
+     * Returns a Map<String, String> where the campaign member status id is the
+     * key and the label is the value.
      *
      * @param campaignId The id of the campaign to find statuses
      * @return Map<String, String>
@@ -46,7 +46,7 @@ public with sharing class CampaignListService implements CampaignList.Service {
         Map<String, String> statuses = new Map<String, String>();
         for(CampaignMemberStatus status: [SELECT Label FROM CampaignMemberStatus WHERE CampaignId = :campaignId ORDER BY SortOrder ASC]) {
             statuses.put(
-                status.Label,
+                status.Id,
                 status.Label
             );
         }

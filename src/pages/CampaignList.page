@@ -171,7 +171,7 @@
     <apex:outputText value="{!$Label.CampaignToolsListEditorSaveError}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSaveSuccessful}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSelectIdColumn}" rendered="false"/>
-    <apex:outputText value="{!$Label.CampaignToolsListEditorSelectStatus}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorAllStatus}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSelectSourceType}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSourceType}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorTitle}" rendered="false"/>

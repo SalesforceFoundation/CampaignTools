@@ -100,7 +100,7 @@
         <members>Segment__c.Root_Segment__c</members>
         <members>Segment__c.Source_ID__c</members>
         <members>Segment__c.Source_Type__c</members>
-        <members>Segment__c.Status__c</members>
+        <members>Segment__c.StatusIds__c</members>
         <name>CustomField</name>
     </types>
     <types>
@@ -112,6 +112,7 @@
         <members>CampaignToolsDeleteCampaignListMembersExecuteException</members>
         <members>CampaignToolsListEditorAddGroup</members>
         <members>CampaignToolsListEditorAddSource</members>
+        <members>CampaignToolsListEditorAllStatus</members>
         <members>CampaignToolsListEditorAndJoin</members>
         <members>CampaignToolsListEditorCampaignName</members>
         <members>CampaignToolsListEditorCampaignType</members>
@@ -132,7 +133,6 @@
         <members>CampaignToolsListEditorSaveSuccessful</members>
         <members>CampaignToolsListEditorSelectIdColumn</members>
         <members>CampaignToolsListEditorSelectSourceType</members>
-        <members>CampaignToolsListEditorSelectStatus</members>
         <members>CampaignToolsListEditorSourceType</members>
         <members>CampaignToolsListEditorStatus</members>
         <members>CampaignToolsListEditorTitle</members>

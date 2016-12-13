@@ -163,7 +163,7 @@ public class CampaignListSegmentMapper implements CampaignList.SegmentMapper {
                 Exclude_Source__c,
                 Report_Column_Name__c,
                 Root_Segment__c,
-                Status__c
+                StatusIds__c
             FROM Segment__c
             WHERE Root_Segment__c = :rootSegmentId
             OR Id = :rootSegmentId
@@ -196,8 +196,8 @@ public class CampaignListSegmentMapper implements CampaignList.SegmentMapper {
         } else if ('SOURCE' == segment.Operation__c) {
             Id sourceId = (Id) segment.Source_ID__c;
             if (Campaign.sObjectType == sourceId.getSObjectType()) {
-                String status = segment.Status__c;
-                return new CampaignListSegment.CampaignSourceSegment(segmentId, rootSegmentId, parentId, isExclusion, sourceId, status);
+                String statusIds = segment.StatusIds__c;
+                return new CampaignListSegment.CampaignSourceSegment(segmentId, rootSegmentId, parentId, isExclusion, sourceId, statusIds);
             } else if (Report.sObjectType == sourceId.getSObjectType()) {
                 String columnName = segment.Report_Column_Name__c;
                 return new CampaignListSegment.ReportSourceSegment(segmentId, rootSegmentId, parentId, isExclusion, sourceId, columnName);
@@ -381,7 +381,7 @@ public class CampaignListSegmentMapper implements CampaignList.SegmentMapper {
         public Boolean isExclusion;
         public String columnName;
         public String sourceName;
-        public String status;
+        public String statusIds;
         public List<SegmentData> children;
 
         /**
@@ -411,7 +411,7 @@ public class CampaignListSegmentMapper implements CampaignList.SegmentMapper {
                 segment = new CampaignListSegment.OrSegment(segmentId, rootSegmentId, parentId, isExclusion);
             } else if (CampaignList.SegmentType.CAMPAIGN_SOURCE_SEGMENT == segmentType) {
                 if (null == sourceId) return null;
-                segment = new CampaignListSegment.CampaignSourceSegment(segmentId, rootSegmentId, parentId, isExclusion, sourceId, status);
+                segment = new CampaignListSegment.CampaignSourceSegment(segmentId, rootSegmentId, parentId, isExclusion, sourceId, statusIds);
                 ((CampaignListSegment.SourceSegment) segment).setSourceName(sourceName);
             } else if (CampaignList.SegmentType.REPORT_SOURCE_SEGMENT == segmentType) {
                 if (null == sourceId) return null;

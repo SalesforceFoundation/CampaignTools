@@ -151,10 +151,10 @@
         <type>Picklist</type>
     </fields>
     <fields>
-        <fullName>Status__c</fullName>
-        <description>If this segment represents a campaign source, this field should hold the status of the campaign members that should be added.</description>
+        <fullName>StatusIds__c</fullName>
+        <description>If this segment represents a campaign source, this field should hold the member status Ids of the campaign members that should be added.</description>
         <externalId>false</externalId>
-        <label>Status</label>
+        <label>StatusIds</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
