@@ -33,7 +33,7 @@ private class CampaignListFromCampaignBatch_TEST {
         Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
         Id targetCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
 
-        CampaignList_TEST.TestCampaign testCampaign = new CampaignList_TEST.TestCampaign('Test', 100, 100);
+        CampaignList_TEST.TestCampaign testCampaign = new CampaignList_TEST.TestCampaign('Test', 100, 100, '');
 
         CampaignListFromCampaignBatch batch = new CampaignListFromCampaignBatch(
             rootSegmentId,
@@ -83,7 +83,6 @@ private class CampaignListFromCampaignBatch_TEST {
             memberMapperStub.updateByRelatedIdsAndSourceSourceName
         );
     }
-
     private static testMethod void testCampaignListFromCampaignBatchHandlesException() {
         CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
         CampaignList_TEST.MemberMapperStub memberMapperStub = new CampaignList_TEST.MemberMapperStub();
@@ -134,6 +133,65 @@ private class CampaignListFromCampaignBatch_TEST {
         System.assertEquals(
             jobId,
             serviceStub.abortJobJobId
+        );
+    }
+    private static testMethod void testCampaignListFromCampaignBatchHandlesStatus() {
+        CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
+        Id memberStatusId = CampaignList_TEST.getNextId(CampaignMemberStatus.sObjectType);
+        String memberStatus = 'Sent';
+        serviceStub.statusesMap = new Map<String,String>{memberStatusId => memberStatus};
+        CampaignList_TEST.TestCampaign testCampaign = new CampaignList_TEST.TestCampaign('Test', 100, 100, memberStatus);
+
+        CampaignList.setService(serviceStub);
+
+        Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id targetCampaignId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        Id sourceCampaignId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
+        String sourceCampaignName = 'Test Source Campaign';
+
+        CampaignListFromCampaignBatch batch = new CampaignListFromCampaignBatch(
+            rootSegmentId,
+            targetCampaignId,
+            testCampaign.campaign.Id,
+            testCampaign.campaign.Name,
+            memberStatusId
+        );
+        CampaignList_TEST.MemberMapperStub memberMapperStub = new CampaignList_TEST.MemberMapperStub();
+        CampaignList.setMemberMapper(memberMapperStub);
+
+        batch.setScope(200);
+        Test.startTest();
+        batch.executeBatch();
+        Test.stopTest();
+
+        Set<Id> relatedIds = new Set<Id>();
+
+        for (Contact c : testCampaign.contacts) {
+            relatedIds.add(c.Id);
+        }
+
+        for (Lead l : testCampaign.leads) {
+            relatedIds.add(l.Id);
+        }
+
+        System.assertEquals(
+            relatedIds,
+            new Set<Id>(memberMapperStub.updateByRelatedIdsAndSourceRelatedIds)
+        );
+
+        System.assertEquals(
+            rootSegmentId,
+            memberMapperStub.updateByRelatedIdsAndSourceRootSegmentId
+        );
+
+        System.assertEquals(
+            testCampaign.campaign.Id,
+            memberMapperStub.updateByRelatedIdsAndSourceSourceId
+        );
+
+        System.assertEquals(
+            testCampaign.campaign.Name,
+            memberMapperStub.updateByRelatedIdsAndSourceSourceName
         );
     }
 }

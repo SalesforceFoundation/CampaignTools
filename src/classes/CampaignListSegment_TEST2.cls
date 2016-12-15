@@ -1208,7 +1208,7 @@ private with sharing class CampaignListSegment_TEST2 {
         } else if ('AND' == operator) {
             return new CampaignListSegment.AndSegment(null, null, null, isExclusion);
         } else if ('SOURCE' == operator) {
-            return new CampaignListSegment.CampaignSourceSegment(null, null, null, isExclusion, sourceId);
+            return new CampaignListSegment.CampaignSourceSegment(null, null, null, isExclusion, sourceId, '');
         }
         return null;
     }

@@ -77,7 +77,8 @@ private with sharing class CampaignListSegment_TEST {
             rootSegmentId,
             parentId,
             false,
-            sourceId
+            sourceId,
+            ''
         );
 
         segment.setSourceName('Test Campaign');
