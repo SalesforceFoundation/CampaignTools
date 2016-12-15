@@ -473,15 +473,33 @@ public with sharing abstract class CampaignListSegment implements CampaignList.S
         private final CampaignList.SegmentType segmentType = CampaignList.SegmentType.CAMPAIGN_SOURCE_SEGMENT;
 
         /**
+         * @description the member status Ids of the campaign member to retrieve members
+         * from the campaign
+         */
+        private String statusIds;
+
+        /**
          * @description Construct a CampaignSourceSegment
          * @param segmentId The id of this segment
          * @param rootSegmentId The id of the "campaign list" this segment belongs to
          * @param parentId The immediate parent of this segment
          * @param sourceId The id of the source Campaign
          * @param isExclusion True if this source is intended to exclude members that are found in the given campaign.  False, otherwise.
+         * @param statusIds the member status Ids of the campaign member to use to retrieve members from the campaign
          */
-        public CampaignSourceSegment(Id segmentId, Id rootSegmentId, Id parentId, Boolean isExclusion, Id sourceId) {
+        public CampaignSourceSegment(Id segmentId, Id rootSegmentId, Id parentId, Boolean isExclusion, Id sourceId, String statusIds) {
             super(segmentId, rootSegmentId, parentId, isExclusion, sourceId);
+            this.statusIds = statusIds;
+        }
+
+        /**
+         * @description Get the status of the campaign member that this source
+         * segment is intending to use to retrieve members from the campaign
+         *
+         * @return String
+         */
+        public String getStatusIds() {
+           return statusIds;
         }
 
         /**
@@ -499,12 +517,24 @@ public with sharing abstract class CampaignListSegment implements CampaignList.S
                 getCampaignListId(),
                 campaignId,
                 sourceId,
-                'Campaign: ' + getSourceName()
+                'Campaign: ' + getSourceName(),
+                statusIds
             );
 
             batch.setScope(10000);
 
             return batch;
+        }
+
+        /**
+         * @description Return a Segment__c sObject that represents this CampaignListSegment
+         *
+         * @return Segment__c
+         */
+        public override Segment__c getSObject() {
+            Segment__c s = super.getSObject();
+            s.StatusIds__c = statusIds;
+            return s;
         }
     }
 
