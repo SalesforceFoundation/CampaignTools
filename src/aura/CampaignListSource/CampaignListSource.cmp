@@ -66,7 +66,7 @@
                     </div>
                 </aura:if>
                 <aura:if isTrue="{!v.source.segmentType == 'CAMPAIGN_SOURCE_SEGMENT'}">
-                    <div class="slds-form-element slds-col--padded slds-size--3-of-5 slds-grow-none">
+                    <div class="slds-form-element slds-col--padded slds-size--2-of-5 slds-grow-none">
                         <label class="slds-form-element__label">
                             {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorCampaignName : $Label.c.CampaignToolsListEditorCampaignName)}
                         </label>
@@ -86,9 +86,21 @@
                             </c:autocomplete>
                         </div>
                     </div>
+                    <div class="slds-form-element slds-col--padded slds-size--1-of-5 slds-grow-none">
+                        <label class="slds-form-element__label">
+                            {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorStatus : $Label.c.CampaignToolsListEditorStatus)}
+                        </label>
+                        <div class="slds-form-element__control" style="height: 125%; padding-bottom: 50px;">
+                            <ui:inputSelect class="slds-select"
+                                multiple="true"
+                                aura:id="status"
+                                change="{!c.handleStatus}"
+                                />
+                        </div>
+                    </div>
                 </aura:if>
                 <aura:if isTrue="{!v.allowDelete}">
-                    <div class="slds-form-element slds-col--padded slds-grow-none slds-align-bottom">
+                    <div class="slds-form-element slds-col--padded slds-grow-none slds-align-top slds-p-vertical--large">
                         <button
                             type="button"
                             class="slds-button slds-button--destructive"

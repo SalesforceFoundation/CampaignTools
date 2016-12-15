@@ -1,7 +1,7 @@
 ({
     handleSourceChange: function(component, event, helper) {
         var sourceSegment = event.getParam("value");
-        helper.updateReportColumns(component, helper, sourceSegment);
+        helper.updateDependentInputs(component, helper, sourceSegment);
     },
 
     handleSourceType: function(component) {
@@ -19,6 +19,18 @@
             delete source.columnName;
         } else {
             source.columnName = columnName;
+        }
+        component.set("v.source", source);
+    },
+
+    handleStatus: function(component) {
+        var selectCmp = component.find("status");
+        var source = component.get('v.source');
+        var statusIds = selectCmp.get("v.value");
+        if (statusIds === '') {
+            delete source.statusIds;
+        } else {
+            source.statusIds = statusIds;
         }
         component.set("v.source", source);
     },

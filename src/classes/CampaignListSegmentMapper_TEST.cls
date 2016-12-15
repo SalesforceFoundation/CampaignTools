@@ -225,8 +225,8 @@ private with sharing class CampaignListSegmentMapper_TEST {
         Id reportId = CampaignList_TEST.getNextId(Report.sObjectType);
         CampaignList.Segment rootSegment = new CampaignListSegment.AndSegment(null, null, null, false);
         CampaignList.Segment orSegment = new CampaignListSegment.OrSegment(null, null, null, false);
-        CampaignList.Segment campaignSourceSegment1 = new CampaignListSegment.CampaignSourceSegment(null, null, null, false, campaignId1);
-        CampaignList.Segment campaignSourceSegment2 = new CampaignListSegment.CampaignSourceSegment(null, null, null, true, campaignId2);
+        CampaignList.Segment campaignSourceSegment1 = new CampaignListSegment.CampaignSourceSegment(null, null, null, false, campaignId1, '');
+        CampaignList.Segment campaignSourceSegment2 = new CampaignListSegment.CampaignSourceSegment(null, null, null, true, campaignId2, '');
         CampaignList.Segment reportSourceSegment = new CampaignListSegment.ReportSourceSegment(null, null, null, false, reportId, 'TEST_COLUMN_NAME');
 
         orSegment.addChild(campaignSourceSegment2);
@@ -423,7 +423,8 @@ private with sharing class CampaignListSegmentMapper_TEST {
             existingRootSegment.Id,
             existingOrSegment.Id,
             false, // note this is being changed
-            campaignId2
+            campaignId2,
+            ''
         );
 
         CampaignList.Segment reportSourceSegment = new CampaignListSegment.ReportSourceSegment(

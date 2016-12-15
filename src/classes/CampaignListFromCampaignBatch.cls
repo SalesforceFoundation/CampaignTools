@@ -62,6 +62,13 @@ public class CampaignListFromCampaignBatch extends BatchableSequence.Batch imple
     private String sourceCampaignName;
 
     /**
+     * @description The member status Ids of the campaign members from the
+     * source campaign of potential members
+     */
+    @TestVisible
+    private String statusIds;
+
+    /**
      * @description Construct the batch process to gather potential members
      * from a given campaign for a given campaign list.
      *
@@ -78,14 +85,43 @@ public class CampaignListFromCampaignBatch extends BatchableSequence.Batch imple
     }
 
     /**
+     * @description Construct the batch process to gather potential members
+     * from a given campaign for a given campaign list.
+     *
+     * @param rootSegmentId The id of the "campaign list" which the members should be added to
+     * @param targetCampaignId The id of the Campaign being refreshed
+     * @param sourceCampaignId The id of the Campaign from which to gather potential members
+     * @param sourceCampaignName The name of the Campaign from which to gather potential members
+     * @param status The member status Ids of the campaign members from the source campaign of potential members
+     */
+    public CampaignListFromCampaignBatch(Id rootSegmentId, Id targetCampaignId, Id sourceCampaignId, String sourceCampaignName, String statusIds) {
+        this.rootSegmentId = rootSegmentId;
+        this.targetCampaignId = targetCampaignId;
+        this.sourceCampaignId = sourceCampaignId;
+        this.sourceCampaignName = sourceCampaignName;
+        this.statusIds = statusIds;
+    }
+
+    /**
      * @description Implementation of start() from Database.Batchable
      * interface.
      *
      * @return Database.QueryLocator The CampaignMembers from the specified source campaign
      */
     public Database.QueryLocator start(Database.BatchableContext bc) {
+        String queryStr = 'SELECT ContactId, LeadId FROM CampaignMember WHERE CampaignId = :sourceCampaignId';
+        if (!String.isEmpty(statusIds)) {
+            List<String> statusIdList = statusIds.split(';');
+            List<String> statusList = new List<String>();
+            Map<String,String> statuses = CampaignList.getService().getStatuses(sourceCampaignId);
+            for (String statusId : statusIdList) {
+                if (statuses.containsKey(statusId))
+                    statusList.add(statuses.get(statusId));
+            }
+            queryStr += ' AND Status IN :statusList';
+        }
         return Database.getQueryLocator(
-            'SELECT ContactId, LeadId FROM CampaignMember WHERE CampaignId = :sourceCampaignId'
+            queryStr
         );
     }
 
@@ -109,7 +145,6 @@ public class CampaignListFromCampaignBatch extends BatchableSequence.Batch imple
                     ids.add(cm.LeadId);
                 }
             }
-
             CampaignList.getMemberMapper().updateByRelatedIdsAndSource(
                 new List<Id>(ids),
                 rootSegmentId,
