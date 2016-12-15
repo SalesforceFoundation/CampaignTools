@@ -147,6 +147,31 @@
         );
     },
 
+    isValidSegment: function (component, segmentData) {
+        var inclusionChild = segmentData.inclusionSegment.children[0].children[0];
+        var exclusionChild = segmentData.exclusionSegment.children[0].children[0];
+        var this_ = this;
+
+        if (exclusionChild.sourceId && !inclusionChild.sourceId) {
+            var saveErrorLabel;
+            var saveErrorMessage;
+            if (component.get('v.nsPrefix') === 'camptools') {
+                saveErrorLabel = '$Label.camptools.CampaignToolsListEditorSaveError';
+                saveErrorMessage = '$Label.camptools.CampaignToolsListEditorSaveNoIncludes';
+            } else {
+                saveErrorLabel = '$Label.c.CampaignToolsListEditorSaveError';
+                saveErrorMessage = '$Label.c.CampaignToolsListEditorSaveNoIncludes';
+            }
+            this_.addPageMessage(
+                'error',
+                $A.get(saveErrorLabel),
+                $A.get(saveErrorMessage)
+            );
+            return false;
+        }
+        return true;
+    },
+
     loadSegmentTreeData: function (component, rootSegmentId, callback) {
         // If a rootSegmentId is provided, then query for the segmentTree
         // corresponding to that rootSegmentId.  Otherwise, generate an empty
@@ -175,7 +200,6 @@
             'segmentId', 'segmentType', 'rootSegmentId', 'parentId', 'sourceId',
             'isExclusion', 'columnName', 'sourceName', 'children', 'statusIds'
         ];
-
         var serializedSegmentTree = JSON.stringify(
             segmentData.segmentTree,
             serializableProperties

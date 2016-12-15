@@ -47,6 +47,10 @@
     handleSave: function (component, event, helper) {
         var segmentData = component.get('v.segmentData');
         var campaignId = component.get('v.campaignId');
+
+        if (!helper.isValidSegment(component, segmentData))
+            return;
+
         helper.saveSegmentData(
             component,
             campaignId,
@@ -65,16 +69,11 @@
                         err[0].message
                     );
                 } else {
-                    var saveSuccessLabel;
-                    if (component.get('v.nsPrefix') === 'camptools') {
-                        saveSuccessLabel = '$Label.camptools.CampaignToolsListEditorSaveSuccessful';
+                    if (typeof sforce === "undefined") {
+                        window.location.replace('/' + component.get('v.campaignId'));
                     } else {
-                        saveSuccessLabel = '$Label.c.CampaignToolsListEditorSaveSuccessful';
+                        sforce.one.back(true);
                     }
-                    helper.addPageMessage(
-                        'confirm',
-                        $A.get(saveSuccessLabel)
-                    );
                 }
             }
         );
