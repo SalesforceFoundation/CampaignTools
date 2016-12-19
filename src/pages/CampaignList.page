@@ -151,6 +151,7 @@
     recommended way to get the spider to package labels. -->
     <apex:outputText value="{!$Label.CampaignToolsListEditorAddGroup}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorAddSource}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorAllStatus}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorAndJoin}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorCampaignName}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorCampaignType}" rendered="false"/>
@@ -164,16 +165,16 @@
     <apex:outputText value="{!$Label.CampaignToolsListEditorMethodException}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorOrJoin}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportColumn}" rendered="false"/>
-    <apex:outputText value="{!$Label.CampaignToolsListEditorStatus}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportName}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportType}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSave}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSaveError}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSaveNoIncludes}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSaveSuccessful}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSelectIdColumn}" rendered="false"/>
-    <apex:outputText value="{!$Label.CampaignToolsListEditorAllStatus}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSelectSourceType}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSourceType}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorStatus}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorTitle}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorYouAreHere}" rendered="false"/>
 </apex:page>
