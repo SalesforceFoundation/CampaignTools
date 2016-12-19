@@ -147,12 +147,20 @@
         );
     },
 
-    isValidSegment: function (component, segmentData) {
-        var inclusionChild = segmentData.inclusionSegment.children[0].children[0];
-        var exclusionChild = segmentData.exclusionSegment.children[0].children[0];
+    isExcludeOnly: function (component, segmentData) {
+        var inclusionChild = segmentData.inclusionSegment.children[0];
+        var exclusionChild = segmentData.exclusionSegment.children[0];
+        var hasExclude = false;
+        var hasInclude = false;
         var this_ = this;
 
-        if (exclusionChild.sourceId && !inclusionChild.sourceId) {
+        if (exclusionChild.children.length > 0 && exclusionChild.children[0].sourceId)
+            hasExclude = true;
+
+        if (inclusionChild.children.length > 0 && inclusionChild.children[0].sourceId)
+            hasInclude = true;
+
+        if (hasExclude && !hasInclude) {
             var saveErrorLabel;
             var saveErrorMessage;
             if (component.get('v.nsPrefix') === 'camptools') {
@@ -167,9 +175,9 @@
                 $A.get(saveErrorLabel),
                 $A.get(saveErrorMessage)
             );
-            return false;
+            return true;
         }
-        return true;
+        return false;
     },
 
     loadSegmentTreeData: function (component, rootSegmentId, callback) {
