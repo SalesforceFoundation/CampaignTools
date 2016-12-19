@@ -209,6 +209,14 @@
         <value>Save Error</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsListEditorSaveNoIncludes</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListEditorSaveNoIncludes</shortDescription>
+        <value>Your list excludes Campaigns or Reports, but doesn&apos;t include any. Add some Campaign or Report sources before continuing.</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsListEditorSaveSuccessful</fullName>
         <categories>CampaignTools,CampaignListEditor</categories>
         <language>en_US</language>

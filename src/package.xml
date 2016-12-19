@@ -130,6 +130,7 @@
         <members>CampaignToolsListEditorReportType</members>
         <members>CampaignToolsListEditorSave</members>
         <members>CampaignToolsListEditorSaveError</members>
+        <members>CampaignToolsListEditorSaveNoIncludes</members>
         <members>CampaignToolsListEditorSaveSuccessful</members>
         <members>CampaignToolsListEditorSelectIdColumn</members>
         <members>CampaignToolsListEditorSelectSourceType</members>

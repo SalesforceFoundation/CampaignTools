@@ -147,6 +147,39 @@
         );
     },
 
+    isExcludeOnly: function (component, segmentData) {
+        var inclusionChild = segmentData.inclusionSegment.children[0];
+        var exclusionChild = segmentData.exclusionSegment.children[0];
+        var hasExclude = false;
+        var hasInclude = false;
+        var this_ = this;
+
+        if (exclusionChild.children.length > 0 && exclusionChild.children[0].sourceId)
+            hasExclude = true;
+
+        if (inclusionChild.children.length > 0 && inclusionChild.children[0].sourceId)
+            hasInclude = true;
+
+        if (hasExclude && !hasInclude) {
+            var saveErrorLabel;
+            var saveErrorMessage;
+            if (component.get('v.nsPrefix') === 'camptools') {
+                saveErrorLabel = '$Label.camptools.CampaignToolsListEditorSaveError';
+                saveErrorMessage = '$Label.camptools.CampaignToolsListEditorSaveNoIncludes';
+            } else {
+                saveErrorLabel = '$Label.c.CampaignToolsListEditorSaveError';
+                saveErrorMessage = '$Label.c.CampaignToolsListEditorSaveNoIncludes';
+            }
+            this_.addPageMessage(
+                'error',
+                $A.get(saveErrorLabel),
+                $A.get(saveErrorMessage)
+            );
+            return true;
+        }
+        return false;
+    },
+
     loadSegmentTreeData: function (component, rootSegmentId, callback) {
         // If a rootSegmentId is provided, then query for the segmentTree
         // corresponding to that rootSegmentId.  Otherwise, generate an empty
@@ -175,7 +208,6 @@
             'segmentId', 'segmentType', 'rootSegmentId', 'parentId', 'sourceId',
             'isExclusion', 'columnName', 'sourceName', 'children', 'statusIds'
         ];
-
         var serializedSegmentTree = JSON.stringify(
             segmentData.segmentTree,
             serializableProperties
