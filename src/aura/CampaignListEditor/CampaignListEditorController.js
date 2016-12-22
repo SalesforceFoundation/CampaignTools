@@ -22,6 +22,7 @@
                     );
                 }
                 component.set('v.segmentData', segmentTreeData);
+                component.set('v.showSpinner', false);
             }
         );
     },

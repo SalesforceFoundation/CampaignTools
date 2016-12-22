@@ -8,6 +8,16 @@
             }
         </style>
 
+        <!-- start with a spinner here until lightning loads -->
+        <div class="slds" id="initialSpinner">
+            <div class="slds-spinner_container" style="z-index:999;" > <!-- fixes bug on some browsers where z-order from SLDS was an expression with an error -->            
+                <div class="slds-spinner--brand slds-spinner slds-spinner--medium" style="position:fixed;top:40%;" aria-hidden="false" role="alert">
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>  
+        </div>
+
         <div id="pageMessages"></div>
 
         <div class="slds">
@@ -118,7 +128,10 @@
                         nsPrefix: nsPrefix
                     },
                     "lightning",
-                    function(component) {}
+                    function(component) {
+                        // hide our startup spinner
+                        document.getElementById('initialSpinner').style.display = 'none';                                       
+                    }
                 );
             }
 
