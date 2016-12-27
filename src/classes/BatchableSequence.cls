@@ -40,6 +40,7 @@ public with sharing class BatchableSequence implements Interface_x {
         Batch add(Batch b);
         Batch add(Batch b, Integer scope);
         Id run();
+        Integer count();
     }
 
     public interface Factory {
@@ -96,6 +97,15 @@ public with sharing class BatchableSequence implements Interface_x {
             return batches.get(0).executeBatch();
         }
         return null; // @todo throw exception instead?
+    }
+
+    /**
+     * @description return the count of jobs in this batchable
+     *
+     * @return Integer 
+     */
+    public Integer count() {
+        return batches.size();
     }
 
     /**
