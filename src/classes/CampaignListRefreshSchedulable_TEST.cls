@@ -760,8 +760,9 @@ private with sharing class CampaignListRefreshSchedulable_TEST {
 
     private class ServiceStubUpdateList extends CampaignList_TEST.ServiceStub {
         public List<UpdateCall> calls = new List<UpdateCall>();
-        public override void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
+        public override Integer updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
             calls.add(new UpdateCall(campaignId, rootSegmentId, acquireLock));
+            return 1;
         }
     }
 

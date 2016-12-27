@@ -147,6 +147,9 @@ private with sharing class CampaignListService_TEST {
         public Id run() {
             return null;
         }
+        public Integer count() {
+            return 0;
+        }
     }
 
     private static testMethod void testUpdateCampaignStatus() {
