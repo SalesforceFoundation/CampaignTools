@@ -176,20 +176,22 @@ public with sharing class CampaignList_TEST {
         public Id abortJobJobId;
         public Map<String,String> statusesMap;
 
-        public virtual void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId) {
+        public virtual Integer updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId) {
             this.updateCampaignFromCampaignListCampaignId = campaignId;
             this.updateCampaignFromCampaignListRootSegmentId = rootSegmentId;
             if (null != this.updateCampaignFromCampaignListException) {
                 throw this.updateCampaignFromCampaignListException;
             }
+            return 1;
         }
-        public virtual void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
+        public virtual Integer updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
             this.updateCampaignFromCampaignListCampaignId = campaignId;
             this.updateCampaignFromCampaignListRootSegmentId = rootSegmentId;
             this.updateCampaignFromCampaignListAcquireLock = acquireLock;
             if (null != this.updateCampaignFromCampaignListException) {
                 throw this.updateCampaignFromCampaignListException;
             }
+            return 1;
         }
         public virtual void updateCampaignStatus(Id campaignId, CampaignList.UpdateStatus status) {
             this.updateCampaignStatusCampaignId = campaignId;

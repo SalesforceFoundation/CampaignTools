@@ -37,12 +37,16 @@ public with sharing class JobProgress_CTRL {
      * @description A RemoteAction method for querying the AsyncApexJob table.
      *
      * @param numberOfJobs The limit of number of jobs that should be returned in the query
+     * @param createdDateMin The minimum CreatedDate for jobs to include
      * @return List<BatchJobStatus>
      */
     @RemoteAction
-    public static List<BatchJobStatus> getBatchJobsStatus(Integer numberOfJobs) {
+    public static List<BatchJobStatus> getBatchJobsStatus(Integer numberOfJobs, DateTime createdDateMin) {
         List<BatchJobStatus> jobsStatus = new List<BatchJobStatus>();
             List<AsyncApexJob> jobs = new List<AsyncApexJob>();
+            
+            if (createdDateMin == null)   
+                createdDateMin = system.now().addDays(-1);
 
             try {
                 CampaignTools_UTIL.checkObjectReadAccess('AsyncApexJob');
@@ -59,6 +63,7 @@ public with sharing class JobProgress_CTRL {
                     NumberOfErrors
                     FROM AsyncApexJob
                     WHERE JobType = 'BatchApex'
+                    AND CreatedDate >= :createdDateMin
                     ORDER BY CreatedDate DESC
                     LIMIT :numberOfJobs
                 ];
