@@ -37,8 +37,8 @@ public with sharing abstract class CampaignList {
 
     public interface Service {
         Map<String, String> getStatuses(Id campaignId);
-        void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId);
-        void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock);
+        Integer updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId);
+        Integer updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock);
         void updateCampaignStatus(Id campaignId, UpdateStatus status);
         void unlockCampaignAndMarkFailed(Id campaignId, String errorMessage);
         Integer getFlexQueueCapacity(Integer maxFreeSlots);

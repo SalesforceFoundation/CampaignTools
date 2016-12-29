@@ -37,6 +37,11 @@
         description="The id of the DOM Element to use for events"
         />
 
+    <apex:attribute name="createdDateMin"
+        type="DateTime"
+        description="The CreatedDate that jobs must be greater or equal to"
+        />
+
     <style type="text/css">
         svg {
             width: 100%;
@@ -218,9 +223,11 @@
         }
 
         function refreshJobsList() {
+            var dtMinUTC = new Date('{!createdDateMin}').toUTCString();
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.JobProgress_CTRL.getBatchJobsStatus}',
                 {!cNumberOfJobs},
+                dtMinUTC,
                 function (result, event) {
                     sendProgressEvents(result);
                     var jobsListContainer = document.getElementById('jobsListContainer');
