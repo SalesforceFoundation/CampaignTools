@@ -62,10 +62,10 @@ public with sharing class CampaignListService implements CampaignList.Service {
      *
      * @param campaignId The id of the Campaign to be updated (note existing CampaignMember records will be deleted and replaced)
      * @param rootSegmentId The "campaign list" id
-     * @return void
+     * @return Integer the number of batches to be run
      */
-    public void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId) {
-        updateCampaignFromCampaignList(campaignId, rootSegmentId, true);
+    public Integer updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId) {
+        return updateCampaignFromCampaignList(campaignId, rootSegmentId, true);
     }
 
     /**
@@ -77,9 +77,9 @@ public with sharing class CampaignListService implements CampaignList.Service {
      * @param campaignId The id of the Campaign to be updated (note existing CampaignMember records will be deleted and replaced)
      * @param rootSegmentId The "campaign list" id
      * @param acquireLock Whether to attempt to maintain lock on campaign
-     * @return void
+     * @return Integer the number of batches to be run
      */
-    public void updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
+    public integer updateCampaignFromCampaignList(Id campaignId, Id rootSegmentId, Boolean acquireLock) {
         BatchableSequence.Interface_x batchSequence = CampaignList.getBatchableSequenceFactory().create();
         CampaignList.Segment segmentTree = CampaignList.getSegmentMapper().getSegmentTreeByRootId(rootSegmentId);
 
@@ -125,6 +125,7 @@ public with sharing class CampaignListService implements CampaignList.Service {
 
         CampaignList.getService().updateCampaignStatus(campaignId, CampaignList.UpdateStatus.Processing);
         batchSequence.run();
+        return batchSequence.count();
     }
 
     /**

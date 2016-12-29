@@ -10,31 +10,54 @@
     <body>
         <div class="slds">
             <c:PageMessages />
+            
+            <div class="slds-page-header" role="banner">
 
-            <div class="slds-page-header slds-m-bottom--large" role="banner">
-                <nav class="slds-m-bottom--xx-small" role="navigation">
-                    <p id="bread-crumb-label" class="slds-assistive-text">You are here:</p>
-                    <ol class="slds-breadcrumb slds-list--horizontal" aria-labelledby="bread-crumb-label">
-                        <li class="slds-list__item slds-text-heading--label">
-                            <apex:outputLink value="{!URLFOR($Action.Campaign.Tab, $ObjectType.Campaign)}">
-                                <apex:outputText value="{!$ObjectType.Campaign.labelPlural}"/>
-                            </apex:outputLink>
-                        </li>
-                        <li class="slds-list__item slds-text-heading--label">
-                            <apex:outputLink value="{!URLFOR($Action.Campaign.View, Campaign.Id)}">
-                                <apex:outputText value="{!Campaign.Name}"/>
-                            </apex:outputLink>
-                        </li>
-                    </ol>
-                </nav>
+                <div class="slds-grid">
+                    <div class="slds-col slds-has-flexi-truncate">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <img class="slds-icon slds-icon--large slds-icon-standard-campaign" src="{!URLFOR($Resource.LightningDesignSystem, '1_0_2/assets/icons/standard/campaign.svg')}"/>
+                            </div>
+                            <div class="slds-media__body">
+                                <nav role="navigation">
+                                    <p id="bread-crumb-label" class="slds-assistive-text">
+                                        <apex:outputText value="{!$Label.CampaignToolsListEditorYouAreHere}"/>
+                                    </p>
+                                    <ol class="slds-breadcrumb slds-list--horizontal" aria-labelledby="bread-crumb-label">
+                                        <li class="slds-list__item slds-text-heading--label">
+                                            <a class="slds-type-focus" href="{!URLFOR($Action.Campaign.Tab, $ObjectType.Campaign)}">
+                                                <apex:outputText value="{!$ObjectType.Campaign.LabelPlural}"/>
+                                            </a>
+                                        </li>
+                                        <li class="slds-list__item slds-text-heading--label">
+                                            <a class="slds-type-focus" href="{!URLFOR($Action.Campaign.View, Campaign.Id)}">
+                                                <apex:outputText value="{!Campaign.Name}"/>
+                                            </a>
+                                        </li>
+                                    </ol>
+                                </nav>
 
-                <h1 class="slds-text-heading--medium slds-truncate" title="{!HTMLENCODE($Label.CampaignToolsListRefreshPageTitle)}">
-                    <apex:outputText value="{!$Label.CampaignToolsListRefreshPageTitle}"/>
-                </h1>
+                                <h1 class="slds-page-header__title slds-truncate" title="{!HTMLENCODE($Label.CampaignToolsListEditorTitle)}">
+                                    <apex:outputText value="{!$Label.CampaignToolsListRefreshPageTitle}"/>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-col slds-no-flex slds-align-bottom">
+                        <div class="slds-button-group" role="group">
+                            <a href="{!URLFOR($Action.Campaign.View, Campaign.Id)}" class="slds-button slds-button--neutral">
+                                <apex:outputText value="{!$Label.CampaignToolsListEditorCloseModal}"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
 
             <div class="slds-grid slds-wrap slds-m-vertical--large">
-                <div class="slds-col slds-small-size--1-of-1 slds-medium-size--2-of-3 slds-p-horizontal--large slds-m-bottom--large">
+                <div class="slds-col slds-small-size--1-of-1 slds-medium-size--1-of-3 slds-p-horizontal--large slds-m-bottom--large">
                     <div class="slds-card">
                         <div class="slds-card__header slds-grid">
                             <h4 id="update_status_heading" class="slds-text-heading--small"></h4>
@@ -50,8 +73,8 @@
 
                 </div>
 
-                <div class="slds-col slds-small-size--1-of-1 slds-medium-size--1-of-3 slds-p-horizontal--large slds-col-rule--left">
-                    <c:JobProgress cNumberOfJobs="4" pollingDelay="10000"/>
+                <div class="slds-col slds-small-size--1-of-1 slds-medium-size--2-of-3 slds-p-horizontal--large slds-col-rule--left">
+                    <c:JobProgress cNumberOfJobs="{!countBatches}" createdDateMin="{!createdDateMin}" pollingDelay="10000"/>
                 </div>
             </div>
 

@@ -43,6 +43,14 @@ public with sharing class ProcessSegmentBTN_CTRL {
      * @description True when permissions error occurs on page
      */
     private static Boolean hasPerms;
+    /**
+     * @description the count of batches that will be run
+     */
+    public Integer countBatches { get; private set; }
+    /**
+     * @description the minimum CreatedDate of Jobs to display progress on
+     */
+    public DateTime createdDateMin { get; private set; }
 
     /**
     * @description Constructor
@@ -85,7 +93,8 @@ public with sharing class ProcessSegmentBTN_CTRL {
         CampaignList.Service service = CampaignList.getService();
 
         try {
-            service.updateCampaignFromCampaignList(
+            createdDateMin = System.now();
+            countBatches = service.updateCampaignFromCampaignList(
                 campaign.Id,
                 campaign.Campaign_List__c
             );
