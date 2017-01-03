@@ -100,8 +100,10 @@ public virtual class CampaignListMemberMapper implements CampaignList.MemberMapp
         }
 
         insert campaignMembersToInsert;
-        delete membersToDelete;
-        Database.emptyRecycleBin(membersToDelete);
+        if (membersToDelete.size() > 0) {
+            delete membersToDelete;
+            Database.emptyRecycleBin(membersToDelete);
+        }
     }
 
     /**
@@ -276,9 +278,11 @@ public virtual class CampaignListMemberMapper implements CampaignList.MemberMapp
      * @param member The member objects to delete
      */
     private void deleteMembers(List<CampaignList.Member> members) {
-        List<Member__c> memberObjects = getMemberSObjects(members);
-        delete memberObjects;
-        Database.emptyRecycleBin(memberObjects);
+        if (members.size() > 0) {
+            List<Member__c> memberObjects = getMemberSObjects(members);
+            delete memberObjects;
+            Database.emptyRecycleBin(memberObjects);
+        }
     }
 
     /**
