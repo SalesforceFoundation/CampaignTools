@@ -5,4 +5,4 @@ project:
         namespace: camptools
         api_version: 37.0
     git:
-        release: rel/
+        prefix_release: rel/
