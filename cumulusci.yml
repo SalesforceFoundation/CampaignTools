@@ -5,4 +5,10 @@ project:
         namespace: camptools
         api_version: 37.0
     git:
-        release: rel/
+        prefix_release: rel/
+
+flows:
+    ci_feature:
+        # CumulusCI's debug log parser errors if using test data loads, so don't parse debug logs on tests
+        7:
+            task: run_tests
