@@ -16,7 +16,7 @@
         var source = component.get('v.source');
         var columnName = selectCmp.get("v.value");
         if (columnName === '') {
-            delete source.columnName;
+            source.columnName = null;
         } else {
             source.columnName = columnName;
         }
@@ -28,7 +28,7 @@
         var source = component.get('v.source');
         var statusIds = selectCmp.get("v.value");
         if (statusIds === '') {
-            delete source.statusIds;
+            source.statusIds = null;
         } else {
             source.statusIds = statusIds;
         }
