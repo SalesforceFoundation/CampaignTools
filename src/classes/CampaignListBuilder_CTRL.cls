@@ -53,37 +53,47 @@ public with sharing class CampaignListBuilder_CTRL {
 
     @AuraEnabled
     public static String getSerializedSegmentTree(Id rootSegmentId) {
-        CampaignList.SegmentMapper mapper = new CampaignListSegmentMapper();
-        return JSON.serialize(mapper.getSegmentTreeByRootId(rootSegmentId));
+        try {
+            CampaignTools_UTIL.checkCampaignListPermission();
+            CampaignList.SegmentMapper mapper = new CampaignListSegmentMapper();
+            return JSON.serialize(mapper.getSegmentTreeByRootId(rootSegmentId));
+        } catch (CampaignTools_UTIL.PermsException ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
     }
 
     @AuraEnabled
     public static boolean saveCSegmentTree(ID campaignId, string csegRoot) {
-        CampaignList.SegmentMapper mapper = new CampaignListSegmentMapper();
-        CampaignList.Segment segmentTree = mapper.deserializeSegmentFromJSON(csegRoot);
-        Id rootSegmentId = mapper.upsertSegmentTreeByRootSegment(segmentTree);
-        update new Campaign(Id = campaignId, Campaign_List__c = rootSegmentId);
-        return true;
+        try {
+            CampaignTools_UTIL.checkCampaignListPermission();
+            CampaignList.SegmentMapper mapper = new CampaignListSegmentMapper();
+            CampaignList.Segment segmentTree = mapper.deserializeSegmentFromJSON(csegRoot);
+            Id rootSegmentId = mapper.upsertSegmentTreeByRootSegment(segmentTree);
+            update new Campaign(Id = campaignId, Campaign_List__c = rootSegmentId);
+            return true;
+        } catch (CampaignTools_UTIL.PermsException ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
     }
 
     @AuraEnabled
     public static Map<String, String> getReportIdColumns(Id reportId) {
         try {
+            CampaignTools_UTIL.checkCampaignListPermission();
             CampaignList.ReportService service = CampaignList.getReportService();
             return service.getIdColumns(reportId);
-        } catch (Exception e) {
-            throw new NoColumnsException();
+        } catch (Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
         }
     }
 
     @AuraEnabled
     public static Map<String, String> getStatuses(Id campaignId) {
         try {
+            CampaignTools_UTIL.checkCampaignListPermission();
             return CampaignList.getService().getStatuses(campaignId);
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
         }
     }
-
-    public class NoColumnsException extends Exception {}
 }

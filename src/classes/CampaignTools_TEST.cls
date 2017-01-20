@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignTools_TEST {
+private with sharing class CampaignTools_TEST {
 	/*********************************************************************************************************
     * @description Tests getting namespace
     */

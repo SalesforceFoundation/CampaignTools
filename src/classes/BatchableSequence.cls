@@ -35,7 +35,7 @@
  * Batchable in the sequence upon finishing.  You can use this class to cause a
  * series of Batchable classes to execute in serial order.
  */
-public with sharing class BatchableSequence implements Interface_x {
+public without sharing class BatchableSequence implements Interface_x {
     public interface Interface_x {
         Batch add(Batch b);
         Batch add(Batch b, Integer scope);
@@ -47,7 +47,7 @@ public with sharing class BatchableSequence implements Interface_x {
         Interface_x create();
     }
 
-    public class DefaultFactory implements Factory {
+    public without sharing class DefaultFactory implements Factory {
         public Interface_x create() {
             return new BatchableSequence();
         }
@@ -114,7 +114,7 @@ public with sharing class BatchableSequence implements Interface_x {
      * @description An individual batch that can be added to a batchable
      * sequence.
      */
-    public abstract class Batch {
+    public abstract without sharing class Batch {
 
         /** @description The next batch to run after this one finishes */
         @TestVisible

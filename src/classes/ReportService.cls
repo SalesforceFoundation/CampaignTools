@@ -33,7 +33,7 @@
  * @description A service class that provides methods for interacting with
  * reports via the Analytics API.
  */
-public with sharing class ReportService implements CampaignList.ReportService {
+public without sharing class ReportService implements CampaignList.ReportService {
     /**
      * @description Retrieve the labels and ids of columns of type ID_TYPE from
      * the given report.  Returns a Map<String, String> where the column id is
@@ -124,7 +124,7 @@ public with sharing class ReportService implements CampaignList.ReportService {
      * from the given column, meaning that if a value has already been returned
      * by this iterator then that value will be skipped next time.
      */
-    public class ReportRowIdIterableIterator implements Iterator<Id>, Iterable<Id> {
+    public without sharing class ReportRowIdIterableIterator implements Iterator<Id>, Iterable<Id> {
         /** @description The id of the report to iterate over */
         @TestVisible
         private Id reportId;
@@ -252,7 +252,7 @@ public with sharing class ReportService implements CampaignList.ReportService {
      * Iterator only if they are strictly greater than the previously returned id.
      */
     @TestVisible
-    private class IteratorMonotonicIncreasingIdFilter implements Iterator<Id> {
+    private without sharing class IteratorMonotonicIncreasingIdFilter implements Iterator<Id> {
         private Iterator<Id> iterator;
         private Id lastSeenId;
         private Boolean hasNext;

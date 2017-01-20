@@ -33,7 +33,8 @@
  * @description Batch process for clearing a Campaign's associated
  * CampaignMember records
  */
-public class DeleteCampaignMembersBatch extends BatchableSequence.Batch implements Database.Batchable<sObject> {
+public without sharing class DeleteCampaignMembersBatch
+    extends BatchableSequence.Batch implements Database.Batchable<sObject> {
     /** @description the id of the Campaign to clear */
     @TestVisible
     private Id campaignId;
