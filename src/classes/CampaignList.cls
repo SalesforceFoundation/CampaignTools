@@ -33,7 +33,7 @@
  * @description This class holds interface definitions for other objects in the
  * CampaignTools group, as well as some service locator methods.
  */
-public abstract without sharing class CampaignList {
+public abstract with sharing class CampaignList {
 
     public interface Service {
         Map<String, String> getStatuses(Id campaignId);

@@ -33,7 +33,7 @@
  * @description A service class that provides methods to perform actions
  * related to campaign lists.
  */
-public without sharing class CampaignListService implements CampaignList.Service {
+public with sharing class CampaignListService implements CampaignList.Service {
     /**
      * @description Retrieve the status available for the source campaign
      * Returns a Map<String, String> where the campaign member status id is the

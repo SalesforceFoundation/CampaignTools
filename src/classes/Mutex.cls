@@ -32,7 +32,7 @@
  * @group Mutex
  * @description Allows obtaining a mutex on a particular record, as long as that record has a mutex datetime field.  This relies on SELECT ... FOR UPDATE for concurrency control.
  */
-public without sharing class Mutex implements MutexInterface {
+public with sharing class Mutex implements MutexInterface {
     /**
      * @description The recordId of the record to be locked
      */
@@ -229,7 +229,7 @@ public without sharing class Mutex implements MutexInterface {
         MutexInterface create(Id recordId, Schema.SObjectField mutexField);
     }
 
-    public without sharing class DefaultFactory implements Factory {
+    public with sharing class DefaultFactory implements Factory {
         public MutexInterface create(Id recordId, Schema.SObjectField mutexField) {
             return new Mutex(recordId, mutexField);
         }

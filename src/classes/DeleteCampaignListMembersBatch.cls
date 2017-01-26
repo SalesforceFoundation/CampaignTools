@@ -33,7 +33,7 @@
  * @description Batch process for cleaning up a campaign list's temporary
  * Member__c records
  */
-public without sharing class DeleteCampaignListMembersBatch
+public with sharing class DeleteCampaignListMembersBatch
     extends BatchableSequence.Batch implements Database.Batchable<sObject> {
     /** @description The "campaign list" id */
     @TestVisible

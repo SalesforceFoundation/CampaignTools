@@ -33,7 +33,7 @@
  * @description A model class that represents a potential member of a campaign
  * list
  */
-public without sharing class CampaignListMember implements CampaignList.Member {
+public with sharing class CampaignListMember implements CampaignList.Member {
     /** @description The id of the campaign list member, if persisted */
     private Id memberId;
 

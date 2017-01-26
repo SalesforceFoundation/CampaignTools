@@ -32,7 +32,7 @@
  * @group CampaignTools
  * @description A Schedulable for refreshing marked Campaigns from Campaign Lists
  */
-public without sharing class CampaignListRefreshSchedulable implements Schedulable {
+public with sharing class CampaignListRefreshSchedulable implements Schedulable {
     /**
      * @description Implementation of Schedulable.execute() method.  This will
      * begin the process of refreshing Campaigns that have been marked for
@@ -175,7 +175,7 @@ public without sharing class CampaignListRefreshSchedulable implements Schedulab
      * dependencies resolved and are ready for scheduling.
      */
     @TestVisible
-    private without sharing class CampaignGraph {
+    private with sharing class CampaignGraph {
         /**
          * @description The CampaignNodes that make up this graph.
          */
@@ -531,7 +531,7 @@ public without sharing class CampaignListRefreshSchedulable implements Schedulab
      * dependencies.
      */
     @TestVisible
-    private without sharing class CampaignNode implements Comparable {
+    private with sharing class CampaignNode implements Comparable {
         /**
          * @description The id of the Campaign associated with this node
          */
@@ -647,7 +647,7 @@ public without sharing class CampaignListRefreshSchedulable implements Schedulab
      * @author Salesforce.org
      * @description A class representing a directed edge in the CampaignGraph.
      */
-    private without sharing class Edge {
+    private with sharing class Edge {
         /**
          * @description The CampaignNode from which this edge connects to
          * another node.
@@ -682,7 +682,7 @@ public without sharing class CampaignListRefreshSchedulable implements Schedulab
      * of the Campaigns needed to be scheduled, it will call itself
      * recursively.
      */
-    public without sharing class Worker implements Queueable {
+    public with sharing class Worker implements Queueable {
         /**
          * @description The CampaignGraph that represents the dependencies
          * between Campaigns to be updated.

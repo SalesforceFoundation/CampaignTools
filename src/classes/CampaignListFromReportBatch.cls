@@ -33,7 +33,7 @@
  * @description Batch process for gathering potential campaign list members
  * from a given report.
  */
-public without sharing class CampaignListFromReportBatch
+public with sharing class CampaignListFromReportBatch
     extends BatchableSequence.Batch implements Database.Batchable<Id> {
     /**
      * @description The id of the "campaign list" which the members should be
@@ -105,7 +105,7 @@ public without sharing class CampaignListFromReportBatch
      * iterable.  This will create a ReportService.ReportRowIdIterableIterator.
      */
     @TestVisible
-    private without sharing class DefaultIdIterableFactory implements IdIterableFactory {
+    private with sharing class DefaultIdIterableFactory implements IdIterableFactory {
         /**
          * @description Create a ReportService.ReportRowIdIterableIterator
          * using the given parameters.

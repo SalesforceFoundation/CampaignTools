@@ -32,7 +32,7 @@
  * @group CampaignTools
  * @description A mapper class for CampaignListMember objects
  */
-public virtual without sharing class CampaignListMemberMapper implements CampaignList.MemberMapper {
+public virtual with sharing class CampaignListMemberMapper implements CampaignList.MemberMapper {
     /**
      * @description Given a list of related record ids, i.e. Contact or Lead
      * record ids, a campaign list id, and the id and name of a source, i.e. a
