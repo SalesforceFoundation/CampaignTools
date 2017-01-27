@@ -90,7 +90,7 @@
                         <label class="slds-form-element__label">
                             {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorStatus : $Label.c.CampaignToolsListEditorStatus)}
                         </label>
-                        <div class="slds-form-element__control" style="height: 125%; padding-bottom: 50px;">
+                        <div class="slds-form-element__control" style="height: 100px;">
                             <ui:inputSelect class="slds-select"
                                 multiple="true"
                                 aura:id="status"
