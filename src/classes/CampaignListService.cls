@@ -144,6 +144,7 @@ public with sharing class CampaignListService implements CampaignList.Service {
 
         if (CampaignList.UpdateStatus.Completed == status) {
             c.Campaign_List_Last_Updated__c = DateTime.now();
+            c.Campaign_List_Error_Message__c = '';
         }
 
         update c;

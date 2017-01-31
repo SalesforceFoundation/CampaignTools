@@ -33,7 +33,7 @@
  * @description A mapper class for serializing and deserializing
  * CampaignListSegment objects to/from corresponding Segment__c sObjects
  */
-public class CampaignListSegmentMapper implements CampaignList.SegmentMapper {
+public with sharing class CampaignListSegmentMapper implements CampaignList.SegmentMapper {
     /**
      * @description Given a list of report or campaign ids, return a map of names for those ids
      *

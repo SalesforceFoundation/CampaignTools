@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignListEditor_TEST {
+private with sharing class CampaignListEditor_TEST {
 	
 	/*********************************************************************************************************
     * @description Tests Autocomplete_CTRL with results

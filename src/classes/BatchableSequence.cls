@@ -47,7 +47,7 @@ public with sharing class BatchableSequence implements Interface_x {
         Interface_x create();
     }
 
-    public class DefaultFactory implements Factory {
+    public with sharing class DefaultFactory implements Factory {
         public Interface_x create() {
             return new BatchableSequence();
         }
@@ -114,7 +114,7 @@ public with sharing class BatchableSequence implements Interface_x {
      * @description An individual batch that can be added to a batchable
      * sequence.
      */
-    public abstract class Batch {
+    public abstract with sharing class Batch {
 
         /** @description The next batch to run after this one finishes */
         @TestVisible

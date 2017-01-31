@@ -58,7 +58,7 @@ private with sharing class CampaignListBuilder_TEST {
 
         try {
             CampaignListBuilder_CTRL.getReportIdColumns(null);
-        } catch (CampaignListBuilder_CTRL.NoColumnsException e) {
+        } catch (AuraHandledException ex) {
             exceptionThrown = true;
         }
 
