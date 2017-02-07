@@ -201,6 +201,14 @@
         <value>Save</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsListEditorSaveEmptyGroup</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListEditorSaveEmptyGroup</shortDescription>
+        <value>You added a group, but didn&apos;t include any sources in the group. Add a source to the group or remove the group before saving.</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsListEditorSaveError</fullName>
         <categories>CampaignTools,CampaignListEditor</categories>
         <language>en_US</language>
@@ -209,12 +217,28 @@
         <value>Save Error</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsListEditorSaveNoColumn</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListEditorSaveNoColumn</shortDescription>
+        <value>You entered a Report, but didn&apos;t include a Report Column. Select a Report Column before saving.</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsListEditorSaveNoIncludes</fullName>
         <categories>CampaignTools,CampaignListEditor</categories>
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>CampaignToolsListEditorSaveNoIncludes</shortDescription>
         <value>Your list excludes Campaigns or Reports, but doesn&apos;t include any. Add some Campaign or Report sources before continuing.</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorSaveNoSource</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListEditorSaveNoSource</shortDescription>
+        <value>You selected a Source type, but didn&apos;t enter a source Campaign or Report.</value>
     </labels>
     <labels>
         <fullName>CampaignToolsListEditorSaveSuccessful</fullName>

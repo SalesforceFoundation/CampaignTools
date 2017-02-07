@@ -1,18 +1,30 @@
 <apex:component controller="PageMessages_CTRL" selfClosing="true">
-    <apex:stylesheet value="{!URLFOR($Resource.LightningDesignSystem, '1_0_2/assets/styles/salesforce-lightning-design-system-vf.min.css')}"/>
 
-    <style class="text/css">
-        /* fix bug in notify container that sets z-index too high and prevents
-         * clicking on header links */
-        .slds-notify-container {
-            z-index: 0 !important;
-        }
-    </style>
+    <apex:attribute name="useToast"
+        description="If true, page messages will be displayed as floating toast messages, as described in the SLDS style guide. Otherwise, page messages will appear as blocks where the component is used."
+        type="Boolean"
+        default="false"
+        required="false"
+        />
+
+    <apex:outputText rendered="{!NOT(useToast)}">
+        <style type="text/css">
+            #page_messages .slds-notify--toast {
+                display: block;
+            }
+        </style>
+    </apex:outputText>
 
     <div class="slds" id="page_messages">
-        <div class="slds-notify-container">
+        <div class="{!IF(useToast, 'slds-notify-container', '')}">
             <apex:repeat value="{!pageMessages}" var="m">
                 <div role="alert" class="slds-notify slds-notify--toast slds-theme--{!m.severityTheme}">
+                    <button class="slds-button slds-notify__close {!IF(m.severityTheme != 'warning', 'slds-button--icon-inverse', '')}">
+                        <svg class="slds-button__icon slds-button__icon--large" aria-hidden="true">
+                            <path d="M14.6 11.9l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.3-.7-.3-1 0L12.6 10c-.1.2-.4.2-.6 0L6 3.9c-.3-.3-.7-.3-1 0l-1 .9c-.3.3-.3.7 0 1l6.1 6.1c.1.1.1.4 0 .6L4 18.6c-.3.3-.3.7 0 1l.9.9c.3.3.7.3 1 0l6.1-6c.2-.2.5-.2.6 0l6.1 6c.3.3.7.3 1 0l.9-.9c.3-.3.3-.7 0-1l-6-6c-.2-.2-.2-.5 0-.7z"/>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
                     <div class="notify__content">
                         <div class="slds-media">
                             <div class="slds-media__figure">
@@ -40,11 +52,9 @@
                             <div class="slds-media__body">
                                 <h2 class="slds-text-heading--small">
                                     <apex:outputText value="{!m.severityLabel}: " rendered="{!'' != m.severityLabel}"/>
-                                    <apex:outputText value="{!m.summary}"/>
+                                    <apex:outputText value="{!m.summary}" escape="false"/>
                                 </h2>
-                                <apex:outputText rendered="{!AND(NOT(ISBLANK(m.detail)), NOT(m.summary == m.detail))}">
-                                    <p class="slds-m-top--medium">{!m.detail}</p>
-                                </apex:outputText>
+                                <apex:outputText styleClass="slds-m-top--medium" value="{!m.detail}" escape="false" rendered="{!AND(NOT(ISBLANK(m.detail)), NOT(m.summary == m.detail))}"/>
                             </div>
                         </div>
                     </div>
@@ -52,4 +62,37 @@
             </apex:repeat>
         </div>
     </div>
+
+    <script type="text/javascript">
+        var elementMatches = function(el, selector) {
+            var m = el.matches || el.matchesSelector || el.msMatchesSelector;
+            return m.call(el, selector);
+        };
+
+        document.getElementById('page_messages').addEventListener(
+            'click',
+            function (e) {
+                if (e.defaultPrevented) return;
+
+                var el = e.target;
+
+                if (elementMatches(el, 'button.slds-notify__close, button.slds-notify__close *')) {
+                    var p;
+                    while (el) {
+                        if (elementMatches(el, 'div.slds-notify')) {
+                            p = el;
+                            break;
+                        }
+                        el = el.parentNode;
+                    }
+                    if (p && p.parentNode) {
+                        p.parentNode.removeChild(p);
+                    }
+                }
+
+                e.preventDefault();
+            },
+            true
+        );
+    </script>
 </apex:component>

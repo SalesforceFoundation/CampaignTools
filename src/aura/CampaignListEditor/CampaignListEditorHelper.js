@@ -147,37 +147,63 @@
         );
     },
 
-    isExcludeOnly: function (component, segmentData) {
-        var inclusionChild = segmentData.inclusionSegment.children[0];
-        var exclusionChild = segmentData.exclusionSegment.children[0];
-        var hasExclude = false;
+    validSegmentData: function (component, segmentData) {
+        var incGroups = segmentData.inclusionSegment.children;
+        var excGroups = segmentData.exclusionSegment.children;
         var hasInclude = false;
+        var hasExclude = false;
+        var valid = true;
+        var nsPrefix = component.get('v.nsPrefix');
         var this_ = this;
-
-        if (exclusionChild.children.length > 0 && exclusionChild.children[0].sourceId)
-            hasExclude = true;
-
-        if (inclusionChild.children.length > 0 && inclusionChild.children[0].sourceId)
-            hasInclude = true;
-
-        if (hasExclude && !hasInclude) {
-            var saveErrorLabel;
-            var saveErrorMessage;
-            if (component.get('v.nsPrefix') === 'camptools') {
-                saveErrorLabel = '$Label.camptools.CampaignToolsListEditorSaveError';
-                saveErrorMessage = '$Label.camptools.CampaignToolsListEditorSaveNoIncludes';
-            } else {
-                saveErrorLabel = '$Label.c.CampaignToolsListEditorSaveError';
-                saveErrorMessage = '$Label.c.CampaignToolsListEditorSaveNoIncludes';
-            }
+        var addErrMessage = function(err) {
+            var errLabel = nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveError' : '$Label.c.CampaignToolsListEditorSaveError';
             this_.addPageMessage(
                 'error',
-                $A.get(saveErrorLabel),
-                $A.get(saveErrorMessage)
+                $A.get(errLabel),
+                $A.get(err)
             );
-            return true;
         }
-        return false;
+        var checkSources = function(sources) {
+            for (var srcIndex = 0; srcIndex < sources.length; srcIndex += 1) {
+                if (!$A.util.isEmpty(sources[srcIndex].segmentType) &&
+                    $A.util.isEmpty(sources[srcIndex].sourceId)) {
+                    valid = false;
+                    addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoSource' : '$Label.c.CampaignToolsListEditorSaveNoSource');
+                } else if (sources[srcIndex].segmentType === 'REPORT_SOURCE_SEGMENT' &&
+                    $A.util.isEmpty(sources[srcIndex].columnName)) {
+                    valid = false;
+                    addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoColumn' : '$Label.c.CampaignToolsListEditorSaveNoColumn');
+                }
+            }
+        }
+
+        for (var incIndex = 0; incIndex < incGroups.length; incIndex += 1) {
+            var incSources = incGroups[incIndex].children;
+            if (!$A.util.isEmpty(incSources) && !$A.util.isEmpty(incSources[0].sourceId))
+                hasInclude = true;
+            if (incGroups.length > 1 && incSources.length === 1 && $A.util.isEmpty(incSources[0].segmentType)) {
+                valid = false;
+                addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveEmptyGroup' : '$Label.c.CampaignToolsListEditorSaveEmptyGroup');
+            }
+            checkSources(incSources);
+        }
+        for (var excIndex = 0; excIndex < excGroups.length; excIndex += 1) {
+            var excSources = excGroups[excIndex].children;
+            if (!$A.util.isEmpty(excSources) && !$A.util.isEmpty(excSources[0].sourceId))
+                hasExclude = true;
+            if (excGroups.length > 1 && excSources.length === 1 && $A.util.isEmpty(excSources[0].segmentType)) {
+                valid = false;
+                addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveEmptyGroup' : '$Label.c.CampaignToolsListEditorSaveEmptyGroup');
+            }
+            checkSources(excSources);
+        }
+
+        if (hasExclude && !hasInclude) {
+            valid = false;
+            addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoIncludes' : '$Label.c.CampaignToolsListEditorSaveNoIncludes');
+        }
+
+        return valid;
     },
 
     loadSegmentTreeData: function (component, rootSegmentId, callback) {

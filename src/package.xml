@@ -129,8 +129,11 @@
         <members>CampaignToolsListEditorReportName</members>
         <members>CampaignToolsListEditorReportType</members>
         <members>CampaignToolsListEditorSave</members>
+        <members>CampaignToolsListEditorSaveEmptyGroup</members>
         <members>CampaignToolsListEditorSaveError</members>
+        <members>CampaignToolsListEditorSaveNoColumn</members>
         <members>CampaignToolsListEditorSaveNoIncludes</members>
+        <members>CampaignToolsListEditorSaveNoSource</members>
         <members>CampaignToolsListEditorSaveSuccessful</members>
         <members>CampaignToolsListEditorSelectIdColumn</members>
         <members>CampaignToolsListEditorSelectSourceType</members>

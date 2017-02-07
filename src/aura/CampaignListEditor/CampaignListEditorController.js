@@ -42,14 +42,25 @@
     handleDeleteSegment: function (component, event, helper) {
         var segment = event.getParam('segment');
         helper.deleteSegment(segment);
-        component.set('v.segmentData', component.get('v.segmentData'));
+        var segmentData = component.get('v.segmentData');
+        // After deletion if entire segment branch is removed re-add with an empty group
+        if (segmentData.segmentTree.children.length === 1) {
+            if ($A.util.isEmpty(segmentData.inclusionSegment.children)) {
+                helper.addGroup(segmentData.inclusionSegment);
+                segmentData.segmentTree.children.push(segmentData.inclusionSegment);
+            } else if ($A.util.isEmpty(segmentData.exclusionSegment.children)) {
+                helper.addGroup(segmentData.exclusionSegment);
+                segmentData.segmentTree.children.push(segmentData.exclusionSegment);
+            }
+        }
+        component.set('v.segmentData', segmentData);
     },
 
     handleSave: function (component, event, helper) {
         var segmentData = component.get('v.segmentData');
         var campaignId = component.get('v.campaignId');
 
-        if (helper.isExcludeOnly(component, segmentData))
+        if (!helper.validSegmentData(component, segmentData))
             return;
 
         helper.saveSegmentData(
