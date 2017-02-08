@@ -45,13 +45,17 @@
         var segmentData = component.get('v.segmentData');
         // After deletion if entire segment branch is removed re-add with an empty group
         if (segmentData.segmentTree.children.length === 1) {
+            // Deal with Locker Service issue by creating a new array when pushing new elements
+            var children = [];
+            children = segmentData.segmentTree.children;
             if ($A.util.isEmpty(segmentData.inclusionSegment.children)) {
                 helper.addGroup(segmentData.inclusionSegment);
-                segmentData.segmentTree.children.push(segmentData.inclusionSegment);
+                children.push(segmentData.inclusionSegment);
             } else if ($A.util.isEmpty(segmentData.exclusionSegment.children)) {
                 helper.addGroup(segmentData.exclusionSegment);
-                segmentData.segmentTree.children.push(segmentData.exclusionSegment);
+                children.push(segmentData.exclusionSegment);
             }
+            segmentData.segmentTree.children = children;
         }
         component.set('v.segmentData', segmentData);
     },

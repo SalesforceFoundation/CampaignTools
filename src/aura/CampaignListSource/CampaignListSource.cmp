@@ -99,7 +99,7 @@
                         </div>
                     </div>
                 </aura:if>
-                <aura:if isTrue="{!v.allowDelete || !empty(v.source.segmentType)}">
+                <aura:if isTrue="{!v.allowDelete}">
                     <div class="slds-form-element slds-col--padded slds-grow-none slds-align-top slds-p-vertical--large">
                         <button
                             type="button"
