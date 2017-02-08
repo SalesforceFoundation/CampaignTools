@@ -163,41 +163,41 @@
                 $A.get(err)
             );
         }
-        // Every source must have a sourceId and every report must have a column name specified
-        var checkSources = function(sources, checkEmpty) {
+        // A valid source is not empty, has a source id and a column name for reports
+        var validSources = function(sources, checkEmpty) {
             var emptyGroup = true;
+            var validSource = true;
             for (var srcIndex = 0; srcIndex < sources.length; srcIndex += 1) {
                 if (!$A.util.isEmpty(sources[srcIndex].segmentType)) {
                     emptyGroup = false;
                     if (!$A.util.isEmpty(sources[srcIndex].segmentType) &&
                         $A.util.isEmpty(sources[srcIndex].sourceId)) {
-                        valid = false;
+                        validSource = false;
                         addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoSource' : '$Label.c.CampaignToolsListEditorSaveNoSource');
                     } else if (sources[srcIndex].segmentType === 'REPORT_SOURCE_SEGMENT' &&
                         $A.util.isEmpty(sources[srcIndex].columnName)) {
-                        valid = false;
+                        validSource = false;
                         addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoColumn' : '$Label.c.CampaignToolsListEditorSaveNoColumn');
                     }
                 }
             }
             if (checkEmpty && emptyGroup) {
-                valid = false;
+                validSource = false;
                 addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveEmptyGroup' : '$Label.c.CampaignToolsListEditorSaveEmptyGroup');
             }
+            valid = valid && validSource; // a segment group can be valid when the first and only group is empty
+
+            return validSource && !emptyGroup; // a source is not valid when an empty group is present unlike a segment group which may have an empty group
         }
-        // If there is an inclusion, each group within the inclusion branch must have at least one complete source
+        // Iterate through each inclusion group to determine if the groups sources are valid
         for (var incIndex = 0; incIndex < incGroups.length; incIndex += 1) {
-            var incSources = incGroups[incIndex].children;
-            if (!$A.util.isEmpty(incSources) && !$A.util.isEmpty(incSources[0].sourceId))
-                hasInclude = true;
-            checkSources(incSources, incGroups.length > 1);
+            var validIncSources = validSources(incGroups[incIndex].children, incGroups.length > 1);
+            hasInclude = hasInclude || validIncSources;
         }
-        // If there is an exclusion, each group within the exclusion branch must have at least one complete source
+        // Iterate through each exclusion group to determine if the groups sources are valid
         for (var excIndex = 0; excIndex < excGroups.length; excIndex += 1) {
-            var excSources = excGroups[excIndex].children;
-            if (!$A.util.isEmpty(excSources) && !$A.util.isEmpty(excSources[0].sourceId))
-                hasExclude = true;
-            checkSources(excSources, excGroups.length > 1);
+            var validExcSources = validSources(excGroups[excIndex].children, excGroups.length > 1);
+            hasExclude = hasExclude || validExcSources;
         }
         // When an exclusion is present there must always be at least one inclusion
         if (hasExclude && !hasInclude) {
