@@ -304,7 +304,12 @@
             siblings.splice(siblings.indexOf(segment), 1);
             segment.parent.children = siblings;
             if (siblings.length === 0) {
-                this.deleteSegment(segment.parent);
+                // If the parent is the last group do not delete instead add empty segment
+                if (!$A.util.isEmpty(segment.parent.parent) && segment.parent.parent.children.length > 1) {
+                    this.deleteSegment(segment.parent);
+                } else {
+                    this.addSegment(segment.parent);
+                }
             }
         }
     },
