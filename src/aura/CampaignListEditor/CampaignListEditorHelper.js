@@ -151,6 +151,10 @@
         var nsPrefix = component.get('v.nsPrefix');
         var this_ = this;
         var valid = true;
+        var incGroups = segmentData.inclusionSegment.children;
+        var excGroups = segmentData.exclusionSegment.children;
+        var hasInclude = false;
+        var hasExclude = false;
         var addErrMessage = function(err) {
             var errLabel = nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveError' : '$Label.c.CampaignToolsListEditorSaveError';
             this_.addPageMessage(
@@ -159,17 +163,6 @@
                 $A.get(err)
             );
         }
-        // Segment Data must always contain one inclusion and one exclusion return immediately if either is missing
-        if ($A.util.isEmpty(segmentData.inclusionSegment) || $A.util.isEmpty(segmentData.inclusionSegment)) {
-            valid = false;
-            addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveEmptyGroup' : '$Label.c.CampaignToolsListEditorSaveEmptyGroup');
-            return valid;
-        }
-
-        var incGroups = segmentData.inclusionSegment.children;
-        var excGroups = segmentData.exclusionSegment.children;
-        var hasInclude = false;
-        var hasExclude = false;
         // Every source must have a sourceId and every report must have a column name specified
         var checkSources = function(sources) {
             for (var srcIndex = 0; srcIndex < sources.length; srcIndex += 1) {
