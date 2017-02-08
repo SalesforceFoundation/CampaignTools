@@ -189,6 +189,7 @@
 
             return validSource && !emptyGroup; // a source is not valid when an empty group is present unlike a segment group which may have an empty group
         }
+        debugger;
         // Iterate through each inclusion group to determine if the groups sources are valid
         for (var incIndex = 0; incIndex < incGroups.length; incIndex += 1) {
             var validIncSources = validSources(incGroups[incIndex].children, incGroups.length > 1);
@@ -199,8 +200,8 @@
             var validExcSources = validSources(excGroups[excIndex].children, excGroups.length > 1);
             hasExclude = hasExclude || validExcSources;
         }
-        // When an exclusion is present there must always be at least one inclusion
-        if (hasExclude && !hasInclude) {
+        // When an exclusion is present there must always be at least one inclusion, final validation once all sources are complete
+        if (hasExclude && !hasInclude && valid) {
             valid = false;
             addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoIncludes' : '$Label.c.CampaignToolsListEditorSaveNoIncludes');
         }
