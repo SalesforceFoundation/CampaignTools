@@ -49,7 +49,7 @@
         var segmentData = component.get('v.segmentData');
         var campaignId = component.get('v.campaignId');
 
-        if (helper.isExcludeOnly(component, segmentData))
+        if (!helper.validSegmentData(component, segmentData))
             return;
 
         helper.saveSegmentData(

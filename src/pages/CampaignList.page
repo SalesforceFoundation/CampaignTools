@@ -181,8 +181,11 @@
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportName}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportType}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSave}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSaveEmptyGroup}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSaveError}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSaveNoColumn}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSaveNoIncludes}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSaveNoSource}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSaveSuccessful}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSelectIdColumn}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSelectSourceType}" rendered="false"/>
