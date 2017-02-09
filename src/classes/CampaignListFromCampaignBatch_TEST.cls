@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 @isTest
-private class CampaignListFromCampaignBatch_TEST {
+private with sharing class CampaignListFromCampaignBatch_TEST {
     private static testMethod void testCampaignListFromCampaignBatch() {
         Id rootSegmentId = CampaignList_TEST.getNextId(Segment__c.sObjectType);
         Id targetCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);

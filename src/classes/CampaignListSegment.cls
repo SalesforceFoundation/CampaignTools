@@ -34,7 +34,7 @@
  * list.  A "segment" of a campaign list is one part of the criteria that
  * defines the campaign list.
  */
-public with sharing abstract class CampaignListSegment implements CampaignList.Segment {
+public abstract with sharing class CampaignListSegment implements CampaignList.Segment {
     /** @description This segment's id */
     private Id segmentId;
 
@@ -188,7 +188,7 @@ public with sharing abstract class CampaignListSegment implements CampaignList.S
         return new TreeIterator(this);
     }
 
-    public class TreeIterator implements Iterator<CampaignList.Segment> {
+    public with sharing class TreeIterator implements Iterator<CampaignList.Segment> {
         private List<CampaignList.Segment> nextSegments = new List<CampaignList.Segment>();
 
         public TreeIterator(CampaignList.Segment rootSegment) {
@@ -212,7 +212,7 @@ public with sharing abstract class CampaignListSegment implements CampaignList.S
      * @description This is a specific type of CampaignListSegment that
      * represents an 'AND' segment
      */
-    public class AndSegment extends CampaignListSegment {
+    public with sharing class AndSegment extends CampaignListSegment {
         private final CampaignList.SegmentType segmentType = CampaignList.SegmentType.AND_SEGMENT;
 
         /**
@@ -293,7 +293,7 @@ public with sharing abstract class CampaignListSegment implements CampaignList.S
      * @description This is a specific type of CampaignListSegment that
      * represents an 'OR' segment
      */
-    public class OrSegment extends CampaignListSegment {
+    public with sharing class OrSegment extends CampaignListSegment {
         private final CampaignList.SegmentType segmentType = CampaignList.SegmentType.OR_SEGMENT;
 
         /**
@@ -374,7 +374,7 @@ public with sharing abstract class CampaignListSegment implements CampaignList.S
      * @description This is a specific type of CampaignListSegment that
      * represents a 'SOURCE' segment
      */
-    public abstract class SourceSegment extends CampaignListSegment {
+    public abstract with sharing class SourceSegment extends CampaignListSegment {
         /**
          * @description The id of the source this segment corresponds to, i.e.
          * a Report id or a Campaign id, etc.
@@ -469,7 +469,7 @@ public with sharing abstract class CampaignListSegment implements CampaignList.S
      * @description This is a specific type of SourceSegment that represents a
      * Campaign 'SOURCE' segment
      */
-    public class CampaignSourceSegment extends SourceSegment {
+    public with sharing class CampaignSourceSegment extends SourceSegment {
         private final CampaignList.SegmentType segmentType = CampaignList.SegmentType.CAMPAIGN_SOURCE_SEGMENT;
 
         /**
@@ -544,7 +544,7 @@ public with sharing abstract class CampaignListSegment implements CampaignList.S
      * @description This is a specific type of SourceSegment that represents a
      * Report 'SOURCE' segment
      */
-    public class ReportSourceSegment extends SourceSegment {
+    public with sharing class ReportSourceSegment extends SourceSegment {
         private final CampaignList.SegmentType segmentType = CampaignList.SegmentType.REPORT_SOURCE_SEGMENT;
 
         /**

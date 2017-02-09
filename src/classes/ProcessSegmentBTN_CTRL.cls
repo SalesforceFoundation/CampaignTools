@@ -61,6 +61,7 @@ public with sharing class ProcessSegmentBTN_CTRL {
         // Check if user has all required permissions for batch processing
         try {
             CampaignTools_UTIL.checkCampaignBatchPermission();
+            CampaignTools_UTIL.checkObjectReadAccess('AsyncApexJob');
             hasPerms = true;
         } catch(CampaignTools_UTIL.PermsException ex) {
             hasPerms = false;
@@ -125,6 +126,10 @@ public with sharing class ProcessSegmentBTN_CTRL {
         try {
             CampaignTools_UTIL.checkFieldReadAccess('Campaign', 'Campaign_List_Update_Status__c');
         } catch(CampaignTools_UTIL.PermsException ex) {
+            ApexPages.addMessage(new ApexPages.Message(
+                ApexPages.Severity.ERROR,
+                ex.getMessage()
+            ));
             return null;
         }
         Campaign c = [

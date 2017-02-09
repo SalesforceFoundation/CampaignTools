@@ -34,7 +34,8 @@
  * from a campaign list's sources that match the campaign list's inclusion
  * criteria
  */
-public class CampaignListUpdateMembersBatch extends BatchableSequence.Batch implements Database.Batchable<sObject> {
+public with sharing class CampaignListUpdateMembersBatch
+    extends BatchableSequence.Batch implements Database.Batchable<sObject> {
     /** @description The id of the Campaign to populate */
     @TestVisible
     private Id campaignId;

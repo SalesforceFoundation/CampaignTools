@@ -229,7 +229,7 @@ public with sharing class Mutex implements MutexInterface {
         MutexInterface create(Id recordId, Schema.SObjectField mutexField);
     }
 
-    public class DefaultFactory implements Factory {
+    public with sharing class DefaultFactory implements Factory {
         public MutexInterface create(Id recordId, Schema.SObjectField mutexField) {
             return new Mutex(recordId, mutexField);
         }
