@@ -37,21 +37,25 @@ public with sharing class CampaignTriggerHandler {
     private static Map<Id, Campaign> mapNewOldCamp = new Map<Id, Campaign>();
     /** @description A static list AsyncApexJobs that match the CampaignListRefresh criteria */
     private static List<AsyncApexJob> listCampRefreshJobs;
+    /** @description Boolean flag to determine if validation should run defaults to true if test not running */
+    @TestVisible private static Boolean validate = !Test.isRunningTest();
 
     /*******************************************************************************************************
     * @description Trigger Handler on Campaign to validate the campaign objects before insert
     * @param listNewCamp the list of Campaigns from trigger new
     ********************************************************************************************************/
 	public static void handleBeforeInsert(List<Campaign> listNewCamp) {
-        validateCampaignRefresh(new List<Campaign>(), listNewCamp);
+        if (!isCampaignRefreshScheduled() && validate)
+            validateCampaignRefresh(new List<Campaign>(), listNewCamp);
     }
     /*******************************************************************************************************
-    * @description Trigger Handler on Campaign to validate the campaign objects before insert
+    * @description Trigger Handler on Campaign to validate the campaign objects before update
     * @param listOldCamp the list of Campaigns from trigger old
     * @param listNewCamp the list of Campaigns from trigger new
     ********************************************************************************************************/
     public static void handleBeforeUpdate(List<Campaign> listOldCamp, List<Campaign> listNewCamp) {
-        validateCampaignRefresh(listOldCamp, listNewCamp);
+        if (!isCampaignRefreshScheduled() && validate)
+            validateCampaignRefresh(listOldCamp, listNewCamp);
     }
     /*******************************************************************************************************
     * @description Adds an error to any campaign set to refresh when a schedule is not present
@@ -59,16 +63,6 @@ public with sharing class CampaignTriggerHandler {
     * @param listNewCamp the list of Campaigns from trigger new
     ********************************************************************************************************/
     public static void validateCampaignRefresh(List<Campaign> listOldCamp, List<Campaign> listNewCamp) {
-        if (listCampRefreshJobs == null){
-            // scheduled Apex jobs will always stays in the Queued status until the job has no NextFireTime,
-            // then it gets marked Completed, or if the job is aborted then it gets marked Aborted
-            listCampRefreshJobs = [SELECT Id FROM AsyncApexJob
-                WHERE JobType = 'ScheduledApex' AND Status ='Queued'
-                AND ApexClass.Name = 'CampaignListRefreshSchedulable'];
-        }
-        if (!listCampRefreshJobs.isEmpty())
-            return; // no need to process the refresh job is scheduled
-
         Map<Id, Campaign> mapOldCamp = new Map<Id, Campaign>(listOldCamp);
         for (Campaign newCamp : listNewCamp) {
             Campaign oldCamp;
@@ -82,5 +76,19 @@ public with sharing class CampaignTriggerHandler {
                 newCamp.addError(Label.CampaignToolsRefreshScheduleValidation, false);
             }
         }
+    }
+    /*******************************************************************************************************
+    * @description Check to see if the refresh job is scheduled
+    * @return Boolean true when job is scheduled
+    ********************************************************************************************************/
+    public static Boolean isCampaignRefreshScheduled() {
+        if (listCampRefreshJobs == null){
+            // scheduled Apex jobs will always stays in the Queued status until the job has no NextFireTime,
+            // then it gets marked Completed, or if the job is aborted then it gets marked Aborted
+            listCampRefreshJobs = [SELECT Id FROM AsyncApexJob
+                WHERE JobType = 'ScheduledApex' AND Status ='Queued'
+                AND ApexClass.Name = 'CampaignListRefreshSchedulable'];
+        }
+        return !listCampRefreshJobs.isEmpty();
     }
 }

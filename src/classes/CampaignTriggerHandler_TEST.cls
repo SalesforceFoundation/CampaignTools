@@ -36,6 +36,7 @@
 public with sharing class CampaignTriggerHandler_TEST {
     @isTest
 	private static void testNewCampsWithoutScheduleNoRefresh() {
+        CampaignTriggerHandler.validate = true;
         List<Campaign> listNewCamps = generateCampaigns(1, false);
         Test.startTest();
         insert listNewCamps;
@@ -48,6 +49,7 @@ public with sharing class CampaignTriggerHandler_TEST {
 
     @isTest
     private static void testNewCampsWithoutScheduleWithRefresh() {
+        CampaignTriggerHandler.validate = true;
         List<Campaign> listNewCamps = generateCampaigns(1, true);
         Test.startTest();
         try {
@@ -65,6 +67,7 @@ public with sharing class CampaignTriggerHandler_TEST {
 
     @isTest
     private static void testUpdateCampsWithoutScheduleNoRefresh() {
+        CampaignTriggerHandler.validate = true;
         List<Campaign> listNewCamps = generateCampaigns(1, false);
         insert listNewCamps;
         for (Campaign newCamps : listNewCamps) {
@@ -82,6 +85,7 @@ public with sharing class CampaignTriggerHandler_TEST {
 
     @isTest
     private static void testUpdateCampsWithoutScheduleWithRefresh() {
+        CampaignTriggerHandler.validate = true;
         List<Campaign> listNewCamps = generateCampaigns(1, false);
         insert listNewCamps;
         for (Campaign newCamps : listNewCamps) {
@@ -105,24 +109,23 @@ public with sharing class CampaignTriggerHandler_TEST {
 
     @isTest
     private static void testCampsWithScheduleMixBulk() {
+        CampaignTriggerHandler.validate = true;
         List<Campaign> listNewCamps = generateCampaigns(100, false);
         listNewCamps.addAll(generateCampaigns(100, true));
         Test.startTest();
-        scheduleJob();
+        List<AsyncApexJob> listCampRefreshJobs = scheduleJob();
         insert listNewCamps;
         Test.stopTest();
 
         List<Campaign> queriedResults = [SELECT Id FROM Campaign WHERE ID IN :listNewCamps];
-        List<AsyncApexJob> listCampRefreshJobs = [SELECT Id FROM AsyncApexJob
-                WHERE JobType = 'ScheduledApex' AND Status ='Queued'
-                AND ApexClass.Name = 'CampaignListRefreshSchedulable'];
 
-        System.assertEquals(listCampRefreshJobs.size(), 1, 'There should be a scheduled job found.');
+        System.assertEquals(listCampRefreshJobs.size(), 1, 'There should be one scheduled job.');
         System.assertEquals(listNewCamps.size(), queriedResults.size(), 'Records should have inserted without issue.');
     }
 
     @isTest
     private static void testCampsWithoutScheduleMixBulk() {
+        CampaignTriggerHandler.validate = true;
         List<Campaign> listNewCamps = generateCampaigns(200, false);
         listNewCamps.addAll(generateCampaigns(200, true));
         Test.startTest();
@@ -139,10 +142,13 @@ public with sharing class CampaignTriggerHandler_TEST {
         System.assert(queriedResults.isEmpty(), 'Records should have failed to insert.');
     }
 
-    private static void scheduleJob() {
+    private static List<AsyncApexJob> scheduleJob() {
         String jobId = System.schedule('testRefreshScheduledApex',
             '0 0 10 ? * MON-FRI', 
-         new CampaignListRefreshSchedulable());
+            new CampaignListRefreshSchedulable());
+        return [SELECT Id FROM AsyncApexJob
+                WHERE JobType = 'ScheduledApex' AND Status ='Queued'
+                AND ApexClass.Name = 'CampaignListRefreshSchedulable'];
     }
 
     private static List<Campaign> generateCampaigns(Integer numOfCamps, Boolean refresh) {
