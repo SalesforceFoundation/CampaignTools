@@ -147,37 +147,65 @@
         );
     },
 
-    isExcludeOnly: function (component, segmentData) {
-        var inclusionChild = segmentData.inclusionSegment.children[0];
-        var exclusionChild = segmentData.exclusionSegment.children[0];
-        var hasExclude = false;
-        var hasInclude = false;
+    validSegmentData: function (component, segmentData) {
+        var nsPrefix = component.get('v.nsPrefix');
         var this_ = this;
-
-        if (exclusionChild.children.length > 0 && exclusionChild.children[0].sourceId)
-            hasExclude = true;
-
-        if (inclusionChild.children.length > 0 && inclusionChild.children[0].sourceId)
-            hasInclude = true;
-
-        if (hasExclude && !hasInclude) {
-            var saveErrorLabel;
-            var saveErrorMessage;
-            if (component.get('v.nsPrefix') === 'camptools') {
-                saveErrorLabel = '$Label.camptools.CampaignToolsListEditorSaveError';
-                saveErrorMessage = '$Label.camptools.CampaignToolsListEditorSaveNoIncludes';
-            } else {
-                saveErrorLabel = '$Label.c.CampaignToolsListEditorSaveError';
-                saveErrorMessage = '$Label.c.CampaignToolsListEditorSaveNoIncludes';
-            }
+        var valid = true;
+        var incGroups = segmentData.inclusionSegment.children;
+        var excGroups = segmentData.exclusionSegment.children;
+        var hasInclude = false;
+        var hasExclude = false;
+        var addErrMessage = function(err) {
+            var errLabel = nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveError' : '$Label.c.CampaignToolsListEditorSaveError';
             this_.addPageMessage(
                 'error',
-                $A.get(saveErrorLabel),
-                $A.get(saveErrorMessage)
+                $A.get(errLabel),
+                $A.get(err)
             );
-            return true;
         }
-        return false;
+        // A valid source is not empty, has a source id and a column name for reports
+        var validSources = function(sources, checkEmpty) {
+            var emptyGroup = true;
+            var validSource = true;
+            for (var srcIndex = 0; srcIndex < sources.length; srcIndex += 1) {
+                if (!$A.util.isEmpty(sources[srcIndex].segmentType)) {
+                    emptyGroup = false;
+                    if (!$A.util.isEmpty(sources[srcIndex].segmentType) &&
+                        $A.util.isEmpty(sources[srcIndex].sourceId)) {
+                        validSource = false;
+                        addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoSource' : '$Label.c.CampaignToolsListEditorSaveNoSource');
+                    } else if (sources[srcIndex].segmentType === 'REPORT_SOURCE_SEGMENT' &&
+                        $A.util.isEmpty(sources[srcIndex].columnName)) {
+                        validSource = false;
+                        addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoColumn' : '$Label.c.CampaignToolsListEditorSaveNoColumn');
+                    }
+                }
+            }
+            if (checkEmpty && emptyGroup) {
+                validSource = false;
+                addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveEmptyGroup' : '$Label.c.CampaignToolsListEditorSaveEmptyGroup');
+            }
+            valid = valid && validSource; // a segment group can be valid when the first and only group is empty
+
+            return validSource && !emptyGroup; // a source is not valid when an empty group is present unlike a segment group which may have an empty group
+        }
+        // Iterate through each inclusion group to determine if the groups sources are valid
+        for (var incIndex = 0; incIndex < incGroups.length; incIndex += 1) {
+            var validIncSources = validSources(incGroups[incIndex].children, incGroups.length > 1);
+            hasInclude = hasInclude || validIncSources;
+        }
+        // Iterate through each exclusion group to determine if the groups sources are valid
+        for (var excIndex = 0; excIndex < excGroups.length; excIndex += 1) {
+            var validExcSources = validSources(excGroups[excIndex].children, excGroups.length > 1);
+            hasExclude = hasExclude || validExcSources;
+        }
+        // When an exclusion is present there must always be at least one inclusion, final validation once all sources are complete
+        if (hasExclude && !hasInclude && valid) {
+            valid = false;
+            addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoIncludes' : '$Label.c.CampaignToolsListEditorSaveNoIncludes');
+        }
+
+        return valid;
     },
 
     loadSegmentTreeData: function (component, rootSegmentId, callback) {
@@ -269,7 +297,12 @@
             siblings.splice(siblings.indexOf(segment), 1);
             segment.parent.children = siblings;
             if (siblings.length === 0) {
-                this.deleteSegment(segment.parent);
+                // If the parent is the last group do not delete instead add empty segment
+                if (!$A.util.isEmpty(segment.parent.parent) && segment.parent.parent.children.length > 1) {
+                    this.deleteSegment(segment.parent);
+                } else {
+                    this.addSegment(segment.parent);
+                }
             }
         }
     },

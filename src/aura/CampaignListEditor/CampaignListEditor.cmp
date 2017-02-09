@@ -21,9 +21,9 @@
          </div>
      </aura:if>
 
-    <c:CampaignListSegment segment="{!v.segmentData.inclusionSegment}" allowEmpty="false" nsPrefix="{!v.nsPrefix}"/>
+    <c:CampaignListSegment segment="{!v.segmentData.inclusionSegment}" allowEmpty="true" nsPrefix="{!v.nsPrefix}"/>
     <h3 class="slds-m-vertical--medium slds-text-heading--small">
         {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorExcludes : $Label.c.CampaignToolsListEditorExcludes)}
     </h3>
-    <c:CampaignListSegment segment="{!v.segmentData.exclusionSegment}" allowEmpty="false" nsPrefix="{!v.nsPrefix}"/>
+    <c:CampaignListSegment segment="{!v.segmentData.exclusionSegment}" allowEmpty="true" nsPrefix="{!v.nsPrefix}"/>
 </aura:component>
