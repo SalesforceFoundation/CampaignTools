@@ -189,7 +189,6 @@
 
             return validSource && !emptyGroup; // a source is not valid when an empty group is present unlike a segment group which may have an empty group
         }
-        debugger;
         // Iterate through each inclusion group to determine if the groups sources are valid
         for (var incIndex = 0; incIndex < incGroups.length; incIndex += 1) {
             var validIncSources = validSources(incGroups[incIndex].children, incGroups.length > 1);
