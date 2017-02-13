@@ -34,6 +34,8 @@
         <members>CampaignList_TEST</members>
         <members>CampaignTools_TEST</members>
         <members>CampaignTools_UTIL</members>
+        <members>CampaignTriggerHandler</members>
+        <members>CampaignTriggerHandler_TEST</members>
         <members>DeleteCampaignListMembersBatch</members>
         <members>DeleteCampaignListMembersBatch_TEST</members>
         <members>DeleteCampaignMembersBatch</members>
@@ -57,6 +59,10 @@
         <members>CampaignList</members>
         <members>ProcessSegmentBTN</members>
         <name>ApexPage</name>
+    </types>
+    <types>
+        <members>CampaignTrigger</members>
+        <name>ApexTrigger</name>
     </types>
     <types>
         <members>AddPageMessageEvent</members>
@@ -155,6 +161,7 @@
         <members>CampaignToolsListRefreshStatusQueuedMessage</members>
         <members>CampaignToolsListUpdateMembersExecuteException</members>
         <members>CampaignToolsNoSavedCampaignList</members>
+        <members>CampaignToolsRefreshScheduleValidation</members>
         <members>CampaignToolsReleaseLockException</members>
         <members>JobProgressCompletedLabel</members>
         <members>JobProgressExtendedStatusLabel</members>
