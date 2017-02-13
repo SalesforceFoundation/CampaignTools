@@ -409,6 +409,14 @@
         <value>There is no saved Campaign List for this campaign.</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsRefreshScheduleValidation</fullName>
+        <categories>CampaignTools,Validation</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsRefreshScheduleValidation</shortDescription>
+        <value>The nightly batch job required to automatically refresh Campaign Lists hasn&apos;t been scheduled yet. An Administrator must schedule this job before you can use the checkbox. Click &lt;a href=&quot;https://powerofus.force.com/articles/Resource/Create-and-Manage-Campaign-Lists#schedule&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt; for more information.</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsReleaseLockException</fullName>
         <categories>CampaignTools,Exceptions</categories>
         <language>en_US</language>
