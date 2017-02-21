@@ -4,8 +4,6 @@ project:
         name: Campaign Tools
         namespace: camptools
         api_version: 37.0
-    git:
-        prefix_release: rel/
 
 flows:
     release_beta:
