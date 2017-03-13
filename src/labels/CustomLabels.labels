@@ -169,6 +169,14 @@
         <value>OR...</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsListEditorReadError</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListEditorReadError</shortDescription>
+        <value>This Campaign List includes a Campaign or Report you don&apos;t have access to, either because it was deleted or it hasn&apos;t been shared with you.</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsListEditorReportColumn</fullName>
         <categories>CampaignTools,CampaignListEditor</categories>
         <language>en_US</language>

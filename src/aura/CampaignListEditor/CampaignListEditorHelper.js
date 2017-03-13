@@ -123,30 +123,6 @@
         );
     },
 
-    verifyPermissions: function (component) {
-        var this_ = this;
-        this.apexControllerMethod(
-            component,
-            'c.checkPerms',
-            {},
-            function (err) {
-                if (err) {
-                    var initErrorLabel;
-                    if (component.get('v.nsPrefix') === 'camptools') {
-                        initErrorLabel = '$Label.camptools.PageMessagesError';
-                    } else {
-                        initErrorLabel = '$Label.c.PageMessagesError';
-                    }
-                    this_.addPageMessage(
-                        'error',
-                        $A.get(initErrorLabel),
-                        err[0].message
-                    );
-                }
-            }
-        );
-    },
-
     validSegmentData: function (component, segmentData) {
         var nsPrefix = component.get('v.nsPrefix');
         var this_ = this;

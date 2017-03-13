@@ -39,9 +39,12 @@
 public with sharing class CampaignListEditor_CTRL {
     
     private static String plainNamespace;
-    private static Boolean hasPerms;
+    private static Boolean enableSave;
+    private final Campaign camp;
     
-    public CampaignListEditor_CTRL(ApexPages.StandardController controller) {}
+    public CampaignListEditor_CTRL(ApexPages.StandardController controller) {
+        this.camp = (Campaign)controller.getRecord();
+    }
 
     /*******************************************************************************************************
     * @description Finds the namespace for the current context.
@@ -57,20 +60,26 @@ public with sharing class CampaignListEditor_CTRL {
     }
 
     /*******************************************************************************************************
-    * @description Checks all required permissions for the page to function correctly, user must have
-    * proper access to the Campaign and Segment Objects and Fields
-    * @return Boolean true when the user has all permissions
+    * @description Before enabling save check whether user has perms and if the list will load without error
+    * @return Boolean true when the list will load
     ********************************************************************************************************/
-    public static Boolean getHasPerms() {
-    	if (null == hasPerms) {
-    		try {
-	    		CampaignTools_UTIL.checkCampaignListPermission();
-	    		hasPerms = true;
-	    	} catch (CampaignTools_UTIL.PermsException ex) {
-	    		hasPerms = false;
-	    	}
+    public Boolean getEnableSave() {
+        if (null == enableSave) {
+            try {
+                if (camp.Campaign_List__c != null) {
+                    // Attempt to get the serialized segment tree which will check for permissions and ensure the list can load
+                    String segmentTree = CampaignListBuilder_CTRL.getSerializedSegmentTree(camp.Campaign_List__c);
+                } else {
+                    // If no existing segment tree then ensure user has proper permissions
+                    CampaignTools_UTIL.checkCampaignListPermission();
+                }
+                enableSave = true;
+            } catch (Exception ex) {
+                System.debug(ex.getMessage());
+                enableSave = false;
+            }
     	}
     	
-    	return hasPerms;
+        return enableSave;
     }
 }

@@ -1,9 +1,6 @@
 ({
     doInit: function (component, event, helper) {
         var rootSegmentId = component.get('v.rootSegmentId');
-        helper.verifyPermissions(
-            component
-        );
         helper.loadSegmentTreeData(
             component,
             rootSegmentId,

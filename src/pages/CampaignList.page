@@ -87,9 +87,9 @@
             function addSaveHandler(nsPrefix) {
                 var campaignListEditorSaveEvent = 'e.' + nsPrefix + ':CampaignListEditorSaveEvent';
                 var element = document.getElementById('saveEditor');
-                var hasPerms = {!hasPerms};
+                var enableSave = {!enableSave};
 
-                if (hasPerms) {
+                if (enableSave) {
                     element.addEventListener(
                         'click',
                         function () {
@@ -130,7 +130,7 @@
                     "lightning",
                     function(component) {
                         // hide our startup spinner
-                        document.getElementById('initialSpinner').style.display = 'none';                                       
+                        document.getElementById('initialSpinner').style.display = 'none';
                     }
                 );
             }
@@ -147,8 +147,8 @@
 
             function init() {
                 var nsPrefix = getNamespace();
-                addSaveHandler(nsPrefix);
                 createApp(nsPrefix);
+                addSaveHandler(nsPrefix);
             }
 
             if (document.readyState !== 'loading') {

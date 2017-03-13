@@ -131,6 +131,7 @@
         <members>CampaignToolsListEditorFindReport</members>
         <members>CampaignToolsListEditorMethodException</members>
         <members>CampaignToolsListEditorOrJoin</members>
+        <members>CampaignToolsListEditorReadError</members>
         <members>CampaignToolsListEditorReportColumn</members>
         <members>CampaignToolsListEditorReportName</members>
         <members>CampaignToolsListEditorReportType</members>
