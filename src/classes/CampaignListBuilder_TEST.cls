@@ -65,30 +65,25 @@ private with sharing class CampaignListBuilder_TEST {
         System.assert(exceptionThrown);
     }
 
-    public static testMethod void testCheckPerms() {
+    public static testMethod void testGetReportIdInvalidThrowsNoPermsException() {
         Boolean exceptionThrown;
+        Id reportId = CampaignList_TEST.getNextId(Report.sObjectType);
+        Map<String, String> expectedColumns = new Map<String, String>{
+            'CONTACT_ID' => 'Contact ID'
+        };
+        ReportServiceWithResultsStub service = new ReportServiceWithResultsStub();
+        service.idColumns = expectedColumns;
+        CampaignList.setReportService(service);
+        CampaignTools_UTIL.throwException = true;
 
+        Test.startTest();
         try {
-            CampaignListBuilder_CTRL.checkPerms();
+            Map<String, String> actualColumns = CampaignListBuilder_CTRL.getReportIdColumns(reportId);
             exceptionThrown = false;
         } catch (AuraHandledException ex) {
             exceptionThrown = true;
         }
-
-        System.assert(!exceptionThrown, 'An exception should not be thrown and the user should have permission.');
-    }
-
-
-    public static testMethod void testCheckWithoutPerms() {
-        Boolean exceptionThrown;
-
-        try {
-            CampaignTools_UTIL.throwException = true;
-            CampaignListBuilder_CTRL.checkPerms();
-            exceptionThrown = false;
-        } catch (AuraHandledException ex) {
-            exceptionThrown = true;
-        }
+        Test.stopTest();
 
         System.assert(exceptionThrown, 'An exception should be thrown and the user should not have permission.');
     }

@@ -97,7 +97,7 @@ private with sharing class CampaignListEditor_TEST {
 
         ApexPages.StandardController sc = new ApexPages.StandardController(testCampaign);
         CampaignListEditor_CTRL ctrl = new CampaignListEditor_CTRL(sc);
-        Boolean hasPerms = CampaignListEditor_CTRL.getHasPerms();
+        Boolean hasPerms = ctrl.getEnableSave();
         List<ApexPages.Message> pageMessages = ApexPages.getMessages();
 
         Test.stopTest();
@@ -121,7 +121,7 @@ private with sharing class CampaignListEditor_TEST {
         ApexPages.StandardController sc = new ApexPages.StandardController(testCampaign);
         CampaignListEditor_CTRL ctrl = new CampaignListEditor_CTRL(sc);
         CampaignTools_UTIL.throwException = true;
-        Boolean hasPerms = CampaignListEditor_CTRL.getHasPerms();
+        Boolean hasPerms = ctrl.getEnableSave();
 
         Test.stopTest();
 
