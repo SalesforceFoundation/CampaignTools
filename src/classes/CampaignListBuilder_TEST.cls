@@ -88,6 +88,72 @@ private with sharing class CampaignListBuilder_TEST {
         System.assert(exceptionThrown, 'An exception should be thrown and the user should not have permission.');
     }
 
+    public static testMethod void testCheckPerms() {
+        Boolean exceptionThrown;
+
+        try {
+            CampaignListBuilder_CTRL.checkPerms();
+            exceptionThrown = false;
+        } catch (AuraHandledException ex) {
+            exceptionThrown = true;
+        }
+
+        System.assert(!exceptionThrown, 'An exception should not be thrown and the user should have permission.');
+    }
+
+    public static testMethod void testCheckWithoutPerms() {
+        Boolean exceptionThrown;
+
+        try {
+            CampaignTools_UTIL.throwException = true;
+            CampaignListBuilder_CTRL.checkPerms();
+            exceptionThrown = false;
+        } catch (AuraHandledException ex) {
+            exceptionThrown = true;
+        }
+
+        System.assert(exceptionThrown, 'An exception should be thrown and the user should not have permission.');
+    }
+
+    public static testMethod void testGetStatuses() {
+        Campaign campRecord = new Campaign(Name='test');
+        insert campRecord;
+        CampaignMemberStatus newStatus = new CampaignMemberStatus(
+            CampaignID = campRecord.id,
+            Label = 'New Status'
+        );
+        insert newStatus;
+
+        Test.startTest();
+        Map<String,String> campStatuses = CampaignListBuilder_CTRL.getStatuses(campRecord.Id);
+        Test.stopTest();
+
+        System.assertEquals(1, campStatuses.size(), 'New campaigns should have one status.');
+    }
+
+    public static testMethod void testGetStatusesNoPermsException() {
+        Boolean exceptionThrown;
+        Campaign campRecord = new Campaign(Name='test');
+        insert campRecord;
+        CampaignMemberStatus newStatus = new CampaignMemberStatus(
+            CampaignID = campRecord.id,
+            Label = 'New Status'
+        );
+        insert newStatus;
+
+        Test.startTest();
+        try {
+            CampaignTools_UTIL.throwException = true;
+            Map<String,String> campStatuses = CampaignListBuilder_CTRL.getStatuses(campRecord.Id);
+            exceptionThrown = false;
+        } catch (AuraHandledException ex) {
+            exceptionThrown = true;
+        }
+        Test.stopTest();
+
+        System.assert(exceptionThrown, 'An exception should be thrown and the user should not have permission.');
+    }
+
     private class ReportServiceWithResultsStub implements CampaignList.ReportService {
         public Id reportId;
         public Map<String, String> idColumns;

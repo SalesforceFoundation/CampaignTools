@@ -85,46 +85,4 @@ private with sharing class CampaignListEditor_TEST {
 
         System.assertEquals(currentNS, nsPrefix, 'The namespace should match the test class namespace.');
     }
-    /*********************************************************************************************************
-    * @description Tests loading the page with permissions
-    */
-	@isTest
-    private static void testPageLoadWithPerms() {
-        Campaign testCampaign = new Campaign(Name='Test Campaign');
-        insert testCampaign;
-
-        Test.startTest();
-
-        ApexPages.StandardController sc = new ApexPages.StandardController(testCampaign);
-        CampaignListEditor_CTRL ctrl = new CampaignListEditor_CTRL(sc);
-        Boolean hasPerms = ctrl.getEnableSave();
-        List<ApexPages.Message> pageMessages = ApexPages.getMessages();
-
-        Test.stopTest();
-
-        System.assertEquals(0, pageMessages.size(), 'There should not be any errors on the page.');
-        System.assert(hasPerms, 'Apex Test should default to have all permissions.');
-        System.assert(hasPerms, 'A permission exception should not occur, user should have permissions.');
-    }
-    /*********************************************************************************************************
-    * @description Tests loading the page without permissions
-    */
-    @isTest
-    private static void testPageLoadWithoutPerms() {
-
-        Campaign testCampaign = new Campaign(Name='Test Campaign');
-        insert testCampaign;
-
-
-        Test.startTest();
-
-        ApexPages.StandardController sc = new ApexPages.StandardController(testCampaign);
-        CampaignListEditor_CTRL ctrl = new CampaignListEditor_CTRL(sc);
-        CampaignTools_UTIL.throwException = true;
-        Boolean hasPerms = ctrl.getEnableSave();
-
-        Test.stopTest();
-
-        System.assert(!hasPerms, 'When permission exception is caught, user should not have permissions.');
-    }
 }

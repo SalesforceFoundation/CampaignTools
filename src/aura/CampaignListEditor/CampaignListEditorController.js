@@ -1,6 +1,9 @@
 ({
     doInit: function (component, event, helper) {
         var rootSegmentId = component.get('v.rootSegmentId');
+        helper.verifyPermissions(
+            component
+        );
         helper.loadSegmentTreeData(
             component,
             rootSegmentId,
@@ -12,6 +15,7 @@
                     } else {
                         initErrorLabel = '$Label.c.PageMessagesError';
                     }
+                    component.set('v.disableSave', true);
                     helper.addPageMessage(
                         'error',
                         $A.get(initErrorLabel),

@@ -39,12 +39,8 @@
 public with sharing class CampaignListEditor_CTRL {
     
     private static String plainNamespace;
-    private static Boolean enableSave;
-    private final Campaign camp;
     
-    public CampaignListEditor_CTRL(ApexPages.StandardController controller) {
-        this.camp = (Campaign)controller.getRecord();
-    }
+    public CampaignListEditor_CTRL(ApexPages.StandardController controller) {}
 
     /*******************************************************************************************************
     * @description Finds the namespace for the current context.
@@ -57,29 +53,5 @@ public with sharing class CampaignListEditor_CTRL {
         }
 
         return plainNamespace;
-    }
-
-    /*******************************************************************************************************
-    * @description Before enabling save check whether user has perms and if the list will load without error
-    * @return Boolean true when the list will load
-    ********************************************************************************************************/
-    public Boolean getEnableSave() {
-        if (null == enableSave) {
-            try {
-                if (camp.Campaign_List__c != null) {
-                    // Attempt to get the serialized segment tree which will check for permissions and ensure the list can load
-                    String segmentTree = CampaignListBuilder_CTRL.getSerializedSegmentTree(camp.Campaign_List__c);
-                } else {
-                    // If no existing segment tree then ensure user has proper permissions
-                    CampaignTools_UTIL.checkCampaignListPermission();
-                }
-                enableSave = true;
-            } catch (Exception ex) {
-                System.debug(ex.getMessage());
-                enableSave = false;
-            }
-    	}
-    	
-        return enableSave;
     }
 }
