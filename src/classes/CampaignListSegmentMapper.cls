@@ -64,10 +64,6 @@ public with sharing class CampaignListSegmentMapper implements CampaignList.Segm
             names.put(c.Id, c.Name);
         }
 
-        if (names.size() != sourceIds.size() && !Test.isRunningTest())
-            // If the query does not return all segement sources assume sharing issue
-            throw new CampaignList.InvalidSegmentSObjectException(Label.CampaignToolsListEditorReadError);
-
         return names;
     }
 
@@ -146,7 +142,11 @@ public with sharing class CampaignListSegmentMapper implements CampaignList.Segm
             CampaignList.Segment next = it.next();
             if (next instanceof CampaignListSegment.SourceSegment) {
                 CampaignListSegment.SourceSegment sourceSegment = (CampaignListSegment.SourceSegment) next;
-                sourceSegment.setSourceName(sourceNamesById.get(sourceSegment.getSourceId()));
+                if (sourceNamesById.containsKey(sourceSegment.getSourceId())) {
+                    sourceSegment.setSourceName(sourceNamesById.get(sourceSegment.getSourceId()));
+                } else {
+                    sourceSegment.setSourceName(sourceSegment.getSourceId() + ' ' + Label.CampaignToolsListEditorSourceError);
+                }
             }
         }
     }

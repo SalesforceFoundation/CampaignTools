@@ -174,7 +174,7 @@
         <language>en_US</language>
         <protected>true</protected>
         <shortDescription>CampaignToolsListEditorReadError</shortDescription>
-        <value>This Campaign List includes a Campaign or Report you don&apos;t have access to, either because it was deleted or it hasn&apos;t been shared with you.</value>
+        <value>This Campaign List includes a Campaign or Report you don&apos;t have access to, either because it was deleted or hasn&apos;t been shared with you. The Source ID and an error are listed in the Name field for the unavailable source.</value>
     </labels>
     <labels>
         <fullName>CampaignToolsListEditorReportColumn</fullName>
@@ -271,6 +271,14 @@
         <protected>false</protected>
         <shortDescription>CampaignToolsListEditorSelectSourceType</shortDescription>
         <value>Select Source Type</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsListEditorSourceError</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListEditorSourceError</shortDescription>
+        <value>(You don&apos;t have access)</value>
     </labels>
     <labels>
         <fullName>CampaignToolsListEditorSourceType</fullName>

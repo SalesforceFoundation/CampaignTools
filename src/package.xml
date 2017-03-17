@@ -144,6 +144,7 @@
         <members>CampaignToolsListEditorSaveSuccessful</members>
         <members>CampaignToolsListEditorSelectIdColumn</members>
         <members>CampaignToolsListEditorSelectSourceType</members>
+        <members>CampaignToolsListEditorSourceError</members>
         <members>CampaignToolsListEditorSourceType</members>
         <members>CampaignToolsListEditorStatus</members>
         <members>CampaignToolsListEditorTitle</members>
