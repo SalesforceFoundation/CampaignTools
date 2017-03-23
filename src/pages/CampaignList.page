@@ -1,6 +1,6 @@
 <apex:page standardController="Campaign" extensions="CampaignListEditor_CTRL" title="{!$Label.CampaignToolsListEditorTitle}" standardStylesheets="false" docType="html-5.0">
         <apex:includeLightning />
-        <apex:stylesheet value="{!URLFOR($Resource.LightningDesignSystem, '1_0_2/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
+        <apex:slds />
 
         <style type="text/css">
             html body.sfdcBody {
@@ -11,7 +11,7 @@
         <!-- start with a spinner here until lightning loads -->
         <div class="slds" id="initialSpinner">
             <div class="slds-spinner_container" style="z-index:999;" > <!-- fixes bug on some browsers where z-order from SLDS was an expression with an error -->            
-                <div class="slds-spinner--brand slds-spinner slds-spinner--medium" style="position:fixed;top:40%;" aria-hidden="false" role="alert">
+                <div class="slds-spinner--brand slds-spinner slds-spinner--medium" style="position:fixed;top:35%;" aria-hidden="false" role="alert">
                     <div class="slds-spinner__dot-a"></div>
                     <div class="slds-spinner__dot-b"></div>
                 </div>
@@ -20,56 +20,7 @@
 
         <div id="pageMessages"></div>
 
-        <div class="slds">
-            <div class="slds-page-header" role="banner">
-
-                <div class="slds-grid">
-                    <div class="slds-col slds-has-flexi-truncate">
-                        <div class="slds-media">
-                            <div class="slds-media__figure">
-                                <img class="slds-icon slds-icon--large slds-icon-standard-campaign" src="{!URLFOR($Resource.LightningDesignSystem, '1_0_2/assets/icons/standard/campaign.svg')}"/>
-                            </div>
-                            <div class="slds-media__body">
-                                <nav role="navigation">
-                                    <p id="bread-crumb-label" class="slds-assistive-text">
-                                        <apex:outputText value="{!$Label.CampaignToolsListEditorYouAreHere}"/>
-                                    </p>
-                                    <ol class="slds-breadcrumb slds-list--horizontal" aria-labelledby="bread-crumb-label">
-                                        <li class="slds-list__item slds-text-heading--label">
-                                            <a class="slds-type-focus" href="{!URLFOR($Action.Campaign.Tab, $ObjectType.Campaign)}">
-                                                <apex:outputText value="{!$ObjectType.Campaign.LabelPlural}"/>
-                                            </a>
-                                        </li>
-                                        <li class="slds-list__item slds-text-heading--label">
-                                            <a class="slds-type-focus" href="{!URLFOR($Action.Campaign.View, Campaign.Id)}">
-                                                <apex:outputText value="{!Campaign.Name}"/>
-                                            </a>
-                                        </li>
-                                    </ol>
-                                </nav>
-
-                                <h1 class="slds-page-header__title slds-truncate" title="{!HTMLENCODE($Label.CampaignToolsListEditorTitle)}">
-                                    <apex:outputText value="{!$Label.CampaignToolsListEditorTitle}"/>
-                                </h1>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="slds-col slds-no-flex slds-align-bottom">
-                        <div class="slds-button-group" role="group">
-                            <a href="{!URLFOR($Action.Campaign.View, Campaign.Id)}" class="slds-button slds-button--neutral">
-                                <apex:outputText value="{!$Label.CampaignToolsListEditorCancel}"/>
-                            </a>
-                            <button id="saveEditor" class="slds-button slds-button--brand">
-                                <apex:outputText value="{!$Label.CampaignToolsListEditorSave}"/>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="lightning" class="slds-container--fluid slds-p-around--medium"/>
-        </div>
+        <div id="lightning" class="slds-container--fluid slds-p-around--medium"/>
 
         <script>
 
@@ -82,28 +33,6 @@
                 }
 
                 return nsPrefix;
-            }
-
-            function addSaveHandler(nsPrefix) {
-                var campaignListEditorSaveEvent = 'e.' + nsPrefix + ':CampaignListEditorSaveEvent';
-                var element = document.getElementById('saveEditor');
-                var hasPerms = {!hasPerms};
-
-                if (hasPerms) {
-                    element.addEventListener(
-                        'click',
-                        function () {
-                            var $Aura = (window.opener && window.opener.$A) || window.$A;
-                            if (!$Aura) return;
-                            var saveEvent = $Aura.get(campaignListEditorSaveEvent);
-                            if (saveEvent) {
-                                saveEvent.fire();
-                            }
-                        }
-                    );
-                } else {
-                    element.setAttribute('disabled', 'true');
-                }
             }
 
             function createComponents(nsPrefix) {
@@ -124,13 +53,16 @@
                     campaignListEditorCmp,
                     {
                         campaignId : '{!Campaign.Id}',
+                        campaignName : '{!Campaign.Name}',
+                        campaignsURL : '{!URLFOR($Action.Campaign.Tab, $ObjectType.Campaign)}',
+                        campaignsLabel : '{!$ObjectType.Campaign.LabelPlural}',
                         rootSegmentId: '{!Campaign.Campaign_List__c}',
                         nsPrefix: nsPrefix
                     },
                     "lightning",
                     function(component) {
                         // hide our startup spinner
-                        document.getElementById('initialSpinner').style.display = 'none';                                       
+                        document.getElementById('initialSpinner').style.display = 'none';
                     }
                 );
             }
@@ -147,7 +79,6 @@
 
             function init() {
                 var nsPrefix = getNamespace();
-                addSaveHandler(nsPrefix);
                 createApp(nsPrefix);
             }
 
@@ -177,6 +108,7 @@
     <apex:outputText value="{!$Label.CampaignToolsListEditorFindReport}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorMethodException}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorOrJoin}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorReadError}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportColumn}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportName}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportType}" rendered="false"/>
@@ -189,6 +121,7 @@
     <apex:outputText value="{!$Label.CampaignToolsListEditorSaveSuccessful}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSelectIdColumn}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSelectSourceType}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorSourceError}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSourceType}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorStatus}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorTitle}" rendered="false"/>

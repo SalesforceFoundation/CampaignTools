@@ -57,7 +57,7 @@ public with sharing class CampaignListBuilder_CTRL {
             CampaignTools_UTIL.checkCampaignListPermission();
             CampaignList.SegmentMapper mapper = new CampaignListSegmentMapper();
             return JSON.serialize(mapper.getSegmentTreeByRootId(rootSegmentId));
-        } catch (CampaignTools_UTIL.PermsException ex) {
+        } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
         }
     }
@@ -71,7 +71,7 @@ public with sharing class CampaignListBuilder_CTRL {
             Id rootSegmentId = mapper.upsertSegmentTreeByRootSegment(segmentTree);
             update new Campaign(Id = campaignId, Campaign_List__c = rootSegmentId);
             return true;
-        } catch (CampaignTools_UTIL.PermsException ex) {
+        } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
         }
     }

@@ -39,7 +39,6 @@
 public with sharing class CampaignListEditor_CTRL {
     
     private static String plainNamespace;
-    private static Boolean hasPerms;
     
     public CampaignListEditor_CTRL(ApexPages.StandardController controller) {}
 
@@ -54,23 +53,5 @@ public with sharing class CampaignListEditor_CTRL {
         }
 
         return plainNamespace;
-    }
-
-    /*******************************************************************************************************
-    * @description Checks all required permissions for the page to function correctly, user must have
-    * proper access to the Campaign and Segment Objects and Fields
-    * @return Boolean true when the user has all permissions
-    ********************************************************************************************************/
-    public static Boolean getHasPerms() {
-    	if (null == hasPerms) {
-    		try {
-	    		CampaignTools_UTIL.checkCampaignListPermission();
-	    		hasPerms = true;
-	    	} catch (CampaignTools_UTIL.PermsException ex) {
-	    		hasPerms = false;
-	    	}
-    	}
-    	
-    	return hasPerms;
     }
 }

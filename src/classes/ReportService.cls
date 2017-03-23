@@ -85,6 +85,10 @@ public with sharing class ReportService implements CampaignList.ReportService {
             new List<String>{indexColumn}
         );
 
+        metadata.setAggregates(
+            new List<String>()
+        );
+
         Reports.SortColumn sortColumn = new Reports.SortColumn();
         sortColumn.setSortColumn(indexColumn);
         sortColumn.setSortOrder(Reports.ColumnSortOrder.ASCENDING);

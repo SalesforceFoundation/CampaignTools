@@ -137,6 +137,7 @@
                     } else {
                         initErrorLabel = '$Label.c.PageMessagesError';
                     }
+                    component.set('v.disableSave', true);
                     this_.addPageMessage(
                         'error',
                         $A.get(initErrorLabel),
@@ -147,20 +148,23 @@
         );
     },
 
-    validSegmentData: function (component, segmentData) {
+    validSegmentData: function (component, segmentData, severity) {
         var nsPrefix = component.get('v.nsPrefix');
+        //Adding label comments to preload labels
+        //$Label.camptools.PageMessagesWarning
+        //$Label.c.PageMessagesWarning
+        var label = '$Label.' + nsPrefix + '.PageMessages' + severity.charAt(0).toUpperCase() + severity.slice(1);
         var this_ = this;
         var valid = true;
         var incGroups = segmentData.inclusionSegment.children;
         var excGroups = segmentData.exclusionSegment.children;
         var hasInclude = false;
         var hasExclude = false;
-        var addErrMessage = function(err) {
-            var errLabel = nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveError' : '$Label.c.CampaignToolsListEditorSaveError';
+        var addErrMessage = function(msg) {
             this_.addPageMessage(
-                'error',
-                $A.get(errLabel),
-                $A.get(err)
+                severity,
+                $A.getReference(label),
+                $A.get(msg)
             );
         }
         // A valid source is not empty, has a source id and a column name for reports
@@ -170,10 +174,15 @@
             for (var srcIndex = 0; srcIndex < sources.length; srcIndex += 1) {
                 if (!$A.util.isEmpty(sources[srcIndex].segmentType)) {
                     emptyGroup = false;
-                    if (!$A.util.isEmpty(sources[srcIndex].segmentType) &&
-                        $A.util.isEmpty(sources[srcIndex].sourceId)) {
+                    // When the source Id of a Campaign or Report is empty add the warning / error to the page
+                    if ($A.util.isEmpty(sources[srcIndex].sourceId)) {
                         validSource = false;
                         addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoSource' : '$Label.c.CampaignToolsListEditorSaveNoSource');
+                    // When the source is missing we will add the Id and Message to the Name - if the name contains the Id add the warning / error to the page
+                    } else if (sources[srcIndex].sourceName.indexOf(sources[srcIndex].sourceId) > -1) {
+                        validSource = false;
+                        addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorReadError' : '$Label.c.CampaignToolsListEditorReadError');
+                    // When the source is a Report and the column name to use from the report is empty add the warning / error to the page
                     } else if (sources[srcIndex].segmentType === 'REPORT_SOURCE_SEGMENT' &&
                         $A.util.isEmpty(sources[srcIndex].columnName)) {
                         validSource = false;
