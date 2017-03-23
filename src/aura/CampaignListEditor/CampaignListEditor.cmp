@@ -1,8 +1,12 @@
 <aura:component controller="CampaignListBuilder_CTRL" implements="c:namespaceAware">
     <aura:attribute name="rootSegmentId" type="Id" access="public"/>
     <aura:attribute name="campaignId" type="Id" access="public"/>
+    <aura:attribute name="campaignName" type="String" access="public"/>
+    <aura:attribute name="campaignsURL" type="String" access="public" description="Breadcrumb navigation object tab URL"/>
+    <aura:attribute name="campaignsLabel" type="String" access="public" description="Breadcrumb navigation object label"/>
     <aura:attribute name="segmentData" type="Object" access="private"/>
     <aura:attribute name="showSpinner" type="Boolean" access="private" default="true" />
+    <aura:attribute name="disableSave" type="Boolean" access="private" default="false" />
 
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
     <aura:handler name="addSegmentEvent" event="c:CampaignListSegmentUpdateEvent" action="{!c.handleAddSegment}"/>
@@ -11,15 +15,52 @@
 
     <aura:handler event="c:CampaignListEditorSaveEvent" action="{!c.handleSave}"/>
 
-     <!-- Spinner for waiting feedback -->
-     <aura:if isTrue="{!v.showSpinner}">
-         <div class="slds-spinner_container">
-             <div class="slds-spinner--brand slds-spinner slds-spinner--medium" aria-hidden="false" role="alert">
-                 <div class="slds-spinner__dot-a"></div>
-                 <div class="slds-spinner__dot-b"></div>
-             </div>
-         </div>
-     </aura:if>
+    <div class="slds-page-header slds-m-bottom--medium" role="banner">
+        <div class="slds-grid">
+            <div class="slds-col slds-has-flexi-truncate">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <lightning:icon iconName="standard:campaign" size="large"/>
+                    </div>
+                    <div class="slds-media__body">
+                        <nav role="navigation">
+                            <p id="bread-crumb-label" class="slds-assistive-text">
+                                {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorYouAreHere : $Label.c.CampaignToolsListEditorYouAreHere)}
+                            </p>
+                            <ol class="slds-breadcrumb slds-list--horizontal" aria-labelledby="bread-crumb-label">
+                                <li class="slds-breadcrumb__item slds-text-heading--label"><a href="{!v.campaignsURL}">{!v.campaignsLabel}</a></li>
+                                <li class="slds-breadcrumb__item slds-text-heading--label"><a href="{!'/' + v.campaignId}">{!v.campaignName}</a></li>
+                            </ol>
+                        </nav>
+
+                        <h1 class="slds-page-header__title slds-truncate slds-p-top--xx-small"
+                            title="{!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorTitle : $Label.c.CampaignToolsListEditorTitle)}">
+                            {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorTitle : $Label.c.CampaignToolsListEditorTitle)}
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-col slds-no-flex slds-align-bottom">
+                <div class="slds-button-group" role="group">
+                    <a href="{!'/' + v.campaignId}" class="slds-button slds-button--neutral">
+                        {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorCancel : $Label.c.CampaignToolsListEditorCancel)}
+                    </a>
+                    <lightning:button onclick="{!c.handleSave}" variant="brand" disabled="{!v.disableSave}"
+                        label="{!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorSave : $Label.c.CampaignToolsListEditorSave)}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Spinner for waiting feedback -->
+    <aura:if isTrue="{!v.showSpinner}">
+        <div class="slds-spinner_container">
+            <div class="slds-spinner--brand slds-spinner slds-spinner--medium" aria-hidden="false" role="alert">
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
 
     <c:CampaignListSegment segment="{!v.segmentData.inclusionSegment}" allowEmpty="true" nsPrefix="{!v.nsPrefix}"/>
     <h3 class="slds-m-vertical--medium slds-text-heading--small">

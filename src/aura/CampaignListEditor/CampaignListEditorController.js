@@ -1,9 +1,11 @@
 ({
     doInit: function (component, event, helper) {
         var rootSegmentId = component.get('v.rootSegmentId');
-        helper.verifyPermissions(
-            component
-        );
+        if (!rootSegmentId) { // Check CRUD and FLS Perms alone when an existing campaign doesn't exist
+            helper.verifyPermissions(
+                component
+            );
+        }
         helper.loadSegmentTreeData(
             component,
             rootSegmentId,
@@ -15,11 +17,14 @@
                     } else {
                         initErrorLabel = '$Label.c.PageMessagesError';
                     }
+                    component.set('v.disableSave', true);
                     helper.addPageMessage(
                         'error',
                         $A.get(initErrorLabel),
                         err[0].message
                     );
+                } else if (rootSegmentId) { // validate existing segment tree
+                    helper.validSegmentData(component, segmentTreeData, 'warning');
                 }
                 component.set('v.segmentData', segmentTreeData);
                 component.set('v.showSpinner', false);
@@ -49,7 +54,7 @@
         var segmentData = component.get('v.segmentData');
         var campaignId = component.get('v.campaignId');
 
-        if (!helper.validSegmentData(component, segmentData))
+        if (!helper.validSegmentData(component, segmentData, 'error'))
             return;
 
         helper.saveSegmentData(
