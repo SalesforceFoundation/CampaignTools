@@ -142,8 +142,10 @@ public with sharing class CampaignListSegmentMapper implements CampaignList.Segm
             CampaignList.Segment next = it.next();
             if (next instanceof CampaignListSegment.SourceSegment) {
                 CampaignListSegment.SourceSegment sourceSegment = (CampaignListSegment.SourceSegment) next;
+                // Check to see if the query returned the matching Id / Name, may not if a source is not shared or has been deleted
                 if (sourceNamesById.containsKey(sourceSegment.getSourceId())) {
                     sourceSegment.setSourceName(sourceNamesById.get(sourceSegment.getSourceId()));
+                // Adding the Source Id and Error Message to the Name in order to display to end user when source is not available
                 } else {
                     sourceSegment.setSourceName(sourceSegment.getSourceId() + ' ' + Label.CampaignToolsListEditorSourceError);
                 }
