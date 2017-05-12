@@ -27,18 +27,104 @@
     ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+/**
+ * @author Salesforce.org
+ * @group CampaignTools
+ * @description Tests for CampaignTools_UTIL
+ */
 @isTest
-private with sharing class CampaignTools_TEST {
-	/*********************************************************************************************************
-    * @description Tests getting namespace
-    */
-	public static testmethod void TestNamespacePrefixFixups() {
+    private with sharing class CampaignTools_TEST {
+    /*******************************************************************************************************
+     * @description Tests namespace fixup conditionally depending on whether a namespace is present
+     *******************************************************************************************************/
+    @isTest
+    public static void TestNamespacePrefixFixups() {
         if (CampaignTools_UTIL.getNamespace()!='') {
             system.assertEquals(CampaignTools_UTIL.getNamespace()+'__foo', CampaignTools_UTIL.StrTokenNSPrefix('foo'));
             system.assertEquals(CampaignTools_UTIL.getNamespace()+'__foo__c', CampaignTools_UTIL.StrTokenNSPrefix('foo__c'));     
         } else {
             system.assertEquals('foo', CampaignTools_UTIL.StrTokenNSPrefix('foo'));
             system.assertEquals('foo__c', CampaignTools_UTIL.StrTokenNSPrefix('foo__c'));          
+        }
+    }
+    /*******************************************************************************************************
+     * @description Test invalid object name and assert and exception was caught
+     *******************************************************************************************************/
+    @isTest
+    public static void TestInvalidObjectDescribe() {
+        try {
+            CampaignTools_UTIL.checkObjectCreateAccess('InvalidObjectName');
+            System.assert(false, 'An exception should have occured.');
+        } catch(Exception ex) {
+            System.assert(true, 'An exception should occur.');
+        }
+    }
+    /*******************************************************************************************************
+     * @description Test invalid field name and assert and exception was caught
+     *******************************************************************************************************/
+    @isTest
+    public static void TestInvalidFieldDescribe() {
+        try {
+            CampaignTools_UTIL.checkFieldCreateAccess('Campaign', 'InvalidFieldName');
+            System.assert(false, 'An exception should have occured.');
+        } catch(Exception ex) {
+            System.assert(true, 'An exception should occur.');
+        }
+    }
+    /*******************************************************************************************************
+     * @description Test permissions exception, since CRUD cannot be set in a test, setting a flag on
+     * CampaignTools_Util to simulate and asserting the exception was caught
+     *******************************************************************************************************/
+    @isTest
+    public static void TestNoCreateAccess() {
+        CampaignTools_UTIL.throwException = true;
+        try {
+            CampaignTools_UTIL.checkObjectCreateAccess('Campaign');
+            System.assert(false, 'An exception should have occured.');
+        } catch(Exception ex) {
+            System.assert(true, 'An exception should occur.');
+        }
+    }
+    /*******************************************************************************************************
+     * @description Test permissions exception, since CRUD cannot be set in a test, setting a flag on
+     * CampaignTools_Util to simulate and asserting the exception was caught
+     *******************************************************************************************************/
+    @isTest
+    public static void TestNoReadAccess() {
+        CampaignTools_UTIL.throwException = true;
+        try {
+            CampaignTools_UTIL.checkObjectReadAccess('Campaign');
+            System.assert(false, 'An exception should have occured.');
+        } catch(Exception ex) {
+            System.assert(true, 'An exception should occur.');
+        }
+    }
+    /*******************************************************************************************************
+     * @description Test permissions exception, since CRUD cannot be set in a test, setting a flag on
+     * CampaignTools_Util to simulate and asserting the exception was caught
+     *******************************************************************************************************/
+    @isTest
+    public static void TestNoFieldCreateAccess() {
+        CampaignTools_UTIL.throwException = true;
+        try {
+            CampaignTools_UTIL.checkFieldCreateAccess('Campaign', 'Name');
+            System.assert(false, 'An exception should have occured.');
+        } catch(Exception ex) {
+            System.assert(true, 'An exception should occur.');
+        }
+    }
+    /*******************************************************************************************************
+     * @description Test permissions exception, since CRUD cannot be set in a test, setting a flag on
+     * CampaignTools_Util to simulate and asserting the exception was caught
+     *******************************************************************************************************/
+    @isTest
+    public static void TestNoDeleteAccess() {
+        CampaignTools_UTIL.throwException = true;
+        try {
+            CampaignTools_UTIL.checkObjectDeleteAccess('Campaign');
+            System.assert(false, 'An exception should have occured.');
+        } catch(Exception ex) {
+            System.assert(true, 'An exception should occur.');
         }
     }
 }

@@ -161,6 +161,17 @@ public with sharing class CampaignListSegmentMapper implements CampaignList.Segm
      * @return List<Segment__c>
      */
     private List<Segment__c> queryByRootSegmentId(Id rootSegmentId) {
+        return queryByRootSegmentId(new Set<Id>{rootSegmentId});
+    }
+
+    /**
+     * @description Given a set of "campaign list" ids, query for all of the related
+     * Segment__c sObjects associated with those campaign list
+     *
+     * @param set rootSegmentIds The set of "campaign list" ids
+     * @return List<Segment__c>
+     */
+    public List<Segment__c> queryByRootSegmentId(Set<Id> rootSegmentIds) {
         return [
             SELECT
                 Parent_Segment__c,
@@ -171,8 +182,8 @@ public with sharing class CampaignListSegmentMapper implements CampaignList.Segm
                 Root_Segment__c,
                 StatusIds__c
             FROM Segment__c
-            WHERE Root_Segment__c = :rootSegmentId
-            OR Id = :rootSegmentId
+            WHERE Root_Segment__c IN :rootSegmentIds
+            OR Id IN :rootSegmentIds
         ];
     }
 
