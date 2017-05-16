@@ -34,124 +34,6 @@
  */
 @isTest
 public with sharing class CampaignTriggerHandler_TEST {
-    /*******************************************************************************************************
-     * @description Clones a campaign record without a campaign list and asserts the cloned campaign
-     * does not have a campaign list.
-     *******************************************************************************************************/
-    @isTest
-    private static void testNewCampsWithoutSegments() {
-        List<Campaign> listNewCamps = generateCampaigns(1, false);
-        List<Campaign> listClonedCamps;
-
-        insert listNewCamps;
-        listClonedCamps = listNewCamps.deepClone();
-
-        Test.startTest();
-        insert listClonedCamps;
-        Test.stopTest();
-
-        List<Campaign> queriedResults = [SELECT Id, Campaign_List__c FROM Campaign WHERE ID IN :listClonedCamps];
-
-        System.assertEquals(null, listNewCamps[0].Campaign_List__c, 'There should not be a segment related to the original.');
-        System.assertEquals(null, listClonedCamps[0].Campaign_List__c, 'There should not be a segment related to the clone.');
-    }
-    /*******************************************************************************************************
-     * @description Clones a campaign record with a campaign list and asserts the cloned campaign
-     * has a cloned copy of the original campaing list
-     *******************************************************************************************************/
-    @isTest
-    private static void testNewCampsWithSegments() {
-        List<Campaign> listNewCamps = generateCampaigns(1, false);
-        List<Campaign> listClonedCamps;
-        List<Segment__c> listNewSegments = new List<Segment__c>();
-
-        // Creating generic segments for testing purposes that do not reflect a true segment tree
-        listNewSegments.add(new Segment__c(Operation__c = 'AND'));
-        listNewSegments.add(new Segment__c(Operation__c = 'OR'));
-        listNewSegments.add(new Segment__c(Operation__c = 'AND'));
-        insert listNewSegments;
-
-        // Updating the segment to simulate a segment tree structure
-        listNewSegments[1].Parent_Segment__c = listNewSegments[0].Id;
-        listNewSegments[1].Root_Segment__c = listNewSegments[0].Id;
-        listNewSegments[2].Parent_Segment__c = listNewSegments[1].Id;
-        listNewSegments[2].Root_Segment__c = listNewSegments[0].Id;
-        update listNewSegments;
-
-        // Assigning the segment to the new campaign
-        listNewCamps[0].Campaign_List__c = listNewSegments[0].Id;
-        insert listNewCamps;
-        listClonedCamps = listNewCamps.deepClone();
-
-        Test.startTest();
-        insert listClonedCamps;
-        Test.stopTest();
-
-        List<Campaign> queriedCampaigns = [SELECT Id, Campaign_List__c FROM Campaign WHERE ID IN :listClonedCamps];
-        List<Segment__c> queriedSegments = new CampaignListSegmentMapper().queryByRootSegmentId(new Set<Id>{queriedCampaigns[0].Campaign_List__c});
-
-        System.assertEquals(listNewSegments[0].Id, listNewCamps[0].Campaign_List__c, 'The root segment should be related to the original campaign.');
-        System.assertNotEquals(listNewSegments[0].Id, queriedCampaigns[0].Campaign_List__c, 'The root segment should not be related to the cloned campaign.');
-        System.assertEquals(listNewSegments.size(), queriedSegments.size(), 'The total number of segments should match the original campaigns.');
-    }
-    /*******************************************************************************************************
-     * @description Clones several campaign records with a campaign list and asserts the cloned campaign
-     * has a cloned copy of the original campaing list
-     *******************************************************************************************************/
-    @isTest
-    private static void testMultiNewCampsWithSegments() {
-        List<Campaign> listNewCamps = generateCampaigns(200, false);
-        List<Campaign> listClonedCamps;
-        List<Segment__c> listNewSegments = new List<Segment__c>();
-
-        // Creating generic segments for testing purposes that do not reflect a true segment tree
-        for (Integer i = 0; i < 100; i++) {
-            listNewSegments.add(new Segment__c(Operation__c = 'AND'));
-            listNewSegments.add(new Segment__c(Operation__c = 'OR'));
-            listNewSegments.add(new Segment__c(Operation__c = 'AND'));
-        }
-        insert listNewSegments;
-
-        // Updating the segment to simulate a segment tree structure
-        for (Integer i = 0; i < 298; i = i+3) {
-            listNewSegments[i + 1].Parent_Segment__c = listNewSegments[i].Id;
-            listNewSegments[i + 1].Root_Segment__c = listNewSegments[i].Id;
-            listNewSegments[i + 2].Parent_Segment__c = listNewSegments[i + 1].Id;
-            listNewSegments[i + 2].Root_Segment__c = listNewSegments[i].Id;
-        }
-        update listNewSegments;
-
-        // Assigning the segment to the new campaign
-        for (Integer i = 0; i < 100; i++) {
-            listNewCamps[i].Campaign_List__c = listNewSegments[i * 3].Id;
-        }
-        insert listNewCamps;
-        listClonedCamps = listNewCamps.deepClone();
-
-        Test.startTest();
-        insert listClonedCamps;
-        Test.stopTest();
-
-        List<Campaign> queriedCampaigns = [SELECT Id, Campaign_List__c FROM Campaign WHERE ID IN :listClonedCamps];
-        List<Segment__c> queriedSegments = new List<Segment__c>([SELECT Id, Root_Segment__c, Parent_Segment__c FROM Segment__c WHERE Id NOT IN :listNewSegments]);
-
-        Map<Id, Segment__c> mapNewSegments = new Map<Id, Segment__c>(listNewSegments);
-
-        for (Campaign queriedCampaign : queriedCampaigns) {
-            System.assert(!mapNewSegments.keySet().contains(queriedCampaign.Campaign_List__c), 'The cloned camp segment should not be the same as the original segment.');
-        }
-        for (Segment__c queriedSegment : queriedSegments) {
-            System.assert(!mapNewSegments.keySet().contains(queriedSegment.Root_Segment__c), 'The cloned segments root should not be the same as the original segment.');
-        }
-        for (Segment__c queriedSegment : queriedSegments) {
-            System.assert(!mapNewSegments.keySet().contains(queriedSegment.Parent_Segment__c), 'The cloned segments parent should not be the same as the original segment.');
-        }
-        System.assertEquals(listNewSegments.size(), queriedSegments.size(), 'The total number of segments should match the original campaigns.');
-    }
-    /*******************************************************************************************************
-     * @description Inserts a campaign record that is not set to auto refresh without a scheduled job and
-     * asserts that the record should have inserted successfully
-     *******************************************************************************************************/
     @isTest
 	private static void testNewCampsWithoutScheduleNoRefresh() {
         CampaignTriggerHandler.validate = true;
@@ -164,10 +46,7 @@ public with sharing class CampaignTriggerHandler_TEST {
 
         System.assertEquals(listNewCamps.size(), queriedResults.size(), 'Records should have inserted without issue.');
     }
-    /*******************************************************************************************************
-     * @description Inserts a campaign record that is set to auto refresh without a scheduled job and
-     * asserts that an error should have been thrown and no records were inserted
-     *******************************************************************************************************/
+
     @isTest
     private static void testNewCampsWithoutScheduleWithRefresh() {
         CampaignTriggerHandler.validate = true;
@@ -185,10 +64,7 @@ public with sharing class CampaignTriggerHandler_TEST {
 
         System.assert(queriedResults.isEmpty());
     }
-    /*******************************************************************************************************
-     * @description Updates a campaign record that is not set to auto refresh without a scheduled job and
-     * asserts that the record should have updated successfully
-     *******************************************************************************************************/
+
     @isTest
     private static void testUpdateCampsWithoutScheduleNoRefresh() {
         CampaignTriggerHandler.validate = true;
@@ -206,10 +82,7 @@ public with sharing class CampaignTriggerHandler_TEST {
 
         System.assertEquals(listNewCamps.size(), queriedResults.size(), 'Records should have updated without issue.');
     }
-    /*******************************************************************************************************
-     * @description Updates a campaign record and sets it to auto refresh without a scheduled job and
-     * asserts that an error should have been thrown and no records were updated
-     *******************************************************************************************************/
+
     @isTest
     private static void testUpdateCampsWithoutScheduleWithRefresh() {
         CampaignTriggerHandler.validate = true;
@@ -233,10 +106,7 @@ public with sharing class CampaignTriggerHandler_TEST {
 
         System.assert(queriedResults.isEmpty(), 'Records should have failed to update.');
     }
-    /*******************************************************************************************************
-     * @description Inserts 100 campaigns set to refresh and 100 campaigns not set to refresh with a
-     * scheduled job and asserts that all records were inserted
-     *******************************************************************************************************/
+
     @isTest
     private static void testCampsWithScheduleMixBulk() {
         CampaignTriggerHandler.validate = true;
@@ -252,10 +122,7 @@ public with sharing class CampaignTriggerHandler_TEST {
         System.assertEquals(listCampRefreshJobs.size(), 1, 'There should be one scheduled job.');
         System.assertEquals(listNewCamps.size(), queriedResults.size(), 'Records should have inserted without issue.');
     }
-    /*******************************************************************************************************
-     * @description Inserts 200 campaigns set to refresh and 200 campaigns not set to refresh without a
-     * scheduled job and asserts that an exception was thrown and no records were inserted
-     *******************************************************************************************************/
+
     @isTest
     private static void testCampsWithoutScheduleMixBulk() {
         CampaignTriggerHandler.validate = true;
@@ -274,9 +141,7 @@ public with sharing class CampaignTriggerHandler_TEST {
 
         System.assert(queriedResults.isEmpty(), 'Records should have failed to insert.');
     }
-    /*******************************************************************************************************
-     * @description creates a scheduled job called by tests requiring a scheduled job
-     *******************************************************************************************************/
+
     private static List<AsyncApexJob> scheduleJob() {
         String jobId = System.schedule('testRefreshScheduledApex',
             '0 0 10 ? * MON-FRI', 
@@ -285,13 +150,7 @@ public with sharing class CampaignTriggerHandler_TEST {
                 WHERE JobType = 'ScheduledApex' AND Status ='Queued'
                 AND ApexClass.Name = 'CampaignListRefreshSchedulable'];
     }
-    /*******************************************************************************************************
-     * @description creates a specified number of campaigns and sets them to refresh if specefied by the
-     * refresh parameter. Called by tests to generate test campaign data
-     * @param numOfCamps - the number of campaigns to create
-     * @param refresh - boolean flag when true sets the campaign to refresh
-     * @return List<Campaign> - the list of campaign records created
-     *******************************************************************************************************/
+
     private static List<Campaign> generateCampaigns(Integer numOfCamps, Boolean refresh) {
         List<Campaign> listCamps = new List<Campaign>();
         for (Integer i = 0; i < numOfCamps; i++) {
