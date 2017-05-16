@@ -6,8 +6,8 @@
     <aura:handler name="change" value="{!v.source}" action="{!c.handleSourceChange}"/>
     <aura:handler event="c:autocompleteSelectListOption" name="optionSelected" action="{!c.handleAutocomplete}" />
 
-            <div class="slds-grid">
-                <div class="slds-form-element slds-col--padded slds-size--1-of-5 slds-grow-none">
+            <div class="slds-grid"> <!-- disable options until Report Option is available
+                <div class="slds-form-element slds-col-*-padded slds-size-*-1-of-5 slds-grow-none">
                     <label class="slds-form-element__label">
                         {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorSourceType : $Label.c.CampaignToolsListEditorSourceType)}
                     </label>
@@ -29,9 +29,9 @@
                         </div>
 
                     </div>
-                </div>
-                <aura:if isTrue="{!v.source.segmentType == 'REPORT_SOURCE_SEGMENT'}">
-                    <div class="slds-form-element slds-col--padded slds-size--2-of-5 slds-grow-none">
+                </div> -->
+                <aura:if isTrue="{!v.source.segmentType == 'REPORT_SOURCE_SEGMENT'}"> <!-- Increasing to 3-of-5 until Report option is available -->
+                    <div class="slds-form-element slds-col--padded slds-size--3-of-5 slds-grow-none">
                         <label class="slds-form-element__label">
                             {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorReportName : $Label.c.CampaignToolsListEditorReportName)}
                         </label>
@@ -65,8 +65,8 @@
                         </div>
                     </div>
                 </aura:if>
-                <aura:if isTrue="{!v.source.segmentType == 'CAMPAIGN_SOURCE_SEGMENT'}">
-                    <div class="slds-form-element slds-col--padded slds-size--2-of-5 slds-grow-none">
+                <aura:if isTrue="{!v.source.segmentType == 'CAMPAIGN_SOURCE_SEGMENT'}"> <!-- Increasing to 3-of-5 until Report option is available -->
+                    <div class="slds-form-element slds-col--padded slds-size--3-of-5 slds-grow-none">
                         <label class="slds-form-element__label">
                             {!(v.nsPrefix == 'camptools' ? $Label.camptools.CampaignToolsListEditorCampaignName : $Label.c.CampaignToolsListEditorCampaignName)}
                         </label>

@@ -738,11 +738,15 @@ public with sharing class CampaignListRefreshSchedulable implements Schedulable 
 
             for (Integer i = 0; i < numberOfCampaignsToSchedule; i++) {
                 Campaign campaignToSchedule = readyCampaigns.get(i);
-                service.updateCampaignFromCampaignList(
-                    campaignToSchedule.Id,
-                    campaignToSchedule.Campaign_List__c,
-                    false
-                );
+                try {
+                    service.updateCampaignFromCampaignList(
+                        campaignToSchedule.Id,
+                        campaignToSchedule.Campaign_List__c,
+                        false
+                    );
+                } catch(Exception ex) {
+                    service.unlockCampaignAndMarkFailed(campaignToSchedule.Id, ex.getMessage());
+                }
             }
 
             if (queuedCount > 0) {

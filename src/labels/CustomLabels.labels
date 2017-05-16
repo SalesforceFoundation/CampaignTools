@@ -185,6 +185,14 @@
         <value>Report Column</value>
     </labels>
     <labels>
+        <fullName>CampaignToolsListEditorReportError</fullName>
+        <categories>CampaignTools,CampaignListEditor</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsListEditorReportError</shortDescription>
+        <value>Reports are not a supported source for Campaign Lists. Please remove all reports and try again.</value>
+    </labels>
+    <labels>
         <fullName>CampaignToolsListEditorReportName</fullName>
         <categories>CampaignTools,CampaignListEditor</categories>
         <language>en_US</language>
@@ -439,6 +447,14 @@
         <protected>true</protected>
         <shortDescription>CampaignToolsReleaseLockException</shortDescription>
         <value>Could not release lock on campaign {0}</value>
+    </labels>
+    <labels>
+        <fullName>CampaignToolsReportException</fullName>
+        <categories>CampaignTools,Exceptions</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CampaignToolsReportException</shortDescription>
+        <value>This Campaign List can&apos;t be refreshed because it contains reports as sources. Please remove all reports and try again.</value>
     </labels>
     <labels>
         <fullName>JobProgressCompletedLabel</fullName>
