@@ -41,28 +41,30 @@ public with sharing class CampaignTriggerHandler {
     @TestVisible private static Boolean validate = !Test.isRunningTest();
 
     /*******************************************************************************************************
-    * @description Trigger Handler on Campaign to validate the campaign objects before insert
-    * @param listNewCamp the list of Campaigns from trigger new
-    ********************************************************************************************************/
-	public static void handleBeforeInsert(List<Campaign> listNewCamp) {
-        if (!isCampaignRefreshScheduled() && validate)
-            validateCampaignRefresh(new List<Campaign>(), listNewCamp);
+     * @description Trigger Handler on Campaign to validate the campaign objects before insert
+     * @param listNewCamp the list of Campaigns from trigger new
+     *******************************************************************************************************/
+    public static void handleBeforeInsert(List<Campaign> listNewCamp) {
+        validateCampaignRefresh(new List<Campaign>(), listNewCamp);
+        onBeforeInsert(listNewCamp);
     }
     /*******************************************************************************************************
-    * @description Trigger Handler on Campaign to validate the campaign objects before update
-    * @param listOldCamp the list of Campaigns from trigger old
-    * @param listNewCamp the list of Campaigns from trigger new
-    ********************************************************************************************************/
+     * @description Trigger Handler on Campaign to validate the campaign objects before update
+     * @param listOldCamp the list of Campaigns from trigger old
+     * @param listNewCamp the list of Campaigns from trigger new
+     *******************************************************************************************************/
     public static void handleBeforeUpdate(List<Campaign> listOldCamp, List<Campaign> listNewCamp) {
-        if (!isCampaignRefreshScheduled() && validate)
-            validateCampaignRefresh(listOldCamp, listNewCamp);
+        validateCampaignRefresh(listOldCamp, listNewCamp);
     }
     /*******************************************************************************************************
-    * @description Adds an error to any campaign set to refresh when a schedule is not present
-    * @param listOldCamp the list of Campaigns from trigger old
-    * @param listNewCamp the list of Campaigns from trigger new
-    ********************************************************************************************************/
+     * @description Adds an error to any campaign set to refresh when a schedule is not present
+     * @param listOldCamp the list of Campaigns from trigger old
+     * @param listNewCamp the list of Campaigns from trigger new
+     *******************************************************************************************************/
     public static void validateCampaignRefresh(List<Campaign> listOldCamp, List<Campaign> listNewCamp) {
+        // return when not validating the records or the campaign refresh job is scheduled
+        if (!validate || isCampaignRefreshScheduled())
+            return;
         Map<Id, Campaign> mapOldCamp = new Map<Id, Campaign>(listOldCamp);
         for (Campaign newCamp : listNewCamp) {
             Campaign oldCamp;
@@ -78,9 +80,50 @@ public with sharing class CampaignTriggerHandler {
         }
     }
     /*******************************************************************************************************
-    * @description Check to see if the refresh job is scheduled
-    * @return Boolean true when job is scheduled
-    ********************************************************************************************************/
+     * @description On newly inserted records check if cloned from a campaign with a campaign list
+     * @param listNewCamp the list of Campaigns from trigger new
+     *******************************************************************************************************/
+    public static void onBeforeInsert(List<Campaign> listNewCamp) {
+        /** @description A map of the original campaign list Ids to the newly cloned Campaign Record */
+        Map<Id, Campaign> srcIdToClonedCampaigns = new Map<Id, Campaign>();
+        // loop through all newly created campaign records and if they are a clone with a list add to map
+        for (Campaign newCamp : listNewCamp) {
+            if (newCamp.isClone() && newCamp.Campaign_List__c != null) {
+                srcIdToClonedCampaigns.put(newCamp.Campaign_List__c, newCamp);
+            }
+        }
+        if (srcIdToClonedCampaigns.size() > 0) {
+            /** @description A map of all root and children segments related to the cloned campaigns with a list */
+            Map<Id, Segment__c> mapSrcSegments = new Map<Id, Segment__c>(
+                new CampaignListSegmentMapper().queryByRootSegmentId(srcIdToClonedCampaigns.keySet()));
+            /** @description A deep clone of the list of related segments */
+            List<Segment__c> clonedSegments = mapSrcSegments.values().deepClone();
+            // clear out the existing hierarchy before inserting the new segments
+            for (Segment__c clonedSegment : clonedSegments) {
+                clonedSegment.Parent_Segment__c = null;
+                clonedSegment.Root_Segment__c = null;
+            }
+            insert clonedSegments;
+            /** @description A map of the original segment Id to the new segment Id */
+            Map<Id, Id> mapSrcIdToClonedId = new Map<Id, Id>();
+            for (Segment__c clonedSegment : clonedSegments) {
+                mapSrcIdToClonedId.put(clonedSegment.getCloneSourceId(), clonedSegment.Id);
+            }
+            // update the hierarchy with the new ids and set the new root segment id on the campaign
+            for (Segment__c clonedSegment : clonedSegments) {
+                Segment__c srcSegment = mapSrcSegments.get(clonedSegment.getCloneSourceId());
+                clonedSegment.Parent_Segment__c = srcSegment.Parent_Segment__c == null ? null : mapSrcIdToClonedId.get(srcSegment.Parent_Segment__c);
+                clonedSegment.Root_Segment__c = srcSegment.Root_Segment__c == null ? null : mapSrcIdToClonedId.get(srcSegment.Root_Segment__c);
+                if (srcIdToClonedCampaigns.containsKey(srcSegment.Id))
+                    srcIdToClonedCampaigns.get(srcSegment.Id).Campaign_List__c = mapSrcIdToClonedId.get(srcSegment.Id);
+            }
+            upsert clonedSegments;
+        }
+    }
+    /*******************************************************************************************************
+     * @description Check to see if the refresh job is scheduled
+     * @return Boolean true when job is scheduled
+     *******************************************************************************************************/
     public static Boolean isCampaignRefreshScheduled() {
         if (listCampRefreshJobs == null){
             // scheduled Apex jobs will always stays in the Queued status until the job has no NextFireTime,
