@@ -110,6 +110,7 @@
     <apex:outputText value="{!$Label.CampaignToolsListEditorOrJoin}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReadError}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportColumn}" rendered="false"/>
+    <apex:outputText value="{!$Label.CampaignToolsListEditorReportError}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportName}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorReportType}" rendered="false"/>
     <apex:outputText value="{!$Label.CampaignToolsListEditorSave}" rendered="false"/>

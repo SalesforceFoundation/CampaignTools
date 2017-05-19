@@ -86,11 +86,14 @@ public with sharing class CampaignListService implements CampaignList.Service {
         batchSequence.add(new DeleteCampaignListMembersBatch(rootSegmentId, campaignId), 5000);
 
         Iterator<CampaignList.Segment> segmentTreeIterator = segmentTree.iterator();
-
         while (segmentTreeIterator.hasNext()) {
             CampaignList.Segment next = segmentTreeIterator.next();
             if (next instanceof CampaignListSegment.SourceSegment) {
                 CampaignListSegment.SourceSegment sourceSegment = (CampaignListSegment.SourceSegment) next;
+                // Add error when source is a report until Report Option is available
+                if (sourceSegment.getSourceId().getSObjectType() == Schema.Report.SObjectType) {
+                    throw new CampaignListUpdateReportException(Label.CampaignToolsReportException);
+                }
                 batchSequence.add(sourceSegment.getBatchProcessor(campaignId));
             }
         }
@@ -237,4 +240,5 @@ public with sharing class CampaignListService implements CampaignList.Service {
 
     public virtual class CustomException extends Exception {}
     public class CampaignListUpdateAlreadyRunningException extends CustomException {}
+    public class CampaignListUpdateReportException extends CustomException {} // Exception for when source is a report until Report Option is available
 }

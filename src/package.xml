@@ -133,6 +133,7 @@
         <members>CampaignToolsListEditorOrJoin</members>
         <members>CampaignToolsListEditorReadError</members>
         <members>CampaignToolsListEditorReportColumn</members>
+        <members>CampaignToolsListEditorReportError</members>
         <members>CampaignToolsListEditorReportName</members>
         <members>CampaignToolsListEditorReportType</members>
         <members>CampaignToolsListEditorSave</members>
@@ -165,6 +166,7 @@
         <members>CampaignToolsNoSavedCampaignList</members>
         <members>CampaignToolsRefreshScheduleValidation</members>
         <members>CampaignToolsReleaseLockException</members>
+        <members>CampaignToolsReportException</members>
         <members>JobProgressCompletedLabel</members>
         <members>JobProgressExtendedStatusLabel</members>
         <members>JobProgressItemsProcessedLabel</members>
