@@ -172,6 +172,7 @@
             var emptyGroup = true;
             var validSource = true;
             for (var srcIndex = 0; srcIndex < sources.length; srcIndex += 1) {
+                /** Validation rules will change when Report Option is available
                 if (!$A.util.isEmpty(sources[srcIndex].segmentType)) {
                     emptyGroup = false;
                     // When the source Id of a Campaign or Report is empty add the warning / error to the page
@@ -187,6 +188,19 @@
                         $A.util.isEmpty(sources[srcIndex].columnName)) {
                         validSource = false;
                         addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoColumn' : '$Label.c.CampaignToolsListEditorSaveNoColumn');
+                    }
+                } */
+                if (!$A.util.isEmpty(sources[srcIndex].sourceId)) {
+                    emptyGroup = false;
+                    if (sources[srcIndex].sourceName.indexOf(sources[srcIndex].sourceId) > -1) {
+                        validSource = false;
+                        addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorReadError' : '$Label.c.CampaignToolsListEditorReadError');
+                    // When the source is a Report and the column name to use from the report is empty add the warning / error to the page
+                    } else if (sources[srcIndex].segmentType === 'REPORT_SOURCE_SEGMENT' /** && Error for all reports until Report Option is available
+                        $A.util.isEmpty(sources[srcIndex].columnName)*/) {
+                        validSource = false;
+                        // addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorSaveNoColumn' : '$Label.c.CampaignToolsListEditorSaveNoColumn');
+                        addErrMessage(nsPrefix === 'camptools' ? '$Label.camptools.CampaignToolsListEditorReportError' : '$Label.c.CampaignToolsListEditorReportError');
                     }
                 }
             }
@@ -266,7 +280,7 @@
     },
 
     addSegment: function (group) {
-        var segmentType;
+        var segmentType = 'CAMPAIGN_SOURCE_SEGMENT'; // Defaulting to Campaign until Report Option is available.
         var children = [];
         children = group.children;
         children.push({
@@ -278,7 +292,7 @@
     },
 
     addGroup: function (group) {
-        var segmentType;
+        var segmentType = 'CAMPAIGN_SOURCE_SEGMENT'; // Defaulting to Campaign until Report Option is available.
         var children = [];
         children = group.children;
         var newGroup = {
