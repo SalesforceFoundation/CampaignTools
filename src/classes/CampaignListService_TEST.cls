@@ -27,9 +27,126 @@
     ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+/**
+ * @author Salesforce.org
+ * @group CampaignTools
+ * @description Tests for CampaignListService
+ */
 @isTest
 private with sharing class CampaignListService_TEST {
-    private static testMethod void testUpdateCampaignFromCampaignList() {
+    /*******************************************************************************************************
+     * @description Test updating a campaign with campaign list from batch
+     * NOTE: Add Report batch to test class when Report option is available
+     *******************************************************************************************************/
+    @isTest
+    private static void testUpdateCampaignFromCampaignList() {
+        Id sourceReportId = CampaignList_TEST.getNextId(Report.sObjectType);
+        Id sourceCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+        Id destinationCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
+
+        Segment__c rootSegment = new Segment__c(
+            Operation__c = 'AND'
+        );
+        insert rootSegment;
+        /** Removing report source until the report option is available
+        Segment__c reportSourceSegment = new Segment__c(
+            Operation__c = 'SOURCE',
+            Parent_Segment__c = rootSegment.Id,
+            Root_Segment__c = rootSegment.Id,
+            Source_ID__c = sourceReportId,
+            Report_Column_Name__c = 'test_column_name',
+            Exclude_Source__c = false
+        );
+        insert reportSourceSegment;
+        */
+        Segment__c campaignSourceSegment = new Segment__c(
+            Operation__c = 'SOURCE',
+            Parent_Segment__c = rootSegment.Id,
+            Root_Segment__c = rootSegment.Id,
+            Source_ID__c = sourceCampaignId,
+            Exclude_Source__c = false
+        );
+        insert campaignSourceSegment;
+
+        BatchableSequenceStub bsStub = new BatchableSequenceStub();
+        BatchableSequenceStubFactory bsStubFactory= new BatchableSequenceStubFactory();
+        bsStubFactory.bs = bsStub;
+        CampaignList.setBatchableSequenceFactory(bsStubFactory);
+
+        CampaignList_TEST.ServiceStub serviceStub = new CampaignList_TEST.ServiceStub();
+        CampaignList.setService(serviceStub);
+
+        CampaignList_TEST.MutexStub mutexStub = new CampaignList_TEST.MutexStub();
+        mutexStub.acquireLock = true;
+
+        CampaignList_TEST.MutexStubFactory mutexFactory = new CampaignList_TEST.MutexStubFactory();
+        mutexFactory.createReturn = mutexStub;
+        CampaignList.setMutexFactory(mutexFactory);
+
+        CampaignListService service = new CampaignListService();
+        service.updateCampaignFromCampaignList(destinationCampaignId, rootSegment.Id);
+        // assert that the destination campaign was updated to indicate a
+        // running update
+
+        System.assertEquals(destinationCampaignId, serviceStub.updateCampaignStatusCampaignId);
+        System.assertEquals(destinationCampaignId, mutexFactory.createRecordId);
+        System.assertEquals(Campaign.Campaign_List_Mutex__c, mutexFactory.createMutexField);
+        System.assertEquals(1, mutexStub.acquireLockCalls);
+        System.assertEquals(CampaignList.UpdateStatus.Processing, serviceStub.updateCampaignStatusStatus);
+
+        // assert that the batches in this sequence exist in the expected
+        // order, with a report source batch and a campaign source batch (in
+        // either order)
+
+        List<BatchableSequence.Batch> batches = bsStub.bs.batches;
+
+        System.assert(batches.get(0) instanceof DeleteCampaignListMembersBatch);
+        // Decreasing each batch position by 1 until Report option is available
+        System.assert(batches.get(2) instanceof CampaignListUpdateMembersBatch);
+        System.assert(batches.get(3) instanceof CampaignListInsertMembersBatch);
+        System.assert(batches.get(4) instanceof DeleteCampaignListMembersBatch);
+
+        DeleteCampaignListMembersBatch deleteCampaignListMembersBatch1 = (DeleteCampaignListMembersBatch) batches.get(0);
+        /** Removing report source until the report option is available
+        CampaignListFromReportBatch reportBatch;
+        CampaignListFromCampaignBatch campaignBatch;
+
+        if (batches.get(1) instanceof CampaignListFromReportBatch) {
+            reportBatch = (CampaignListFromReportBatch) batches.get(1);
+            campaignBatch = (CampaignListFromCampaignBatch) batches.get(2);
+        } else {
+            reportBatch = (CampaignListFromReportBatch) batches.get(2);
+            campaignBatch = (CampaignListFromCampaignBatch) batches.get(1);
+        }
+
+        System.assertNotEquals(null, reportBatch);
+        System.assertNotEquals(null, campaignBatch);
+        */
+        CampaignListFromCampaignBatch campaignBatch  = (CampaignListFromCampaignBatch) batches.get(1);
+        // Decreasing each batch position by 1 until Report option is available
+        CampaignListUpdateMembersBatch campaignListUpdateMembersBatch = (CampaignListUpdateMembersBatch) batches.get(2);
+        CampaignListInsertMembersBatch campaignListInsertMembersBatch = (CampaignListInsertMembersBatch) batches.get(3);
+        DeleteCampaignListMembersBatch deleteCampaignListMembersBatch2 = (DeleteCampaignListMembersBatch) batches.get(4);
+
+        System.assertEquals(rootSegment.Id, deleteCampaignListMembersBatch1.rootSegmentId);
+        // System.assertEquals(rootSegment.Id, reportBatch.rootSegmentId);
+        // System.assertEquals(sourceReportId, reportBatch.reportId);
+        // System.assertEquals('test_column_name', reportBatch.idColumnName);
+        System.assertEquals(rootSegment.Id, campaignBatch.rootSegmentId);
+        System.assertEquals(destinationCampaignId, campaignBatch.targetCampaignId);
+        System.assertEquals(sourceCampaignId, campaignBatch.sourceCampaignId);
+        System.assertEquals(rootSegment.Id, campaignListUpdateMembersBatch.rootSegment.getId());
+        System.assertEquals(destinationCampaignId, campaignListUpdateMembersBatch.campaignId);
+        System.assertEquals(rootSegment.Id, campaignListInsertMembersBatch.rootSegment.getId());
+        System.assertEquals(destinationCampaignId, campaignListInsertMembersBatch.campaignId);
+        System.assertEquals(rootSegment.Id, deleteCampaignListMembersBatch2.rootSegmentId);
+    }
+    /*******************************************************************************************************
+     * @description Test updating a campaign with campaign list with report source from batch
+     * NOTE: Reports will throw an exception until the Report option is available
+     *******************************************************************************************************/
+    @isTest
+    private static void testUpdateCampaignFromCampaignListWithReportError() {
         Id sourceReportId = CampaignList_TEST.getNextId(Report.sObjectType);
         Id sourceCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
         Id destinationCampaignId = CampaignList_TEST.getNextId(Campaign.sObjectType);
@@ -74,59 +191,12 @@ private with sharing class CampaignListService_TEST {
         CampaignList.setMutexFactory(mutexFactory);
 
         CampaignListService service = new CampaignListService();
-        service.updateCampaignFromCampaignList(destinationCampaignId, rootSegment.Id);
-        // assert that the destination campaign was updated to indicate a
-        // running update
-
-        System.assertEquals(destinationCampaignId, serviceStub.updateCampaignStatusCampaignId);
-        System.assertEquals(destinationCampaignId, mutexFactory.createRecordId);
-        System.assertEquals(Campaign.Campaign_List_Mutex__c, mutexFactory.createMutexField);
-        System.assertEquals(1, mutexStub.acquireLockCalls);
-        System.assertEquals(CampaignList.UpdateStatus.Processing, serviceStub.updateCampaignStatusStatus);
-
-        // assert that the batches in this sequence exist in the expected
-        // order, with a report source batch and a campaign source batch (in
-        // either order)
-
-        List<BatchableSequence.Batch> batches = bsStub.bs.batches;
-
-        System.assert(batches.get(0) instanceof DeleteCampaignListMembersBatch);
-        System.assert(batches.get(3) instanceof CampaignListUpdateMembersBatch);
-        System.assert(batches.get(4) instanceof CampaignListInsertMembersBatch);
-        System.assert(batches.get(5) instanceof DeleteCampaignListMembersBatch);
-
-        DeleteCampaignListMembersBatch deleteCampaignListMembersBatch1 = (DeleteCampaignListMembersBatch) batches.get(0);
-
-        CampaignListFromReportBatch reportBatch;
-        CampaignListFromCampaignBatch campaignBatch;
-
-        if (batches.get(1) instanceof CampaignListFromReportBatch) {
-            reportBatch = (CampaignListFromReportBatch) batches.get(1);
-            campaignBatch = (CampaignListFromCampaignBatch) batches.get(2);
-        } else {
-            reportBatch = (CampaignListFromReportBatch) batches.get(2);
-            campaignBatch = (CampaignListFromCampaignBatch) batches.get(1);
+        try {
+            service.updateCampaignFromCampaignList(destinationCampaignId, rootSegment.Id);
+            System.assert(false, 'An exception should be thrown!');
+        } catch(CampaignListService.CampaignListUpdateReportException ex) {
+            System.assert(true, 'An exception should have been thrown!');
         }
-
-        System.assertNotEquals(null, reportBatch);
-        System.assertNotEquals(null, campaignBatch);
-
-        CampaignListUpdateMembersBatch campaignListUpdateMembersBatch = (CampaignListUpdateMembersBatch) batches.get(3);
-        CampaignListInsertMembersBatch campaignListInsertMembersBatch = (CampaignListInsertMembersBatch) batches.get(4);
-        DeleteCampaignListMembersBatch deleteCampaignListMembersBatch2 = (DeleteCampaignListMembersBatch) batches.get(5);
-
-        System.assertEquals(rootSegment.Id, deleteCampaignListMembersBatch1.rootSegmentId);
-        System.assertEquals(rootSegment.Id, reportBatch.rootSegmentId);
-        System.assertEquals(sourceReportId, reportBatch.reportId);
-        System.assertEquals('test_column_name', reportBatch.idColumnName);
-        System.assertEquals(rootSegment.Id, campaignBatch.rootSegmentId);
-        System.assertEquals(destinationCampaignId, campaignBatch.targetCampaignId);
-        System.assertEquals(sourceCampaignId, campaignBatch.sourceCampaignId);
-        System.assertEquals(rootSegment.Id, campaignListUpdateMembersBatch.rootSegment.getId());
-        System.assertEquals(destinationCampaignId, campaignListUpdateMembersBatch.campaignId);
-        System.assertEquals(rootSegment.Id, campaignListInsertMembersBatch.rootSegment.getId());
-        System.assertEquals(destinationCampaignId, campaignListInsertMembersBatch.campaignId);
-        System.assertEquals(rootSegment.Id, deleteCampaignListMembersBatch2.rootSegmentId);
     }
 
     private class BatchableSequenceStubFactory implements BatchableSequence.Factory {
@@ -151,8 +221,11 @@ private with sharing class CampaignListService_TEST {
             return 0;
         }
     }
-
-    private static testMethod void testUpdateCampaignStatus() {
+    /*******************************************************************************************************
+     * @description Test updating the status of a campaign
+     *******************************************************************************************************/
+    @isTest
+    private static void testUpdateCampaignStatus() {
         Campaign c = new Campaign(Name = 'Test Campaign');
         insert c;
 

@@ -108,6 +108,10 @@ public with sharing class ProcessSegmentBTN_CTRL {
                 ),
                 Label.CampaignToolsAlreadyRunningWarningDetail
             ));
+        } catch (CampaignListService.CampaignListUpdateReportException e) {
+            ApexPages.addMessage(new ApexPages.Message(
+                ApexPages.Severity.ERROR, e.getMessage()
+            ));
         }
 
         return null;
