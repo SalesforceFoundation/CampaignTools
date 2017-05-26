@@ -5,6 +5,24 @@ project:
         namespace: camptools
         api_version: 37.0
 
+tasks:
+    download_browser_tests:
+        description: Downloads the browser tests from the HEDA-Browser-Tests Github repository.
+        class_path: cumulusci.tasks.util.DownloadZip
+        options:
+            url: 'https://github.com/SalesforceFoundation/CampaignTools-Browser-Tests/archive/master.zip'
+            dir: browser_tests
+            subfolder: CampaignTools-Browser-Tests-master
+
+    browsertests_chrome:
+        description: Runs the Ruby/Watir browser tests in the browsertests folder using Chrome
+        class_path: cumulusci.tasks.command.SalesforceBrowserTest
+        options:
+            command: 'cd browser_tests; bundle install --quiet; bundle exec cucumber --format junit --out ../junit -c features/ --tags ~@firefox --tags ~@flaky'
+            dir: '.'
+            env:
+                SELENIUM_BROWSER: chrome
+
 flows:
     release_beta:
         tasks:
@@ -12,3 +30,11 @@ flows:
                 task: mrbelvedere_publish
                 options:
                     tag: ^^github_release.tag_name
+
+    browsertests_chrome:
+        description: Runs the browser tests locally against a managed package in Chrome
+        tasks:
+            1:
+                task: download_browser_tests
+            2:
+                task: browsertests_chrome
