@@ -128,7 +128,8 @@ public with sharing class ProcessSegmentBTN_CTRL {
     @RemoteAction
     public static String getCampaignListUpdateStatus(Id campaignId) {
         try {
-            CampaignTools_UTIL.checkFieldReadAccess('Campaign', 'Campaign_List_Update_Status__c');
+            CampaignTools_UTIL.checkReadAccess('Campaign',
+                new Set<String>{'Campaign_List_Update_Status__c', 'Campaign_List_Error_Message__c'});
         } catch(CampaignTools_UTIL.PermsException ex) {
             ApexPages.addMessage(new ApexPages.Message(
                 ApexPages.Severity.ERROR,
