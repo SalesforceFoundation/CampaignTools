@@ -107,7 +107,8 @@
                                 if (event.status) {
                                     spinnerElement.setAttribute('class', 'slds-hide');
 
-                                    var status = result.toLowerCase();
+                                    var status = result.substr(0, result.indexOf(':')).toLowerCase();
+                                    var error = result.substr(result.indexOf(':') + 1);
 
                                     var heading = headings[status] || '';
                                     updateStatusHeadingElement.textContent = heading;
@@ -116,6 +117,9 @@
                                     updateStatusBodyElement.textContent = message;
 
                                     if (0 <= ['aborted', 'completed', 'failed'].indexOf(status)) {
+                                        if (error !== 'null' && status === 'failed') {
+                                            updateStatusBodyElement.textContent = error;
+                                        }
                                         window.clearInterval(updateStatusInterval);
                                     }
                                 }

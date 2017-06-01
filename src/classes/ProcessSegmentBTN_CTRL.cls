@@ -137,12 +137,12 @@ public with sharing class ProcessSegmentBTN_CTRL {
             return null;
         }
         Campaign c = [
-            SELECT Campaign_List_Update_Status__c
+            SELECT Campaign_List_Update_Status__c, Campaign_List_Error_Message__c
             FROM Campaign
             WHERE Id = :campaignId
             LIMIT 1
         ];
 
-        return c.Campaign_List_Update_Status__c;
+        return c.Campaign_List_Update_Status__c + ':' + c.Campaign_List_Error_Message__c;
     }
 }
