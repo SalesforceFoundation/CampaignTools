@@ -121,14 +121,16 @@ public with sharing class ProcessSegmentBTN_CTRL {
      * @description A remote action for querying for the current campaign list
      * refresh status of a given campaign.  Returns one of the picklist values
      * defined on Campaign.Campaign_List_Update_Status__c, which correspond to
-     * the values defined in the CampaignList.UpdateStatus enum.
+     * the values defined in the CampaignList.UpdateStatus enum, along with an
+     * error message when present.
      *
      * @return String
      */
     @RemoteAction
     public static String getCampaignListUpdateStatus(Id campaignId) {
         try {
-            CampaignTools_UTIL.checkFieldReadAccess('Campaign', 'Campaign_List_Update_Status__c');
+            CampaignTools_UTIL.checkReadAccess('Campaign',
+                new Set<String>{'Campaign_List_Update_Status__c', 'Campaign_List_Error_Message__c'});
         } catch(CampaignTools_UTIL.PermsException ex) {
             ApexPages.addMessage(new ApexPages.Message(
                 ApexPages.Severity.ERROR,
@@ -137,12 +139,17 @@ public with sharing class ProcessSegmentBTN_CTRL {
             return null;
         }
         Campaign c = [
-            SELECT Campaign_List_Update_Status__c
+            SELECT Campaign_List_Update_Status__c, Campaign_List_Error_Message__c
             FROM Campaign
             WHERE Id = :campaignId
             LIMIT 1
         ];
 
-        return c.Campaign_List_Update_Status__c;
+        String updateStatus = c.Campaign_List_Update_Status__c;
+        if (null != c.Campaign_List_Error_Message__c) {
+            updateStatus += ':' + c.Campaign_List_Error_Message__c;
+        }
+
+        return updateStatus;
     }
 }
