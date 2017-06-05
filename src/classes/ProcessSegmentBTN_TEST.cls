@@ -107,7 +107,7 @@ private with sharing class ProcessSegmentBTN_TEST {
 
         Test.stopTest();
 
-        System.assertEquals('Completed:null', status, 'The test campaign status should be returned without errors.');
+        System.assertEquals('Completed', status, 'The test campaign status should be returned without errors.');
     }
 
     @isTest

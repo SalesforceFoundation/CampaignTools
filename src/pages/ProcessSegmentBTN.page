@@ -106,9 +106,14 @@
                             function (result, event) {
                                 if (event.status) {
                                     spinnerElement.setAttribute('class', 'slds-hide');
-
-                                    var status = result.substr(0, result.indexOf(':')).toLowerCase();
-                                    var error = result.substr(result.indexOf(':') + 1);
+                                    var status;
+                                    var error;
+                                    if (0 <= result.indexOf(':')) { // separator used to separate status from error message
+                                        status = result.substr(0, result.indexOf(':')).toLowerCase();
+                                        error = result.substr(result.indexOf(':') + 1);
+                                    } else {
+                                        status = result.toLowerCase();
+                                    }
 
                                     var heading = headings[status] || '';
                                     updateStatusHeadingElement.textContent = heading;
@@ -117,7 +122,7 @@
                                     updateStatusBodyElement.textContent = message;
 
                                     if (0 <= ['aborted', 'completed', 'failed'].indexOf(status)) {
-                                        if (error !== 'null' && status === 'failed') {
+                                        if (error && status === 'failed') {
                                             updateStatusBodyElement.textContent = error;
                                         }
                                         window.clearInterval(updateStatusInterval);

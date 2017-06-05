@@ -121,7 +121,8 @@ public with sharing class ProcessSegmentBTN_CTRL {
      * @description A remote action for querying for the current campaign list
      * refresh status of a given campaign.  Returns one of the picklist values
      * defined on Campaign.Campaign_List_Update_Status__c, which correspond to
-     * the values defined in the CampaignList.UpdateStatus enum.
+     * the values defined in the CampaignList.UpdateStatus enum, along with an
+     * error message when present.
      *
      * @return String
      */
@@ -144,6 +145,11 @@ public with sharing class ProcessSegmentBTN_CTRL {
             LIMIT 1
         ];
 
-        return c.Campaign_List_Update_Status__c + ':' + c.Campaign_List_Error_Message__c;
+        String updateStatus = c.Campaign_List_Update_Status__c;
+        if (null != c.Campaign_List_Error_Message__c) {
+            updateStatus += ':' + c.Campaign_List_Error_Message__c;
+        }
+
+        return updateStatus;
     }
 }
