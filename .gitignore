@@ -5,6 +5,7 @@
 .project
 .settings
 /admin_profile
+/browser_tests
 /destructiveChanges.xml
 /installdeploy
 /installedPackages
@@ -12,6 +13,7 @@
 /packaged
 /src.orig
 /test_results.json
+/test_results.xml
 /test_results_junit.xml
 /uninstall
 /uninstallsrc
