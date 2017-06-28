@@ -5,6 +5,6 @@
       "default": true
     }
   ],
-  "namespace": "camptools",
+  "namespace": "",
   "sourceApiVersion": "37.0"
 }
