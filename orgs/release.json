@@ -1,12 +1,11 @@
 {
-  "Company": "CampaignTools - Release Test Org",
-  "Country": "US",
-  "LastName": "Belvedere",
-  "Email": "mrbelvedere@salesforce.org",
-  "Edition": "Developer",
-  "OrgPreferences" : {
-    "DisableParallelApexTesting" : true,
-    "S1DesktopEnabled" : true,
-    "ChatterEnabled" : true
+  "edition": "Developer", 
+  "orgName": "CampaignTools - Release Test Org", 
+  "orgPreferences": {
+    "enabled": [
+      "ChatterEnabled", 
+      "S1DesktopEnabled", 
+      "DisableParallelApexTesting"
+    ]
   }
 }
